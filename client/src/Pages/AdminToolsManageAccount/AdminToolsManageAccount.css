@@ -1,0 +1,96 @@
+.adminToolsManageAccountPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.adminToolsManageAccountPage_container > a {
+    text-decoration: none;
+    display: inline-flex;
+    float: right;
+    margin: 1em 3em 0 -9em;
+}
+.adminToolsManageAccountPage_container > a > .adminToolsManageAccountButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 8em;
+    padding: 0.50em;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageAccountPage_container > a > .adminToolsManageAccountButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+.adminToolsManageAccount_form {
+    margin: 10% auto 10% auto;
+    width: 85%;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminToolsManageAccount_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.adminToolsManageAccount_form > table {
+    margin: 0em auto 3em auto;
+    width: 90%;
+    border: .012em solid black;
+}
+.adminToolsManageAccount_form > table > tbody > tr:nth-child(even) {
+    background-color: rgb(249, 200, 109);
+    color: black
+}
+.adminToolsManageAccount_form > table > tbody > tr:hover{
+    cursor: pointer;
+    background-color:gainsboro;
+}
+.adminToolsManageAccount_form > table > tbody > tr > th {
+    margin: 0;
+    width: 25em;
+    background-color: gold;
+    cursor: default;
+}
+.adminToolsManageAccount_form > table > tbody > tr > td {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin: 0;
+    font-weight: bold;
+}
+@media (max-width: 800px) {
+    .adminToolsManageAccountPage_container{
+        width: 100%;
+        height: 100%;
+    }
+    .adminToolsManageAccount_form {
+        width: 85%;
+    }
+    .adminToolsManageAccount_form > h1 {
+        font-size: 2em;
+    }    
+    .adminToolsManageAccountPage_container > a {
+        text-decoration: none;
+        display: block;
+        float: none;
+        margin: 2em auto auto auto;
+    }
+    .adminToolsManageAccountPage_container > a > .adminToolsManageAccountButton {
+        display: block;
+        margin: auto;
+    }
+    .adminToolsManageAccount_form > table {
+        margin: 0em auto 3em auto;
+    }    
+    th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) {
+        display: none;
+    }
+}

@@ -1,0 +1,62 @@
+.dashboardPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.dashboard_form {
+    margin: 10% auto 10% auto;
+    width: 55em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.dashboard_form > img {
+    height: 20em;
+    width: 20em;
+    margin: 0;
+    padding: 0;
+}
+.dashboard_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.dashboard_form > p {
+    font-size: 1.50em;
+    margin: 1em;
+}
+.dashboard_form > a {
+    text-decoration: none;
+}
+.dashboard_form > a > .dashboardButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 18em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.dashboard_form > a > .dashboardButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .dashboardPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .dashboard_form {
+        width: 85%
+    }
+    .dashboard_form > a > .dashboardButton {
+        width: 85%
+    }
+}

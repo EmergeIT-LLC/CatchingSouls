@@ -1,0 +1,48 @@
+.pageNotFoundPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.pageNotFoundPage_form {
+    margin: 10% auto 10% auto;
+    width: 50em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.pageNotFoundPage_form > img {
+    height: 20em;
+    width: 20em;
+    margin: 0;
+    padding: 0;
+}
+.pageNotFoundPage_form > h1 {
+    color: crimson;
+    font-size: 2.50em;
+    margin: 0.25em 1em;
+}
+.pageNotFoundPage_form > p {
+    font-size: 1.50em;
+    width: 75%;
+    margin: 0 auto 2em auto;
+}
+.pageNotFoundPage_form > p > a {
+    text-decoration: none;
+    color: rgb(138, 43, 226);
+    font-weight: bold;
+}
+.pageNotFoundPage_form > p > a:hover {
+    color: red;
+}
+@media (max-width: 800px) {
+    .pageNotFoundPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .pageNotFoundPage_form {
+        width: 75%;
+    }
+}

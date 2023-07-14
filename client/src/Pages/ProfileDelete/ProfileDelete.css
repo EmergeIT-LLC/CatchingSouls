@@ -1,0 +1,74 @@
+.profileDeletePage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.profileDeletePage_container > h2 {
+    margin-bottom: 10%;
+}
+.profileDelete_form {
+    margin: 10% auto 0 auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.profileDelete_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.profileDelete_form > p {
+    font-size: 1.50em;
+    margin: 1em;
+}
+.profileDelete_form > .profileDeleteButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.profileDelete_form > .profileDeleteButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+.profileDelete_form > a {
+    text-decoration: none;
+}
+.profileDelete_form > a > .profileDeleteButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.profileDelete_form > a > .profileDeleteButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .profileDeletePage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .profileDelete_form {
+        width: 85%;
+    }
+}

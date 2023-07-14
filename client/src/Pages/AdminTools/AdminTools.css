@@ -1,0 +1,52 @@
+.adminToolsPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.adminTools_form {
+    margin: 10% auto 10% auto;
+    width: 55em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminTools_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.adminTools_form > a {
+    text-decoration: none;
+}
+.adminTools_form > a > .adminToolsButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 18em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminTools_form > a > .adminToolsButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .adminToolsPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .adminTools_form {
+        width: 85%;
+    }
+    .adminTools_form > a > .adminToolsButton {
+        width: 75%;
+    }
+}

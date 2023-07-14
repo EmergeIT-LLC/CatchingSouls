@@ -1,0 +1,95 @@
+.adminToolsManageTriviaAddPage_container {
+    display: block;
+    background-color: white;
+    margin-top: -1.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.page_container > h2 {
+    margin-bottom: 10%;
+}
+.adminToolsManageTriviaAdd_form {
+    margin: 10% auto 0 auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminToolsManageTriviaAdd_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.adminToolsManageTriviaAdd_form > textarea::placeholder{
+    color: purple;
+}
+.adminToolsManageTriviaAdd_form > textarea {
+    display: inline-block;
+    min-width: 20em;
+    max-width: 20em;
+    min-height: 6em;
+    max-height: 6em;
+    margin: 0 1em 2em 1em;
+}
+.adminToolsManageTriviaAdd_form > textarea:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.adminToolsManageTriviaAdd_form > input::placeholder{
+    color: purple;
+}
+.adminToolsManageTriviaAdd_form > input {
+    display: block;
+    width: 20em;
+    height: 2em;
+    margin: 0 auto 2em auto;
+}
+.adminToolsManageTriviaAdd_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.adminToolsManageTriviaAdd_form > select {
+    display: block;
+    text-decoration: none;
+    color: purple;
+    font-size: 1.20em;
+    text-align: left;
+    width: 19em;
+    height: 2em;
+    margin: 0 auto 1em auto;
+}
+.adminToolsManageTriviaAdd_form > .adminToolsManageTriviaAddButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 2.50em;
+    width: 10em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageTriviaAdd_form > .adminToolsManageTriviaAddButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .adminToolsManageTriviaAddPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .adminToolsManageTriviaAdd_form {
+        width: 85%;
+        margin-bottom: 4em;
+    }
+    .adminToolsManageTriviaAdd_form > textarea, .adminToolsManageTriviaAdd_form > input, .adminToolsManageTriviaAdd_form > select {
+        display: block;
+        margin: 3em auto 3em auto;
+    }
+}

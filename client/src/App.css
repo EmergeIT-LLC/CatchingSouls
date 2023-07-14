@@ -1,0 +1,12 @@
+body{
+  padding: 0;
+  margin: 0;
+  background: linear-gradient(to bottom, purple, gold);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  font-family: 'sans-serif', Arial, Helvetica;
+  font-size: 0.75em;
+}

@@ -1,0 +1,57 @@
+.logoutPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.logout_form {
+    margin: 10% auto 10% auto;
+    width: 25em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.logout_form > img {
+    height: 20em;
+    width: 20em;
+    margin: 0;
+    padding: 0;
+}
+.logout_form > h1 {
+    color: crimson;
+    font-size: 2.50em;
+    margin: 1em;
+}
+.logout_form > p {
+    font-size: 1.50em;
+}
+.logout_form > a {
+    text-decoration: none;
+}
+.logout_form > a > .logoutButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    height: 2.50em;
+    width: 16em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+}
+.logout_form > a > .logoutButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .logoutPage_container {
+        height: 100%;
+        width: 100%;
+    }
+    .logout_form {
+        width: 75%;
+    }
+}

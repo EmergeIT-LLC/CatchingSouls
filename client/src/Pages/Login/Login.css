@@ -1,0 +1,83 @@
+.loginPage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.loginPage_container > h2 {
+    margin-bottom: 10%;
+}
+.login_form {
+    margin: 10% auto 0 auto;
+    width: 25em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.login_form > img {
+    height: 20em;
+    width: 20em;
+    margin: 0;
+    padding: 0;
+}
+.login_form > h1 {
+    color: crimson;
+    font-size: 2.50em;
+    margin: 1em;
+}
+.login_form > input::placeholder{
+    color: purple;
+}
+.login_form > input {
+    display: block;
+    width: 16em;
+    height: 2em;
+    margin: 0 auto 2em auto;
+}
+.login_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.login_form > .loginButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    height: 2.50em;
+    width: 16em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+}
+.login_form > .loginButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+.login_form > h2 > a {
+    text-decoration: none;
+    color: purple;
+}
+.login_form > h2 > a:hover {
+    color: darkgoldenrod;
+}
+
+@media (max-width: 800px) {
+    .loginPage_container {
+        height: 100%;
+        width: 100%;
+    }
+    .login_form {
+        width: 75%;
+    }
+    .login_form > input {
+        display: block;
+        margin: 3em auto 2em auto;
+        width: 14em;
+    }
+    .login_form > .loginButton {
+        width: 15em;
+    }
+}

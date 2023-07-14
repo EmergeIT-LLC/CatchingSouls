@@ -1,0 +1,121 @@
+.adminToolsManageTriviaUpdatePage_container {
+    display: block;
+    background-color: white;
+    margin-top: -1.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.adminToolsManageTriviaUpdatePage_container > h2 {
+    margin-bottom: 10%;
+}
+.adminToolsManageTriviaUpdate_form {
+    margin: 10% auto 0 auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminToolsManageTriviaUpdate_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.adminToolsManageTriviaUpdate_form > textarea::placeholder{
+    color: purple;
+}
+.adminToolsManageTriviaUpdate_form > textarea {
+    display: inline-block;
+    min-width: 20em;
+    max-width: 20em;
+    min-height: 6em;
+    max-height: 6em;
+    margin: 0 1em 2em 1em;
+}
+.adminToolsManageTriviaUpdate_form > textarea:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.adminToolsManageTriviaUpdate_form > input::placeholder{
+    color: purple;
+}
+.adminToolsManageTriviaUpdate_form > input {
+    display: block;
+    width: 20em;
+    height: 2em;
+    margin: 0 auto 2em auto;
+}
+.adminToolsManageTriviaUpdate_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.adminToolsManageTriviaUpdate_form > select {
+    display: block;
+    text-decoration: none;
+    color: purple;
+    font-size: 1.20em;
+    text-align: left;
+    width: 19em;
+    height: 2em;
+    margin: 0 auto 1em auto;
+}
+.adminToolsManageTriviaUpdate_form > .adminToolsManageTriviaUpdateButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 2.50em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageTriviaUpdate_form > .adminToolsManageTriviaUpdateButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+.adminToolsManageTriviaUpdate_form > a {
+    text-decoration: none;
+}
+.adminToolsManageTriviaUpdate_form > a > .adminToolsManageTriviaUpdateButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 2.50em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageTriviaUpdate_form > a > .adminToolsManageTriviaUpdateButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .adminToolsManageTriviaUpdatePage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .adminToolsManageTriviaUpdate_form {
+        width: 85%;
+    }
+    .adminToolsManageTriviaUpdate_form > .adminToolsManageTriviaUpdateButton {
+        display: block;
+    }
+    .adminToolsManageTriviaUpdate_form > a > .adminToolsManageTriviaUpdateButton {
+        display: block;
+    }
+    .adminToolsManageTriviaUpdate_form > textarea, .adminToolsManageTriviaUpdate_form > input, .adminToolsManageTriviaUpdate_form > select {
+        display: block;
+        margin: 3em auto 3em auto;
+    }
+}

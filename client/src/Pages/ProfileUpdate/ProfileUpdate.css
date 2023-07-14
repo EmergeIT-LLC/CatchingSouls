@@ -1,0 +1,105 @@
+.profileUpdatePage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.page_container > h2 {
+    margin-bottom: 10%;
+}
+.profileUpdate_form {
+    margin: 10% auto 0 auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.profileUpdate_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.profileUpdate_form > input::placeholder{
+    color: purple;
+}
+.profileUpdate_form > input {
+    display: inline-block;
+    width: 16em;
+    height: 2em;
+    margin: 0 1em 2em 1em;
+}
+.profileUpdate_form > .currentpassword {
+    display: block;
+    margin: 0 auto 2em auto;
+}
+.profileUpdate_form > .username {
+    display: block;
+    margin: 0 auto 2em auto;
+}
+.profileUpdate_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.profileUpdate_form > .profileUpdateButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.profileUpdate_form > .profileUpdateButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+.profileUpdate_form > a {
+    text-decoration: none;
+}
+.profileUpdate_form > a > .profileUpdateButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.profileUpdate_form > a > .profileUpdateButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .profileUpdatePage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .profileUpdate_form {
+        width: 85%;
+        margin-bottom: 4em;
+    }
+    .profileUpdate_form > input {
+        display: block;
+        width: 50%;
+        margin: 2.75em auto 2.75em auto;
+    }
+    .profileUpdate_form > .profileUpdateButton {
+        display: block;
+        width: 50%;
+    }
+    .profileUpdate_form > a > .profileUpdateButton {
+        display: block;
+        width: 50%;
+    }
+}

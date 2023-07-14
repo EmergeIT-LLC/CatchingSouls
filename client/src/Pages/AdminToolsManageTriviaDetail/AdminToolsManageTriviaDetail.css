@@ -1,0 +1,73 @@
+.adminToolsManageTriviaDetailPage_container {
+    display: block;
+    background-color: white;
+    margin-top: -1.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.adminToolsManageTriviaDetail_form {
+    margin: 10% auto 10% auto;
+    width: 55em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminToolsManageTriviaDetail_form > h1 {
+    font-size: 2.50em;
+}
+.adminToolsManageTriviaDetail_form > p {
+    font-size: 1.50em;
+    margin: 1em;
+}
+.adminToolsManageTriviaDetailInfo_form {
+    margin: 0 auto 0 auto;
+    text-align: left;
+    width: 40em;
+    border-radius: 2em;
+}
+.adminToolsManageTriviaDetail_form > .adminToolsManageTriviaDetailInfo_form > p {
+    font-size: 1.50em;
+    margin: 1em;
+}
+.adminToolsManageTriviaDetail_form > a {
+    text-decoration: none;
+}
+.adminToolsManageTriviaDetail_form > a > .adminToolsManageTriviaDetailButton {
+    display: inline-block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em 1em 1.50em 1em;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageTriviaDetail_form > a > .adminToolsManageTriviaDetailButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .adminToolsManageTriviaDetailPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .adminToolsManageTriviaDetail_form {
+        width: 85%;
+    }
+    .adminToolsManageTriviaDetail_form > a > .adminToolsManageTriviaDetailButton {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .adminToolsManageTriviaDetailInfo_form {
+        width: 100%
+    }
+}

@@ -1,0 +1,83 @@
+.adminToolsManageAccountAddPage_container {
+    display: block;
+    background-color: white;
+    margin-top: -1.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.page_container > h2 {
+    margin-bottom: 10%;
+}
+.adminToolsManageAccountAdd_form {
+    margin: 10% auto 0 auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.adminToolsManageAccountAdd_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.adminToolsManageAccountAdd_form > input::placeholder{
+    color: purple;
+}
+.adminToolsManageAccountAdd_form > input {
+    display: inline-block;
+    width: 16em;
+    height: 2em;
+    margin: 0 1em 2em 1em;
+}
+.adminToolsManageAccountAdd_form > .username {
+    display: block;
+    margin: 0 auto 2em auto;
+}
+.adminToolsManageAccountAdd_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.adminToolsManageAccountAdd_form > select {
+    text-decoration: none;
+    color: purple;
+    font-size: 1.20em;
+    width: 16em;
+    height: 2em;
+    margin: 0 auto 0.50em auto;
+}
+.adminToolsManageAccountAdd_form > .registerButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 2.50em;
+    width: 10em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageAccountAdd_form > .registerButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .adminToolsManageAccountAddPage_container {
+        width: 100%;
+        height: 100%
+    }
+    .adminToolsManageAccountAdd_form {
+        width: 85%;
+        margin-bottom: 4em;
+    }
+    .adminToolsManageAccountAdd_form > input, .adminToolsManageAccountAdd_form > select {
+        display: block;
+        margin: 2em auto 2em auto;
+        width: 14em;
+    }
+}

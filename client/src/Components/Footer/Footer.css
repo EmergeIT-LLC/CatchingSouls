@@ -1,0 +1,105 @@
+.footerBody {
+    height: auto;
+    width: 85%;
+    display: fixed;
+    margin-top: -1em;
+    margin-left: auto;
+    margin-right: auto;
+	text-align: center;
+	background-color: purple;
+    border: .012em solid black;
+}
+.footerBody > .companyName {
+    display: block;
+    font-size: 2.50em;
+	color: white;
+    font-weight: bold;
+    position: relative;
+    text-align: center;
+}
+.footerBody > .contact {
+    text-align: center;
+	color: white;
+}
+.footerBody > .contact > .email {
+    display: inline-block;
+    font-size: 1.50em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    position: relative;
+    text-align: center;
+}
+.footerBody > .contact > .email > a {
+	color: white;
+    text-decoration: none;
+}
+.footerBody > .contact > .email > a:hover {
+	color: black;
+	background-color: gold;
+}
+.footerBody > .contact > .cellNumber {
+    display: inline-block;
+    font-size: 1.50em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    position: relative;
+    text-align: center;
+}
+.footerBody > .contact > .cellNumber > a {
+	color: white;
+    text-decoration: none;
+}
+.footerBody > .contact > .cellNumber > a:hover {
+	color: black;
+	background-color: gold;
+}
+.footerBody > .socialMedia {
+    margin-top: 0.50em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30em;
+}
+.footerBody > .socialMedia > a {
+    margin-left: 0.50em;
+    margin-right: 0.50em;
+    text-decoration: none;
+	text-align: center;
+}
+.footerBody > .socialMedia > a > .facebookIcon {
+    height: 2em;
+    width: 1.55em;
+}
+.footerBody > .socialMedia > a > .facebookIcon:hover {
+    height: 2.05em;
+    width: 1.50em;
+}
+.footerBody > .socialMedia > a > .instagramIcon {
+    margin-top: 0.050em;
+    height: 2em;
+    width: 2em;
+}
+.footerBody > .socialMedia > a > .instagramIcon:hover {
+    height: 2em;
+    width: 2.05em;
+}
+@media (max-width: 800px) {
+    .footerBody {
+        width: 100%;
+    }
+    .footerBody > .contact {
+        margin-top: 2em;
+    }
+    .footerBody > .socialMedia {
+        margin-top: 2em;
+    }
+    .footerBody > .socialMedia > a {
+        margin-left: 1em;
+        margin-right: 1em;
+        text-decoration: none;
+        text-align: center;
+    }    
+}

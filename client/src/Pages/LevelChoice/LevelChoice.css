@@ -1,0 +1,58 @@
+.levelChoicePage_container {
+    display: block;
+    background-color: white;
+    margin: -1.25em auto 1em auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    text-align: center;
+}
+.levelChoice_form {
+    margin: 10% auto 10% auto;
+    width: 55em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.levelChoice_form > img {
+    height: 20em;
+    width: 20em;
+    margin: 0;
+    padding: 0;
+}
+.levelChoice_form > h1 {
+    font-size: 2.50em;
+    margin: 1em;
+}
+.levelChoice_form > p {
+    font-size: 1.50em;
+    margin: 1em;
+}
+.levelChoice_form > a {
+    text-decoration: none;
+}
+.levelChoice_form > a > .levelChoiceButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 18em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.levelChoice_form > a > .levelChoiceButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .levelChoicePage_container {
+        width: 100%;
+    }
+    .levelChoice_form {
+        width: 85%;
+    }
+}
