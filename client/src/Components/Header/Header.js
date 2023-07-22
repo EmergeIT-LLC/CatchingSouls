@@ -14,13 +14,14 @@ const Header = () => {
   const reRoute = useNavigate();
   const userLoggedIn = CheckLogin();
   const loggedInUser = CheckUser(userLoggedIn);
+  const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
   const adminLevel = GetAdminRole();
   const [buttonLabel, setButtonLabel] = useState('Login');
   const [showMenu, setShowMenu] = useState(false);
   let menu = null;
 
   useEffect(() => {
-    if (userLoggedIn){
+    if (userLoggedIn || guestLoggedIn){
       setButtonLabel('Logout');
     }
     else {
@@ -29,7 +30,7 @@ const Header = () => {
   }, []);
 
   const routeChange = () =>{
-    if (userLoggedIn){
+    if (userLoggedIn || guestLoggedIn){
       reRoute('/logout');
     }
     else {

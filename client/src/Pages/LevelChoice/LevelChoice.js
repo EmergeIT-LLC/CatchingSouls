@@ -13,11 +13,12 @@ const LevelChoice = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const userLoggedIn = CheckLogin();
+    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn){
+        if (userLoggedIn || guestLoggedIn){
             setIsLoading(false);
         }
         else {

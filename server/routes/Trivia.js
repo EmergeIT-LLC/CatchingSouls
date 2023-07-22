@@ -222,18 +222,24 @@ router.post('/checkanswer', async (req, res) => {
                 else if (triviaQAAsked[0][0].trivialevel === "Advance") {
                     pointsToAward = 3;
                 }
-                //Locate User or admin to update
-                const loggedInUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedUser]);
-                const loggedInAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedUser]);
-                //Award user or admin the points
-                if (typeof loggedInUser[0][0] !== 'undefined') {
-                    const updatedPoints = loggedInUser[0][0].savedSouls + pointsToAward;
-                    const updateUserPoints = await db.query('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
-                    return res.json({results: "true"});
+                
+                if (loggedUser !== "Guest"){
+                    //Locate User or admin to update
+                    const loggedInUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedUser]);
+                    const loggedInAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedUser]);
+                    //Award user or admin the points
+                    if (typeof loggedInUser[0][0] !== 'undefined') {
+                        const updatedPoints = loggedInUser[0][0].savedSouls + pointsToAward;
+                        const updateUserPoints = await db.query('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
+                        return res.json({results: "true"});
+                    }
+                    else if (typeof loggedInAdminUser[0][0] !== 'undefined') {
+                        const updatedPoints = loggedInAdminUser[0][0].savedSouls + pointsToAward;
+                        const updateUserPoints = await db.query('UPDATE adminusers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
+                        return res.json({results: "true"});
+                    }
                 }
-                else if (typeof loggedInAdminUser[0][0] !== 'undefined') {
-                    const updatedPoints = loggedInAdminUser[0][0].savedSouls + pointsToAward;
-                    const updateUserPoints = await db.query('UPDATE adminusers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
+                else {
                     return res.json({results: "true"});
                 }
             }

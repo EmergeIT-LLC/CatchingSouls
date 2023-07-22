@@ -17,6 +17,7 @@ const Dashboard = () => {
     const location = useLocation();
     const timeOfDay = TimeOfDay();
     const userLoggedIn = CheckLogin();
+    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
     const loggedInUser = CheckUser(userLoggedIn);
     const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
     const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,7 @@ const Dashboard = () => {
     const [lastName, setLastName] = useState(null);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        if (!userLoggedIn && !guestLoggedIn) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
@@ -32,10 +33,15 @@ const Dashboard = () => {
             });
         }
         else {
-            loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
-            loggedInUserData.then(res => setLastName(res.data.accountLastName));
+            if (guestLoggedIn) {
+                setFirstName("Guest")
+            }
+            else {
+                loggedInUserData.then(res => setFirstName(res.data.accountFirstName));
+                loggedInUserData.then(res => setLastName(res.data.accountLastName));
+            }
         }
-    }, [userLoggedIn]);
+    }, [userLoggedIn, guestLoggedIn]);
 
     return (
         <>

@@ -10,10 +10,15 @@ import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
 const Logout = () => {
     const userLoggedIn = CheckLogin();
 
-    if (userLoggedIn){
+    if (userLoggedIn) {
         sessionStorage.removeItem('catchingSoulsLoggedin');
         sessionStorage.removeItem('catchingSoulsUsername');
         sessionStorage.removeItem('catchingSoulsAdmin');
+    }
+    else if (sessionStorage.getItem('catchingSoulsGuestLoggedin')) {
+        sessionStorage.removeItem('catchingSoulsGuestLoggedin');
+        sessionStorage.removeItem('catchingSoulsGuestUsername');
+        sessionStorage.removeItem('catchingSoulsGuestPoints');
     }
 
     return (

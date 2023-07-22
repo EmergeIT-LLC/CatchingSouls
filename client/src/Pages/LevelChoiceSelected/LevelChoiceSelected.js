@@ -14,8 +14,15 @@ const LevelChoiceSelected = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {SelectedLevel} = useParams();
+    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
     const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
+    let loggedInUser;
+    if (!guestLoggedIn) {
+        loggedInUser = CheckUser(userLoggedIn);    
+    }
+    else {
+        loggedInUser = "Guest";
+    }
     const [isLoading, setIsLoading] = useState(false);
     //Question && Answer Choices
     const [isTrueFalse, setIsTrueFalse] = useState(false);
@@ -35,7 +42,7 @@ const LevelChoiceSelected = () => {
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn){
+        if (userLoggedIn || guestLoggedIn){
             getPlayerPoints();
             getTiviaQandA();
             setTimerLimit();
@@ -62,20 +69,25 @@ const LevelChoiceSelected = () => {
     }, [timer]);
 
     const getPlayerPoints = async () => {
-        setIsLoading(true);
-        const url = process.env.REACT_APP_Backend_URL + '/trivia/getPlayerPoints';
-                
-        Axios.post(url, {
-            loggedInUser : loggedInUser
-        })
-        .then((response) => {
-            setPlayerPoints(response.data.playerPoints);
-            setIsLoading(false);
-        })
-        .catch((error) => {
-            console.log(error);
-            setIsLoading(false);
-        });
+        if (!guestLoggedIn){
+            setIsLoading(true);
+            const url = process.env.REACT_APP_Backend_URL + '/trivia/getPlayerPoints';
+                    
+            Axios.post(url, {
+                loggedInUser : loggedInUser
+            })
+            .then((response) => {
+                setPlayerPoints(response.data.playerPoints);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsLoading(false);
+            });
+        }
+        else {
+            setPlayerPoints(sessionStorage.getItem('catchingSoulsGuestPoints'))
+        }
     }
 
     const getTiviaQandA = async () => {
@@ -130,6 +142,24 @@ const LevelChoiceSelected = () => {
         .then((response) => {
             if(response.data.results == "true"){
                 setAnswerCorrect(true)
+                if (guestLoggedIn) {
+                    let currentPoints = parseInt(sessionStorage.getItem('catchingSoulsGuestPoints'));
+                    
+                    if (SelectedLevel == "Beginner"){
+                        currentPoints += 1;
+                    }
+                    else if (SelectedLevel == "Intermediate"){
+                        currentPoints += 2;
+                    }
+                    else if (SelectedLevel == "Advance"){
+                        currentPoints += 3;
+                    }
+                    else {
+                        currentPoints += 0;
+                    }
+                    
+                    sessionStorage.setItem('catchingSoulsGuestPoints', currentPoints);
+                }
             }
             else {
                 setAnswerCorrect(false);

@@ -68,6 +68,13 @@ const Login = () => {
         });
     }
 
+    const guestLogin = () => {
+        sessionStorage.setItem('catchingSoulsGuestLoggedin', true);
+        sessionStorage.setItem('catchingSoulsGuestUsername', "Guest");
+        sessionStorage.setItem('catchingSoulsGuestPoints', 0);
+        navigate('/');
+    }
+
     return (
         <>
         <Header/>
@@ -75,10 +82,11 @@ const Login = () => {
                 <form className='login_form'>
                     <img src={companyLogo} alt ="Catching Souls Logo" />
                     <h1>Catching Souls</h1>
-                    <input name='username' placeholder='Username' required autoComplete="off" value={username} onChange={(e) => {setUsername(e.target.value)}} />
-                    <input name='password' placeholder='Password' type='password' required autoComplete="off" value={password} onChange={(e) => {setPassword(e.target.value) }} />
+                    <input name='username' placeholder='Username' autoComplete="off" value={username} onChange={(e) => {setUsername(e.target.value)}} />
+                    <input name='password' placeholder='Password' type='password' autoComplete="off" value={password} onChange={(e) => {setPassword(e.target.value) }} />
                     {isLoading && <button className='loginButton' disabled>Loading...</button>}
                     {!isLoading && <button className='loginButton' type='submit' onClick={login}>Login</button>}
+                    {isLoading ? <></> : <button className='loginButton' onClick={guestLogin}>Login As Guest</button>}
                     {isLoading ? <></> : <h2><a href='/Register'>Register?</a> or <a href='/ForgotPassword'>Reset Password?</a></h2>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
