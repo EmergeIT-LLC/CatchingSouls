@@ -80,7 +80,7 @@ const Login = () => {
                     {!isLoading && <button className='loginButton' type='submit' onClick={login}>Login</button>}
                     {isLoading ? <></> : <h2><a href='/Register'>Register?</a> or <a href='/ForgotPassword'>Reset Password?</a></h2>}
                 </form>
-                {isLoading ? <></> : <h2>{statusMessage}</h2>}
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
             </div>
             <Footer/>
         </>

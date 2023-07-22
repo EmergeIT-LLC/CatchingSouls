@@ -42,10 +42,15 @@
     .about_form {
         width: 85%;
     }
-    .about_form > h1 {
-        font-size: 2em;  
+    .about_form > h1, .about_form > h2 {
+        font-size: 2em;
+        margin: 0.50em;
+        text-align: center;
     }
-    .about_form > h1, .about_form > h2, .about_form > p, .about_form > ol > li {
+    .about_form > p {
         margin: 1em;
+    }
+    .about_form > ol > li {
+        margin: 0.50em;
     }
 }

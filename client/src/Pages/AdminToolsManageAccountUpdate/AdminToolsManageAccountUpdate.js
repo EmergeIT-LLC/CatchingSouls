@@ -131,7 +131,7 @@ const AdminToolsManageAccountUpdate = () => {
                     {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`}><button className='adminToolsManageAccountUpdateButton'>Cancel</button></a>}
                     {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountUpdateButton'>Return to Accounts</button></a>}
                 </div>
-            <h2>{statusMessage}</h2>
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
             <Footer/> 
         </>

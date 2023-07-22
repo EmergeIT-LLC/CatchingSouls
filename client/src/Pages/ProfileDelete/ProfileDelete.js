@@ -101,7 +101,7 @@ const ProfileDelete = () => {
                         <button className='profileDeleteButton' type='submit' onClick={deleteUserProps}>Yes</button>
                         <a href={`/Profile/${loggedInUser}`}><button className='profileDeleteButton'>No</button></a>
                     </div>
-                <h2>{statusMessage}</h2>
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
                 </div>
             }
             <Footer/>

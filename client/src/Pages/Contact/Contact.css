@@ -50,10 +50,15 @@
     .contact_form {
         width: 85%;
     }
-    .contact_form > h1 {
-        font-size: 2em;  
+    .contact_form > h1, .contact_form > h2 {
+        font-size: 2em;
+        margin: 0.50em;
+        text-align: center;
     }
-    .contact_form > h1, .contact_form > h2, .contact_form > p, .contact_form > ol > li {
+    .contact_form > p {
         margin: 1em;
+    }
+    .contact_form > ol > li {
+        margin: 0.50em;
     }
 }

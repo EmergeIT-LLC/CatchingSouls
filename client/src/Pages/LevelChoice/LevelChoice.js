@@ -35,8 +35,10 @@ const LevelChoice = () => {
             <Header/>
             <div className='levelChoicePage_container'>
                 <div className='levelChoice_form'>
-                    <img src={companyLogo} alt ="Catching Souls Logo" />
                     <h1>Trivia Levels</h1>
+                    <p>Beginner: +1 Point</p>
+                    <p>Intermediate: +2 Point</p>
+                    <p>Advance: +3 Point</p>
                     <a href='/LevelChoice/Beginner'><button className='levelChoiceButton'>Beginner</button></a>
                     <a href='/LevelChoice/Intermediate'><button className='levelChoiceButton'>Intermediate</button></a>
                     <a href='/LevelChoice/Advance'><button className='levelChoiceButton'>Advance</button></a>

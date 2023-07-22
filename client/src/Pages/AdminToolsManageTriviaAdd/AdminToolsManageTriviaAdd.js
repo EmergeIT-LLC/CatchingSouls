@@ -105,7 +105,7 @@ const AdminToolsManageTriviaAdd = () => {
                     {isLoading && <button className='adminToolsManageTriviaAddButton' disabled>Loading...</button>}
                     {!isLoading && <button className='adminToolsManageTriviaAddButton' type='submit' onClick={submitForm}>Add Q&A</button>}
                 </form>
-                {isLoading ? <></> : <h2>{statusMessage}</h2>}
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
             <Footer/>
         </>

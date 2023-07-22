@@ -88,7 +88,7 @@ const Register = () => {
                     {isLoading && <button className='registerButton' disabled>Loading...</button>}
                     {!isLoading && <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
                 </div>
-            {isLoading ? <></> : <h2>{statusMessage}</h2>}
+            {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
             </div>  
             <Footer/>
         </>

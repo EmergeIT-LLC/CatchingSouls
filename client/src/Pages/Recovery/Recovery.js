@@ -66,8 +66,8 @@ const Recovery = () => {
                     {isLoading && <button className='recoverButton' disabled>Loading...</button>}
                     {!isLoading && <button className='recoverButton' onClick={recoverAccount}>Recover Account</button>}
                 </form>
-                {isLoading ? <></> : <h2>{statusMessage}</h2>}
-            </div>
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
+                </div>
             <Footer/>          
         </>
     );

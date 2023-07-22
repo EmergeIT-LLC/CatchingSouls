@@ -92,7 +92,6 @@ const AdminToolsManageTriviaDelete = () => {
                     {isLoading ?
                         <>
                             <h1>Loading...</h1>
-                            <h2>{statusMessage}</h2>
                         </>
                     :   
                         <>
@@ -105,7 +104,7 @@ const AdminToolsManageTriviaDelete = () => {
                         </>
                     }
                 </form>
-            <h2>{statusMessage}</h2>
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
             <Footer/>
         </>

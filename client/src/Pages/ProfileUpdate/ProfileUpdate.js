@@ -141,8 +141,8 @@ const ProfileUpdate = () => {
                     </>
                 }
                 </div>
-            <h2>{statusMessage}</h2>
-            </div>
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
+                </div>
             <Footer/>
         </>
     );

@@ -129,7 +129,7 @@ const AdminToolsManageTriviaUpdate = () => {
                     {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaUpdateButton'>Cancel</button></Link>}
                     {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaUpdateButton'>Return to Questions</button></Link>}
                 </form>
-                {isLoading ? <></> : <h2>{statusMessage}</h2>}
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
             <Footer/>
         </>

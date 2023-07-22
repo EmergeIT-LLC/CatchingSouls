@@ -108,7 +108,7 @@ const AdminToolsVerification = () => {
                         </>
                     }
                 </div>
-                {isLoading ? <></> : <h2>{statusMessage}</h2>}
+                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
             <Footer/> 
         </>

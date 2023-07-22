@@ -74,25 +74,25 @@ const AdminToolsManageAccountDetail = () => {
                 <div className='adminToolsManageAccountDetail_form'>
                 {isLoading ?
                     <>
-                                <h1>Loading...</h1>
+                        <h1>Loading...</h1>
                     </>
                     :
                     <>
-                                <h1>{firstName} {lastName}</h1>
-                                <div className='adminToolsManageAccountDetailInfo_form'>
-                                    <p><b>Username:</b> {SelectedAdmin}</p>
-                                    <p><b>Email:</b> {email}</p>
-                                    <p><b>Role:</b> {selectRole}</p>
-                                </div>
-                                {showButtons ?
-                                    <>
-                                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Update`}><button className='adminToolsManageAccountDetailButton'>Update Admin</button></a>
-                                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Delete`}><button className='adminToolsManageAccountDetailButton'>Delete Admin</button></a>
-                                    </>
-                                :
-                                <></>
-                                }
-                            <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailButton'>Return to Accounts</button></a>
+                        <h1>{firstName} {lastName}</h1>
+                            <div className='adminToolsManageAccountDetailInfo_form'>
+                                <p><b>Username:</b> {SelectedAdmin}</p>
+                                <p><b>Email:</b> {email}</p>
+                                <p><b>Role:</b> {selectRole}</p>
+                            </div>
+                            {showButtons ?
+                                <>
+                                    <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Update`}><button className='adminToolsManageAccountDetailButton'>Update Admin</button></a>
+                                    <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Delete`}><button className='adminToolsManageAccountDetailButton'>Delete Admin</button></a>
+                                </>
+                            :
+                            <></>
+                            }
+                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailButton'>Return to Accounts</button></a>
                     </>
                 }
                 </div>
