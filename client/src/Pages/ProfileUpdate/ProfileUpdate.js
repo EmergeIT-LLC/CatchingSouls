@@ -62,7 +62,8 @@ const ProfileUpdate = () => {
         }
     }, [userLoggedIn]);
 
-    const submitUpdateForm = () => {
+    const submitUpdateForm = (e) => {
+        e.preventDefault();
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }

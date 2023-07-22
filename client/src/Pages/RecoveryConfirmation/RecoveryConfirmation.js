@@ -47,7 +47,8 @@ const RecoveryConfirmation = () => {
         })
     }
 
-    const submitForm = () => {
+    const submitForm = (e) => {
+        e.preventDefault();
         if (password == null || confirmPassword == null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }

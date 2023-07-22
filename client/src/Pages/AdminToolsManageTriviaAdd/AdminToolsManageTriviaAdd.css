@@ -11,10 +11,11 @@
     text-align: center;
 }
 .page_container > h2 {
+    margin-top: -8%;
     margin-bottom: 10%;
 }
 .adminToolsManageTriviaAdd_form {
-    margin: 10% auto 0 auto;
+    margin: 10% auto 10% auto;
     width: 45em;
     border:0.25em solid purple;
     border-radius: 2em;

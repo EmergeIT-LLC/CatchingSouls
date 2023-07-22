@@ -58,7 +58,8 @@ const AdminToolsManageTriviaDelete = () => {
         })
     };
 
-    const submitForm = () => {
+    const submitForm = (e) => {
+        e.preventDefault();
         setIsLoading(true);
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/TriviaDelete';
                 

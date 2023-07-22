@@ -46,7 +46,8 @@ const AdminToolsManageAccountAdd = () => {
         }
     }, [userLoggedIn]);
 
-    const submitForm = () => {
+    const submitForm = (e) => {
+        e.PreventDefault();
         if (firstName == null || lastName == null || email == null || confirmEmail == null || selectRole == "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }

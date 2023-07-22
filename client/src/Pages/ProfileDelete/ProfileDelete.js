@@ -57,7 +57,8 @@ const ProfileDelete = () => {
         }
     }, [userLoggedIn]);
 
-    const deleteUserProps = () => {
+    const deleteUserProps = (e) => {
+        e.preventDefault();
         setIsLoading(true);
         const url = process.env.REACT_APP_Backend_URL + '/user/account_Delete';
                 

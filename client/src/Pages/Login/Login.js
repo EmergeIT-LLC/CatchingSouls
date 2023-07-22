@@ -29,7 +29,8 @@ const Login = () => {
         }    
     }, [userLoggedIn]);
 
-    const login = async () => {
+    const login = async (e) => {
+        e.preventDefault();
         if (username === null || password === null){
             return setStatusMessage("Username and password must be provided!");
         }

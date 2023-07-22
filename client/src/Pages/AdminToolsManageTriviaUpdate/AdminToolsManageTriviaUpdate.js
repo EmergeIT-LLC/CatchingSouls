@@ -64,7 +64,8 @@ const AdminToolsManageTriviaUpdate = () => {
         })
     };
 
-    const submitForm = () => {
+    const submitForm = (e) => {
+        e.preventDefault();
         if (question == null || answer == null || selectQAType == "null" || selectDifficulty == "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }

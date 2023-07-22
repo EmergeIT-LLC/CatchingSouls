@@ -54,7 +54,8 @@ const AdminToolsManageAccountUpdate = () => {
         }
     }, [userLoggedIn]);
 
-    const submitUpdateForm = async () => {
+    const submitUpdateForm = async (e) => {
+        e.preventDefault();
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }

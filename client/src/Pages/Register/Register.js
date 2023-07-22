@@ -23,7 +23,8 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
 
-    const submitForm = () => {
+    const submitForm = (e) => {
+        e.preventDefault();
         if (firstName == null || lastName == null || username == null || email == null || confirmEmail == null || password == null || confirmPassword == null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }

@@ -8,10 +8,11 @@
     text-align: center;
 }
 .loginPage_container > h2 {
+    margin-top: -8%;
     margin-bottom: 10%;
 }
 .login_form {
-    margin: 10% auto 0 auto;
+    margin: 10% auto 10% auto;
     width: 25em;
     border:0.25em solid purple;
     border-radius: 2em;
