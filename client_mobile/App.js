@@ -6,18 +6,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //Screens
 import Dashboard from './screens/Dashboard';
+import Login from './screens/Login';
+import Logout from './screens/Logout';
 //Code
 
 const Stack = createNativeStackNavigator();
+
+function StackedScreens() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Dashboard" component={Dashboard} initial='true'/>
+      <Stack.Screen name="Login" component={Login}/>
+      <Stack.Screen name="Logout" component={Logout}/>            
+    </Stack.Navigator>
+  )
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={['purple', 'gold']} style={styles.linearBGContainer}>
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Dashboard" component={Dashboard} initial='true'/>
-          </Stack.Navigator>
+          <StackedScreens/>
         </NavigationContainer>
       </LinearGradient>
       <StatusBar style="auto" />
