@@ -1,21 +1,23 @@
 //Dependencies
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 //Screens
 import Dashboard from './screens/Dashboard';
 import Login from './screens/Login';
 import Logout from './screens/Logout';
-//Code
 
+//Code
 const Stack = createNativeStackNavigator();
 
-function StackedScreens() {
+const StackedScreens = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} initial='true'/>
+    <Stack.Navigator initialRouteName='Dashboard'>
+      <Stack.Screen name="Dashboard" component={Dashboard}/>
       <Stack.Screen name="Login" component={Login}/>
       <Stack.Screen name="Logout" component={Logout}/>            
     </Stack.Navigator>
@@ -49,9 +51,4 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  innerContainer : {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
 });

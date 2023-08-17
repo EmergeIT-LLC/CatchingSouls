@@ -17,7 +17,7 @@ const Dashboard = () => {
                     : 
                     <>
                         <Image source={CompanyLogo} style={styles.dashboardImage} alt ="Catching Souls Logo"/>
-                        <Text style={styles.dashboardHeader}>{TOD}!</Text>
+                        <Text style={styles.dashboardHeader}>{TOD},</Text>
                         <Text style={styles.dashboardText}>Do you know your bible enough to spread the lord's message and save souls?</Text>
                         <Text style={styles.dashboardText}>How about seeing the number of souls you can save with some questions?</Text>
                         <Pressable style={styles.dashboardButton}>
@@ -42,9 +42,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',        
         borderColor: 'purple',
         borderStyle: 'solid',
-        borderWidth: 2,
+        borderWidth: 4,
         borderRadius: 15,
-        width: 350,
+        width: '85%',
     },
     dashboardImage: {
         height: 300,
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     dashboardHeader: {
-        margin: 2,
-        fontSize: 20,
+        margin: 4,
+        fontSize: 34,
         fontFamily: 'sans-serif',
         fontWeight: "bold",
     },
@@ -70,10 +70,14 @@ const styles = StyleSheet.create({
         color: 'black',
         padding: 10,
         margin: 25,
+        width: '85%',
+        alignItems: 'center',
+        justifyContent: 'center',
         borderColor: 'purple',
         borderStyle: 'solid',
-        borderWidth: 4,
-        borderRadius: 15,
+        borderWidth: 2,
+        borderRadius: 15,     
+
     },
     dashboardButtonText: {
         fontFamily: 'sans-serif',
