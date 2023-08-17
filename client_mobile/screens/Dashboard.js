@@ -2,10 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import CompanyLogo from '../assets/Images/Logo_Transparent.png'
 import TimeOfDay from '../functions/timeOfDay';
+import VerificationCheck from '../functions/verificationCheck'
 
 const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [TOD, setTOD] = useState(TimeOfDay);
+    // const userLoggedIn = VerificationCheck.CheckLogin();
+    // const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
+    // const loggedInUser = VerificationCheck.CheckUser();
+    // const [loggedInUserData, setLoggedInUserData] = useState(VerificationCheck.GetUserProps());
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
+
+
+    // useEffect(() => {
+    //     if (!userLoggedIn && !guestLoggedIn) {
+    //         navigate('/Login', {
+    //         });
+    //     }
+    //     else {
+    //         if (guestLoggedIn) {
+    //             setFirstName("Guest")
+    //         }
+    //         else {
+    //             loggedInUserData.then(res => setFirstName(res.data.accountFirstName));
+    //             loggedInUserData.then(res => setLastName(res.data.accountLastName));
+    //         }
+    //     }
+    // }, [userLoggedIn, guestLoggedIn]);
 
     return (
         <View style={styles.dashboardContainer}>
@@ -17,7 +41,7 @@ const Dashboard = () => {
                     : 
                     <>
                         <Image source={CompanyLogo} style={styles.dashboardImage} alt ="Catching Souls Logo"/>
-                        <Text style={styles.dashboardHeader}>{TOD},</Text>
+                        <Text style={styles.dashboardHeader}>{TOD} {firstName} {lastName},</Text>
                         <Text style={styles.dashboardText}>Do you know your bible enough to spread the lord's message and save souls?</Text>
                         <Text style={styles.dashboardText}>How about seeing the number of souls you can save with some questions?</Text>
                         <Pressable style={styles.dashboardButton}>
