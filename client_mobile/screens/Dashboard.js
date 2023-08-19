@@ -41,7 +41,7 @@ const Dashboard = () => {
                     : 
                     <>
                         <Image source={CompanyLogo} style={styles.dashboardImage} alt ="Catching Souls Logo"/>
-                        <Text style={styles.dashboardHeader}>{TOD} {firstName} {lastName},</Text>
+                        <Text style={styles.dashboardHeader}>{TOD} {firstName},</Text>
                         <Text style={styles.dashboardText}>Do you know your bible enough to spread the lord's message and save souls?</Text>
                         <Text style={styles.dashboardText}>How about seeing the number of souls you can save with some questions?</Text>
                         <Pressable style={styles.dashboardButton}>
