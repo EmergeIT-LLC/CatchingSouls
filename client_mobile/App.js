@@ -4,7 +4,6 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { AsyncStorage, Button, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { DrawerNavigator } from 'react-navigation';
 import { DrawerActions, NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Icon } from 'react-native-elements';
@@ -23,14 +22,14 @@ const Drawer = createDrawerNavigator();
 const StackedScreens = () => {
   const navigation = useNavigation();
   return (
-    <Stack.Navigator 
+    <Drawer.Navigator 
       initialRouteName='Dashboard'
       screenOptions={headerStyle(navigation)}
     >
-      <Stack.Screen name="Dashboard" component={Dashboard}/>
-      <Stack.Screen name="Login" component={Login}/>
-      <Stack.Screen name="Logout" component={Logout}/>            
-    </Stack.Navigator>
+      <Drawer.Screen name="Dashboard" component={Dashboard} options={{drawerLabel: 'Dashboard'}}/>
+      <Drawer.Screen name="Login" component={Login} options={{drawerLabel: 'Login'}}/>
+      <Drawer.Screen name="Logout" component={Logout} options={{drawerLabel: 'Logout'}}/>            
+    </Drawer.Navigator>
   )
 }
 
@@ -47,7 +46,7 @@ export default function App() {
   );
 }
 
-const headerStyle = navigation => {
+const headerStyle = (navigation) => {
   return {
     title: 'Catching Souls',
     headerStyle: { backgroundColor: 'purple' },
@@ -57,14 +56,15 @@ const headerStyle = navigation => {
       fontSize: 25,
       fontWeight: 'bold',
     },
+    drawerPosition: 'right',
     headerRight: () => 
         (
           <Icon name='menu' size={50} color='white'
-          onPress={()=> navigation.dispatch(DrawerActions.toggleDrawer())}
+            onPress={()=> navigation.dispatch(DrawerActions.toggleDrawer())}
           />
         ),
-  };
-}
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
