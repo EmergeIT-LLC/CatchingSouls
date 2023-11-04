@@ -14,8 +14,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-  key: 'session_cookie_name',
-  secret: 'session_cookie_secret',
+  key: 'BibleTriviaSessionCookies',
+  secret: '3B4F7C4E6DA85A5176758B437A22A',
   store: new SqlDbStore({
   host: process.env.DB_Host,
   port: process.env.DB_Port,
@@ -27,9 +27,21 @@ app.use(session({
   saveUninitialized: false,
   cookie:{
       maxAge:1000*60*60*24,
-      secure: false
+      secure: true
   }
 }));
+function requireAuth(req, res, next) {
+  if (req.session.user) {
+    next(); // User is authenticated, proceed to the route
+  } else {
+    res.json({ message: 'Unauthorized' });
+  }
+}
+
+// Example usage to protect a route
+router.get('/adminprotected', requireAuth, (req, res) => {
+  res.json({ message: 'This is a protected route' });
+});
 //----------------------------------------- END OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
 //Register page communication
@@ -185,7 +197,7 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
 });
 
 router.post('/adminAccountDetail_Update', async (req, res) => {
-  const username = req.body.username;
+  const username = req.session.user;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;

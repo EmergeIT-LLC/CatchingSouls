@@ -52,10 +52,6 @@ const Login = () => {
                 sessionStorage.setItem('catchingSoulsLoggedin', true);
                 sessionStorage.setItem('catchingSoulsUsername', response.data.username);
 
-                if (response.data.isAdmin){
-                    sessionStorage.setItem('catchingSoulsAdmin', true);
-                }
-
                 if (location.state == null) {
                     navigate('/');
                 }

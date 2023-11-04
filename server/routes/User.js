@@ -15,8 +15,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-  key: 'session_cookie_name',
-  secret: 'session_cookie_secret',
+  key: 'BibleTriviaSessionCookies',
+  secret: '3B4F7C4E6DA85A5176758B437A22A',
   store: new SqlDbStore({
   host: process.env.DB_Host,
   port: process.env.DB_Port,
@@ -28,9 +28,21 @@ app.use(session({
   saveUninitialized: false,
   cookie:{
       maxAge:1000*60*60*24,
-      secure: false
+      secure: true
   }
 }));
+function requireAuth(req, res, next) {
+  if (req.session.user) {
+    next(); // User is authenticated, proceed to the route
+  } else {
+    res.json({ message: 'Unauthorized' });
+  }
+}
+
+// Example usage to protect a route
+router.get('/protected', requireAuth, (req, res) => {
+  res.json({ message: 'This is a protected route' });
+});
 //----------------------------------------- END OF PASSPORT MIDDLEWARE SETUP ---------------------------------------------------
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
 //Register page communication
@@ -140,6 +152,8 @@ router.post('/login', async (req, res) => {
     else if (typeof userLogin[0][0] !== 'undefined'){
       bcrypt.compare(password, userLogin[0][0].accountPassword, (err, result) => {
         if (result == true){
+          req.session.user = username;
+          res.cookie('isAdmin', 'false');
           return res.json({ loggedIn: true, username: username });
         }
       });
@@ -153,7 +167,9 @@ router.post('/login', async (req, res) => {
     else if (typeof adminLogin[0][0] !== 'undefined'){
       bcrypt.compare(password, adminLogin[0][0].accountPassword, (err, result) => {
         if (result == true){
-          return res.json({ loggedIn: true, username: username, isAdmin: true });
+          req.session.user = username;
+          res.cookie('isAdmin', 'true');
+          return res.json({ loggedIn: true, username: username });
         }
       });
     }    
@@ -166,10 +182,19 @@ router.post('/login', async (req, res) => {
     return res.json({ message: 'An Error Occured!' });
   }
 });
+router.post('/logout', async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.json({ message: 'Error logging out' });
+    }
+    res.clearCookie('BibleTriviaSessionCookies');
+    res.json({ message: 'Logged out' });
+  });
+});
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
 //Get Account Profile Information
 router.post('/accountDetail_retrieval', async (req, res) => {
-  const username = req.body.username;
+  const username = req.session.user;
 
   try {
     const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
@@ -197,7 +222,7 @@ router.post('/accountDetail_retrieval', async (req, res) => {
 
 //Update Account
 router.post('/account_Update', async (req, res) => {
-  const username = req.body.username;
+  const username = req.session.user;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -276,7 +301,7 @@ router.post('/account_Update', async (req, res) => {
 
 //Delete Account
 router.post('/account_Delete', async (req, res) => {
-  const username = req.body.username;
+  const username = req.session.user;
 
   try {
     const deleteStatus = await db.query('Delete FROM users WHERE accountUsername = ?', [username]);
