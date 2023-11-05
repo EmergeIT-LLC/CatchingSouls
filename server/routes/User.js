@@ -142,43 +142,51 @@ router.post('/login', async (req, res) => {
     const userLogin = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
     const adminVerification = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
     const adminLogin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    
-    //Check User Verification
-    if (typeof userVerification[0][0] !== 'undefined'){
+
+    // Check User Verification
+    if (typeof userVerification[0][0] !== 'undefined') {
       sg.sendVerification(userVerification[0][0].accountEmail, userVerification[0][0].accountFirstName, userVerification[0][0].accountLastName, username);
-      res.json({ message: 'User needs to check email to verify account'});
+      res.json({ message: 'User needs to check email to verify account' });
     }
-    //Check User Table
-    else if (typeof userLogin[0][0] !== 'undefined'){
-      bcrypt.compare(password, userLogin[0][0].accountPassword, (err, result) => {
-        if (result == true){
-          req.session.user = username;
-          res.cookie('isAdmin', 'false');
-          return res.json({ loggedIn: true, username: username });
-        }
+    // Check User Table
+    else if (typeof userLogin[0][0] !== 'undefined') {
+      const result = await new Promise((resolve, reject) => {
+        bcrypt.compare(password, userLogin[0][0].accountPassword, (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        });
       });
+
+      if (result === true) {
+        req.session.user = username;
+        res.cookie('isAdmin', 'false');
+        return res.json({ loggedIn: true, username: username });
+      }
     }
-    //Check Admin Verification
-    else if (typeof adminVerification[0][0] !== 'undefined'){
-      sg.sendAdminVerification(adminVerification[0][0].accountEmail, adminVerification[0][0].accountFirstName, adminVerification[0][0].accountLastName, username)
-      res.json({ message: 'User needs to check email to verify account'});
+    // Check Admin Verification
+    else if (typeof adminVerification[0][0] !== 'undefined') {
+      sg.sendAdminVerification(adminVerification[0][0].accountEmail, adminVerification[0][0].accountFirstName, adminVerification[0][0].accountLastName, username);
+      res.json({ message: 'User needs to check email to verify account' });
     }
-    //Check Admin Table
-    else if (typeof adminLogin[0][0] !== 'undefined'){
-      bcrypt.compare(password, adminLogin[0][0].accountPassword, (err, result) => {
-        if (result == true){
-          req.session.user = username;
-          res.cookie('isAdmin', 'true');
-          return res.json({ loggedIn: true, username: username });
-        }
+    // Check Admin Table
+    else if (typeof adminLogin[0][0] !== 'undefined') {
+      const result = await new Promise((resolve, reject) => {
+        bcrypt.compare(password, adminLogin[0][0].accountPassword, (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        });
       });
-    }    
-    else {
+
+      if (result === true) {
+        req.session.user = username;
+        res.cookie('isAdmin', 'true');
+        return res.json({ loggedIn: true, username: username });
+      }
+    } else {
       return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
     }
-  }
-  catch (err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
     return res.json({ message: 'An Error Occured!' });
   }
 });
