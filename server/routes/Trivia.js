@@ -1,32 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const app = express();
-const SqlDbStore = require('express-mysql-session')(session);
-const cookieParser = require('cookie-parser');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret',
-    store: new SqlDbStore({
-    host: process.env.DB_Host,
-    port: process.env.DB_Port,
-    user: process.env.DB_User,
-    password: process.env.DB_Pass,
-    database: process.env.DB_Data,
-    }),
-    resave: false,
-    saveUninitialized: false,
-    cookie:{
-        maxAge:1000*60*60*24,
-        secure: false
-    }
-}));
 function setTriviaType(triviaTypeSelection) {
     switch(triviaTypeSelection){
         case 0:

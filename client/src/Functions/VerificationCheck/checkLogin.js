@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
-
-function checkCookie(cookieName) {
-  const cookies = document.cookie.split('; ');
-  for (const cookie of cookies) {
-    const [name, value] = cookie.split('=');
-    if (name === cookieName) {
-      return value;
-    }
-  }
-  return null; // Cookie not found
-}
-  
+import Axios from 'axios';
 
 const CheckLogin = () => {
-    const sessionCookie = checkCookie('BibleTriviaSessionCookies');
-        
-    if (sessionCookie) {
+  const url = process.env.REACT_APP_Backend_URL + '/user/checkLogin';
+
+  useEffect(() => {
+    login();
+  }, [])
+  
+  const login = async () => {
+    await Axios.post(url)
+    .then((response) => {
+      if (response.data.loggedIn === true){
         return true;
-    }
-    else {
-        return false;
-    }
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+  }
 }
 
 export default CheckLogin;

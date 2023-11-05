@@ -49,9 +49,6 @@ const Login = () => {
         }).then((response) => {
             setIsLoading(false);
             if (response.data.loggedIn) {
-                sessionStorage.setItem('catchingSoulsLoggedin', true);
-                sessionStorage.setItem('catchingSoulsUsername', response.data.username);
-
                 if (location.state == null) {
                     navigate('/');
                 }

@@ -4,35 +4,10 @@ const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const app = express();
-const SqlDbStore = require('express-mysql-session')(session);
-const cookieParser = require('cookie-parser');
 const sg = require('../config/emailTemplate');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-  key: 'BibleTriviaSessionCookies',
-  secret: '3B4F7C4E6DA85A5176758B437A22A',
-  store: new SqlDbStore({
-  host: process.env.DB_Host,
-  port: process.env.DB_Port,
-  user: process.env.DB_User,
-  password: process.env.DB_Pass,
-  database: process.env.DB_Data,
-  }),
-  resave: false,
-  saveUninitialized: false,
-  cookie:{
-      maxAge:1000*60*60*24,
-      secure: true
-  }
-}));
 function requireAuth(req, res, next) {
-  if (req.session.user) {
+  if (req.cookies.username) {
     next(); // User is authenticated, proceed to the route
   } else {
     res.json({ message: 'Unauthorized' });
@@ -111,6 +86,7 @@ router.post('/verificationInfo', async (req, res) => {
 //Move user from verification table to accounts table
 router.post('/verifyUser', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
+  
   try {
     const unverifiedUser = await db.query('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
 
@@ -152,15 +128,26 @@ router.post('/login', async (req, res) => {
     else if (typeof userLogin[0][0] !== 'undefined') {
       const result = await new Promise((resolve, reject) => {
         bcrypt.compare(password, userLogin[0][0].accountPassword, (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
+          if (err){
+            reject(err);
+          }
+          else {
+            resolve(result);
+          }
         });
       });
 
       if (result === true) {
-        req.session.user = username;
+        req.cookies.username = username;
+        req.cookies.loggedIn = true;
+        req.cookies.isAdmin = false;
+        res.cookie('loggedIn', 'true');
+        res.cookie('username', username);
         res.cookie('isAdmin', 'false');
         return res.json({ loggedIn: true, username: username });
+      }
+      else {
+        return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
       }
     }
     // Check Admin Verification
@@ -172,15 +159,26 @@ router.post('/login', async (req, res) => {
     else if (typeof adminLogin[0][0] !== 'undefined') {
       const result = await new Promise((resolve, reject) => {
         bcrypt.compare(password, adminLogin[0][0].accountPassword, (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
+          if (err){
+            reject(err);
+          }
+          else {
+            resolve(result);
+          }
         });
       });
 
       if (result === true) {
-        req.session.user = username;
+        req.cookies.username = username;
+        req.cookies.loggedIn = true;
+        req.cookies.isAdmin = true;
+        res.cookie('loggedIn', 'true');
+        res.cookie('username', username);
         res.cookie('isAdmin', 'true');
-        return res.json({ loggedIn: true, username: username });
+        return res.json({ loggedIn: true, username: username, isAdmin: true });
+      }
+      else {
+        return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
       }
     } else {
       return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
@@ -190,19 +188,37 @@ router.post('/login', async (req, res) => {
     return res.json({ message: 'An Error Occured!' });
   }
 });
+router.post('/checkLogin', (req, res) => {
+  // Check for HTTP-only cookies and respond accordingly
+  const isAdmin = req.cookies.isAdmin === 'true';
+  const loggedIn = req.cookies.loggedIn === 'true';
+  const username = req.cookies.username;
+
+  if (isAdmin && loggedIn && username) {
+    // User is logged in, send appropriate data
+    return res.json({ loggedIn: true, username: username, isAdmin: isAdmin });
+  } 
+  else if (loggedIn && username) {
+    return res.json({ loggedIn: true, username: username });
+  }
+  else {
+    // User is not logged in, send appropriate data
+    return res.json({ loggedIn: false });
+  }
+});
 router.post('/logout', async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.json({ message: 'Error logging out' });
     }
     res.clearCookie('BibleTriviaSessionCookies');
-    res.json({ message: 'Logged out' });
+    res.json({ loggedIn: false, message: 'Logged out' });
   });
 });
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
 //Get Account Profile Information
 router.post('/accountDetail_retrieval', async (req, res) => {
-  const username = req.session.user;
+  const username = req.cookies.username;
 
   try {
     const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
@@ -230,7 +246,7 @@ router.post('/accountDetail_retrieval', async (req, res) => {
 
 //Update Account
 router.post('/account_Update', async (req, res) => {
-  const username = req.session.user;
+  const username = req.cookies.username;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -309,7 +325,7 @@ router.post('/account_Update', async (req, res) => {
 
 //Delete Account
 router.post('/account_Delete', async (req, res) => {
-  const username = req.session.user;
+  const username = req.cookies.username;
 
   try {
     const deleteStatus = await db.query('Delete FROM users WHERE accountUsername = ?', [username]);

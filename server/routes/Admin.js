@@ -3,33 +3,8 @@ const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const app = express();
-const SqlDbStore = require('express-mysql-session')(session);
-const cookieParser = require('cookie-parser');
 const sg = require('../config/emailTemplate');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-  key: 'BibleTriviaSessionCookies',
-  secret: '3B4F7C4E6DA85A5176758B437A22A',
-  store: new SqlDbStore({
-  host: process.env.DB_Host,
-  port: process.env.DB_Port,
-  user: process.env.DB_User,
-  password: process.env.DB_Pass,
-  database: process.env.DB_Data,
-  }),
-  resave: false,
-  saveUninitialized: false,
-  cookie:{
-      maxAge:1000*60*60*24,
-      secure: true
-  }
-}));
 function requireAuth(req, res, next) {
   if (req.session.user) {
     next(); // User is authenticated, proceed to the route
