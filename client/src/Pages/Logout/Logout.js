@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Logout.css'
 //Components
 import companyLogo from '../../Images/Logo_Transparent.png';
@@ -24,7 +24,7 @@ const Logout = () => {
 
 
     if (userLoggedIn) {
-        logout;
+        logout();
     }
     else if (sessionStorage.getItem('catchingSoulsGuestLoggedin')) {
         sessionStorage.removeItem('catchingSoulsGuestLoggedin');
