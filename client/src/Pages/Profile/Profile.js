@@ -18,7 +18,6 @@ const Profile = () => {
     const {AccountUsername} = useParams();
     const userLoggedIn = CheckLogin();
     const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
     const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
     const [isLoading, setIsLoading] = useState(false);
     const [firstName, setFirstName] = useState('');
@@ -28,17 +27,14 @@ const Profile = () => {
     const isAdmin = GetAdminRole();
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        if (userLoggedIn === false) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
-        }
-        else if (AccountUsername.toLowerCase() !== loggedInUser.toLowerCase()) {
+        else if (AccountUsername !== loggedInUser) {
             navigate('/');
         }
         else {

@@ -138,12 +138,13 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.cookies.username = username;
-        req.cookies.loggedIn = true;
-        req.cookies.isAdmin = false;
-        res.cookie('loggedIn', 'true');
+        req.session.username = username;
+        req.session.loggedIn = true;
+        req.session.isAdmin = false;
         res.cookie('username', username);
-        res.cookie('isAdmin', 'false');
+        res.cookie('loggedIn', true);
+        res.cookie('isAdmin', false);
+        res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=false');
         return res.json({ loggedIn: true, username: username });
       }
       else {
@@ -169,12 +170,13 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.cookies.username = username;
-        req.cookies.loggedIn = true;
-        req.cookies.isAdmin = true;
-        res.cookie('loggedIn', 'true');
+        req.session.username = username;
+        req.session.loggedIn = true;
+        req.session.isAdmin = true;
         res.cookie('username', username);
-        res.cookie('isAdmin', 'true');
+        res.cookie('loggedIn', true);
+        res.cookie('isAdmin', true);
+        res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=true');
         return res.json({ loggedIn: true, username: username, isAdmin: true });
       }
       else {
@@ -189,21 +191,33 @@ router.post('/login', async (req, res) => {
   }
 });
 router.post('/checkLogin', (req, res) => {
-  // Check for HTTP-only cookies and respond accordingly
-  const isAdmin = req.cookies.isAdmin === 'true';
-  const loggedIn = req.cookies.loggedIn === 'true';
-  const username = req.cookies.username;
+  const expectedIsAdmin = req.session.isAdmin; // Get isAdmin from the server's session
+  const expectedLoggedIn = req.session.loggedIn; // Get loggedIn from the server's session
+  const expectedUsername = req.session.username; // Get username from the server's session
 
-  if (isAdmin && loggedIn && username) {
-    // User is logged in, send appropriate data
-    return res.json({ loggedIn: true, username: username, isAdmin: isAdmin });
-  } 
-  else if (loggedIn && username) {
-    return res.json({ loggedIn: true, username: username });
+  const receivedIsAdmin = req.body.isAdmin;
+  const receivedLoggedIn = req.body.loggedIn;
+  const receivedUsername = req.body.username;
+
+  console.log(receivedIsAdmin + ' <-> ' + expectedIsAdmin)
+  console.log(receivedLoggedIn + ' <-> ' + expectedLoggedIn)
+  console.log(receivedUsername + ' <-> ' + expectedUsername)
+
+  if (receivedIsAdmin === null || receivedLoggedIn === null || receivedUsername === null) {
+    //User not logged in...
+    console.log("User not logged in...")
+    return res.json({forceLogout: false, verified: false})
   }
-  else {
-    // User is not logged in, send appropriate data
-    return res.json({ loggedIn: false });
+  else if (receivedIsAdmin === expectedIsAdmin && receivedLoggedIn === expectedLoggedIn && receivedUsername === expectedUsername) {
+    // Cookies match the server's session values
+    //User verification passed...
+    console.log("User verification passed...")
+    return res.json({ forceLogout: false, verified: true });
+  } else {
+    // Cookies do not match the server's session values
+    //User verificaton failed...
+    console.log("User verificaton failed...")
+    return res.json({ forceLogout: true, verified: false });
   }
 });
 router.post('/logout', async (req, res) => {

@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const reRoute = useNavigate();
-  const userLoggedIn = CheckLogin();
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
   const loggedInUser = CheckUser(userLoggedIn);
   const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
   const adminLevel = GetAdminRole();
@@ -21,14 +21,21 @@ const Header = () => {
   let menu = null;
 
   useEffect(() => {
-    if (userLoggedIn || guestLoggedIn){
+    const cookies = document.cookie.split(';');
+    const loggedInCookie = cookies.find(cookie => cookie.trim().startsWith('loggedIn='));
+    const loggedInValue = loggedInCookie ? loggedInCookie.split('=')[1] : null;
+    setUserLoggedIn(loggedInValue);
+    labelChange();
+  }, [userLoggedIn, guestLoggedIn]);
+
+  const labelChange = () => {
+    if (userLoggedIn || guestLoggedIn) {
       setButtonLabel('Logout');
-    }
-    else {
+    } else {
       setButtonLabel('Login');
     }
-  }, []);
-
+  }
+  
   const routeChange = () =>{
     if (userLoggedIn || guestLoggedIn){
       reRoute('/logout');

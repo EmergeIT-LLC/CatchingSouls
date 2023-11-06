@@ -8,6 +8,7 @@ import Footer from '../../Components/Footer/Footer';
 import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
 //Repositories
 import Axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Logout = () => {
     const userLoggedIn = CheckLogin();
@@ -22,9 +23,15 @@ const Logout = () => {
         });
     }
 
+    function clearCookies() {
+        Cookies.remove('loggedIn');
+        Cookies.remove('username');
+        Cookies.remove('isAdmin');    
+    }
 
     if (userLoggedIn) {
         logout();
+        clearCookies();
     }
     else if (sessionStorage.getItem('catchingSoulsGuestLoggedin')) {
         sessionStorage.removeItem('catchingSoulsGuestLoggedin');

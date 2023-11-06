@@ -25,6 +25,7 @@ const Dashboard = () => {
     const [lastName, setLastName] = useState(null);
 
     useEffect(() => {
+        console.log(userLoggedIn);
         if (!userLoggedIn && !guestLoggedIn) {
             navigate('/Login', {
                 state: {

@@ -33,7 +33,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-    res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + ":" + port + "...")
+  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + ":" + port + "...")
 });
 
 const userRoute = require('./routes/User');
@@ -46,5 +46,5 @@ const triviaRoute = require('./routes/Trivia');
 app.use('/trivia', triviaRoute);
 
 app.listen(port, (req, res) => (
-    console.log("Server running on port " + port + "...")
+  console.log("Server running on port " + port + "...")
 ));

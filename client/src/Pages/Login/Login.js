@@ -23,10 +23,11 @@ const Login = () => {
     const [statusMessage, setStatusMessage] = useState('');
 
 
-    useEffect(()=> {
-        if (userLoggedIn) {
-            navigate('/');
-        }    
+    useEffect(() => {
+        console.log(userLoggedIn)
+        if (userLoggedIn === true) {
+          navigate('/');
+        }
     }, [userLoggedIn]);
 
     const login = async (e) => {
@@ -46,9 +47,13 @@ const Login = () => {
         await Axios.post(url, {
         username: username,
         password: password,
-        }).then((response) => {
+        })
+        .then((response) => {
             setIsLoading(false);
             if (response.data.loggedIn) {
+                document.cookie = `loggedIn=${response.data.loggedIn}`;
+                document.cookie = `username=${response.data.username}`;
+                document.cookie = `isAdmin=${response.data.isAdmin}`;
                 if (location.state == null) {
                     navigate('/');
                 }
@@ -58,6 +63,9 @@ const Login = () => {
             } else {
                 setStatusMessage(response.data.message);
             }
+        })
+        .catch((error) => {
+            console.error("Axios network error:", error);
         });
     }
 
