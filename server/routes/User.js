@@ -141,6 +141,7 @@ router.post('/login', async (req, res) => {
         req.session.username = username;
         req.session.loggedIn = true;
         req.session.isAdmin = false;
+        res.cookie('BibleTriviaSessionCookies', req.sessionID);
         res.cookie('username', username);
         res.cookie('loggedIn', true);
         res.cookie('isAdmin', false);
@@ -173,6 +174,7 @@ router.post('/login', async (req, res) => {
         req.session.username = username;
         req.session.loggedIn = true;
         req.session.isAdmin = true;
+        res.cookie('BibleTriviaSessionCookies', req.sessionID);
         res.cookie('username', username);
         res.cookie('loggedIn', true);
         res.cookie('isAdmin', true);

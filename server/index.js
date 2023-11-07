@@ -8,21 +8,22 @@ const session = require('express-session');
 const SqlDbStore = require('express-mysql-session')(session); // Import SqlDbStore
 const cookieParser = require('cookie-parser');
 
+const sessionStore = new SqlDbStore({
+  host: process.env.DB_Host,
+  port: process.env.DB_Port,
+  user: process.env.DB_User,
+  password: process.env.DB_Pass,
+  database: process.env.DB_Data,
+});
+
 app.use(cors());
 app.use(express.json());
-
 app.use(cookieParser());
 app.use(
   session({
     key: 'BibleTriviaSessionCookies',
     secret: '3B4F7C4E6DA85A5176758B437A22A',
-    store: new SqlDbStore({
-      host: process.env.DB_Host,
-      port: process.env.DB_Port,
-      user: process.env.DB_User,
-      password: process.env.DB_Pass,
-      database: process.env.DB_Data,
-    }),
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
