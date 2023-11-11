@@ -6,9 +6,9 @@ import companyLogoGreyedOut from '../../Images/Logo_Transparent_GreyedOut.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
+import { GetUserVerificationProps } from '../../Functions/VerificationCheck';
 //Entry Checks
-import checkPassword from '../../Functions/EntryCheck/checkPassword'
+import { CheckPassword } from '../../Functions/EntryCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ const RecoveryConfirmation = () => {
     const navigate = useNavigate();
     const {AccountUsername} = useParams();
     const [foundAccount, setFoundAccount] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(true, AccountUsername));
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserVerificationProps(AccountUsername));
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -55,7 +55,7 @@ const RecoveryConfirmation = () => {
         else if (password !== confirmPassword){
             return setStatusMessage("Password and confirm password does not match!");
         }
-        else if (checkPassword(password) == false){
+        else if (CheckPassword(password) == false){
             return setStatusMessage("Password Is Not Acceptable");
         }
 

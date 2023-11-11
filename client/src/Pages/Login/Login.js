@@ -5,10 +5,9 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Entry Checks
-import checkUsername from '../../Functions/EntryCheck/checkUsername';
-import checkPassword from '../../Functions/EntryCheck/checkPassword';
+import { CheckUsername, CheckPassword } from '../../Functions/EntryCheck';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
+import {CheckUserLogin} from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -16,26 +15,25 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Login = () => {    
     const navigate = useNavigate();
     const location = useLocation();
-    const userLoggedIn = CheckLogin();
+    const userLoggedIn = CheckUserLogin();
     const [isLoading, setIsLoading] = useState(false);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [statusMessage, setStatusMessage] = useState('');
+    const [username, setUsername] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [statusMessage, setStatusMessage] = useState(null);
 
 
     useEffect(() => {
-        console.log(userLoggedIn)
         if (userLoggedIn === true) {
           navigate('/');
         }
-    }, [userLoggedIn]);
+    }, [userLoggedIn, navigate]);
 
     const login = async (e) => {
         e.preventDefault();
         if (username === null || password === null){
             return setStatusMessage("Username and password must be provided!");
         }
-        else if(checkUsername(username) === false || checkPassword(password) === false){
+        else if(CheckUsername(username) === false || CheckPassword(password) === false){
             return setStatusMessage("Account Does Not Exist or Password Is Incorrect!");
         }
         else {
@@ -51,9 +49,13 @@ const Login = () => {
         .then((response) => {
             setIsLoading(false);
             if (response.data.loggedIn) {
-                document.cookie = `loggedIn=${response.data.loggedIn}`;
-                document.cookie = `username=${response.data.username}`;
-                document.cookie = `isAdmin=${response.data.isAdmin}`;
+                localStorage.setItem('catchingSoulsUserLoggedin', true);
+                localStorage.setItem('catchingSoulsUsername', response.data.username);
+
+                if (response.data.isAdmin){
+                    localStorage.setItem('catchingSoulsAdmin', true);
+                }
+
                 if (location.state == null) {
                     navigate('/');
                 }

@@ -192,36 +192,6 @@ router.post('/login', async (req, res) => {
     return res.json({ message: 'An Error Occured!' });
   }
 });
-router.post('/checkLogin', (req, res) => {
-  const expectedIsAdmin = req.session.isAdmin; // Get isAdmin from the server's session
-  const expectedLoggedIn = req.session.loggedIn; // Get loggedIn from the server's session
-  const expectedUsername = req.session.username; // Get username from the server's session
-
-  const receivedIsAdmin = req.body.isAdmin;
-  const receivedLoggedIn = req.body.loggedIn;
-  const receivedUsername = req.body.username;
-
-  console.log(receivedIsAdmin + ' <-> ' + expectedIsAdmin)
-  console.log(receivedLoggedIn + ' <-> ' + expectedLoggedIn)
-  console.log(receivedUsername + ' <-> ' + expectedUsername)
-
-  if (receivedIsAdmin === null || receivedLoggedIn === null || receivedUsername === null) {
-    //User not logged in...
-    console.log("User not logged in...")
-    return res.json({forceLogout: false, verified: false})
-  }
-  else if (receivedIsAdmin === expectedIsAdmin && receivedLoggedIn === expectedLoggedIn && receivedUsername === expectedUsername) {
-    // Cookies match the server's session values
-    //User verification passed...
-    console.log("User verification passed...")
-    return res.json({ forceLogout: false, verified: true });
-  } else {
-    // Cookies do not match the server's session values
-    //User verificaton failed...
-    console.log("User verificaton failed...")
-    return res.json({ forceLogout: true, verified: false });
-  }
-});
 router.post('/logout', async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -234,7 +204,7 @@ router.post('/logout', async (req, res) => {
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
 //Get Account Profile Information
 router.post('/accountDetail_retrieval', async (req, res) => {
-  const username = req.cookies.username;
+  const username = req.body.username;
 
   try {
     const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
@@ -262,7 +232,7 @@ router.post('/accountDetail_retrieval', async (req, res) => {
 
 //Update Account
 router.post('/account_Update', async (req, res) => {
-  const username = req.cookies.username;
+  const username = req.body.username;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -341,7 +311,7 @@ router.post('/account_Update', async (req, res) => {
 
 //Delete Account
 router.post('/account_Delete', async (req, res) => {
-  const username = req.cookies.username;
+  const username = req.body.username;
 
   try {
     const deleteStatus = await db.query('Delete FROM users WHERE accountUsername = ?', [username]);

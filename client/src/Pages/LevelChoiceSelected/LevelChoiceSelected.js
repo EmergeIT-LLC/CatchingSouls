@@ -4,8 +4,7 @@ import './LevelChoiceSelected.css'
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
+import { CheckUserLogin, CheckGuestLogin, CheckUser } from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -14,15 +13,17 @@ const LevelChoiceSelected = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {SelectedLevel} = useParams();
-    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
-    const userLoggedIn = CheckLogin();
+    const guestLoggedIn = CheckGuestLogin();
+    const userLoggedIn = CheckUserLogin();
     let loggedInUser;
+
     if (!guestLoggedIn) {
-        loggedInUser = CheckUser(userLoggedIn);    
+        loggedInUser = CheckUser();    
     }
     else {
         loggedInUser = "Guest";
     }
+    
     const [isLoading, setIsLoading] = useState(false);
     //Question && Answer Choices
     const [isTrueFalse, setIsTrueFalse] = useState(false);

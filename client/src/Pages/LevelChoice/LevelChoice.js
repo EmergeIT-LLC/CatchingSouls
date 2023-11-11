@@ -5,15 +5,15 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
+import { CheckUserLogin, CheckGuestLogin } from '../../Functions/VerificationCheck';
 //Repositories
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const LevelChoice = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const userLoggedIn = CheckLogin();
-    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
+    const userLoggedIn = CheckUserLogin();
+    const guestLoggedIn = CheckGuestLogin();
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {

@@ -4,10 +4,7 @@ import './AdminToolsManageTriviaDelete.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
@@ -17,9 +14,8 @@ const AdminToolsManageTriviaDelete = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {QuestionID} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
@@ -27,6 +23,7 @@ const AdminToolsManageTriviaDelete = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        GetLogoutStatus(AccountUsername)
         if (!userLoggedIn) {
             navigate('/Login', {
                 state: {
@@ -34,8 +31,8 @@ const AdminToolsManageTriviaDelete = () => {
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');

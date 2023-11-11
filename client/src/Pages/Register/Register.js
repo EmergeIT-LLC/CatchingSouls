@@ -4,9 +4,7 @@ import './Register.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Entry Checks
-import checkUsername from '../../Functions/EntryCheck/checkUsername';
-import checkEmail from '../../Functions/EntryCheck/checkEmail';
-import checkPassword from '../../Functions/EntryCheck/checkPassword'
+import { CheckUsername, CheckEmail, CheckPassword } from '../../Functions/EntryCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -28,19 +26,19 @@ const Register = () => {
         if (firstName == null || lastName == null || username == null || email == null || confirmEmail == null || password == null || confirmPassword == null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
-        else if (checkUsername(username) === false){
+        else if (CheckUsername(username) === false){
             return setStatusMessage("Username Is Not Acceptable");
         }
         else if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (checkEmail(email) === false){
+        else if (CheckEmail(email) === false){
             return setStatusMessage("Email Is Not Acceptable");
         }
         else if (password !== confirmPassword){
             return setStatusMessage("Password and confirm password does not match!");
         }
-        else if (checkPassword(password) === false){
+        else if (CheckPassword(password) === false){
             return setStatusMessage(<>Password Is Not Acceptable!<br/><br/>Password must contain the following:<br/>Uppercase Letter<br/>Lowercase Letter<br/>Numbers<br/>Special Characters</>);
         }
 

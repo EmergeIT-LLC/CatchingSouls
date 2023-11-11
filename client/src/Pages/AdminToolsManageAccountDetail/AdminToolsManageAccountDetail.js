@@ -4,10 +4,7 @@ import './AdminToolsManageAccountDetail.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -17,9 +14,8 @@ const AdminToolsManageAccountDetail = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {SelectedAdmin} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [firstName, setFirstName] = useState(null);
@@ -29,6 +25,7 @@ const AdminToolsManageAccountDetail = () => {
     const [showButtons, setShowButtons] = useState(true);
 
     useEffect(() => {
+        GetLogoutStatus(AccountUsername);
         if (!userLoggedIn) {
             navigate('/Login', {
                 state: {
@@ -36,8 +33,8 @@ const AdminToolsManageAccountDetail = () => {
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');

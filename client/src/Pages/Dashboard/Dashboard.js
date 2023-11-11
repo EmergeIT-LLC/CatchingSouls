@@ -5,10 +5,8 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
-import TimeOfDay from '../../Functions/Extra/timeOfDay';
+import { CheckUserLogin, CheckGuestLogin, GetUserProps } from '../../Functions/VerificationCheck';
+import TimeOfDay from '../../Functions/timeOfDay';
 //Repositories
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -16,16 +14,14 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const timeOfDay = TimeOfDay();
-    const userLoggedIn = CheckLogin();
-    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
-    const loggedInUser = CheckUser(userLoggedIn);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
+    const userLoggedIn = CheckUserLogin();
+    const guestLoggedIn = CheckGuestLogin();
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps());
     const [isLoading, setIsLoading] = useState(false);
-    const [firstName, setFirstName] = useState(null);
-    const [lastName, setLastName] = useState(null);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
 
     useEffect(() => {
-        console.log(userLoggedIn);
         if (!userLoggedIn && !guestLoggedIn) {
             navigate('/Login', {
                 state: {

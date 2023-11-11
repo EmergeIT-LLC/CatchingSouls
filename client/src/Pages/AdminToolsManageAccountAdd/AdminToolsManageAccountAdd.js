@@ -4,12 +4,9 @@ import './AdminToolsManageAccountAdd.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
 //Entry Checks
-import checkEmail from '../../Functions/EntryCheck/checkEmail';
+import { CheckEmail } from '../../Functions/EntryCheck'
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -18,9 +15,8 @@ const AdminToolsManageAccountAdd = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -31,6 +27,7 @@ const AdminToolsManageAccountAdd = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        GetLogoutStatus(AccountUsername);
         if (!userLoggedIn) {
             navigate('/Login', {
                 state: {
@@ -38,8 +35,8 @@ const AdminToolsManageAccountAdd = () => {
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
@@ -54,7 +51,7 @@ const AdminToolsManageAccountAdd = () => {
         else if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (checkEmail(email) === false){
+        else if (CheckEmail(email) === false){
             return setStatusMessage("Email Is Not Acceptable");
         }
 

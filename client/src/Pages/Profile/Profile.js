@@ -4,11 +4,7 @@ import './Profile.css'
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetUserProps, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
@@ -16,9 +12,9 @@ const Profile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps());
     const [isLoading, setIsLoading] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

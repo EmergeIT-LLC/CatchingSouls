@@ -4,12 +4,9 @@ import './AdminToolsManageAccountUpdate.css'
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Entry Checks
-import checkEmail from '../../Functions/EntryCheck/checkEmail';
+import { CheckEmail } from '../../Functions/EntryCheck';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -19,9 +16,8 @@ const AdminToolsManageAccountUpdate = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {SelectedAdmin} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
@@ -33,6 +29,7 @@ const AdminToolsManageAccountUpdate = () => {
     const [statusMessage, setStatusMessage] = useState(null);
 
     useEffect(() => {
+        GetLogoutStatus(AccountUsername);
         if (!userLoggedIn) {
             navigate('/Login', {
                 state: {
@@ -40,8 +37,8 @@ const AdminToolsManageAccountUpdate = () => {
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
@@ -59,7 +56,7 @@ const AdminToolsManageAccountUpdate = () => {
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (checkEmail(email) == false){
+        else if (CheckEmail(email) == false){
             return setStatusMessage("Email Is Not Acceptable");
         }
         else if (selectRole == "null"){

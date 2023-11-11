@@ -5,13 +5,11 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
+import {CheckUserLogin, CheckGuestLogin} from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
-import Cookies from 'js-cookie';
 
 const Logout = () => {
-    const userLoggedIn = CheckLogin();
     const [statusMessage, setStatusMessage] = useState('');
 
     const logout = async () => {
@@ -23,17 +21,13 @@ const Logout = () => {
         });
     }
 
-    function clearCookies() {
-        Cookies.remove('loggedIn');
-        Cookies.remove('username');
-        Cookies.remove('isAdmin');    
-    }
-
-    if (userLoggedIn) {
+    if (CheckUserLogin()) {
         logout();
-        clearCookies();
+        localStorage.removeItem('catchingSoulsUserLoggedin');
+        localStorage.removeItem('catchingSoulsUsername');
+        localStorage.removeItem('catchingSoulsAdmin');
     }
-    else if (sessionStorage.getItem('catchingSoulsGuestLoggedin')) {
+    else if (CheckGuestLogin()) {
         sessionStorage.removeItem('catchingSoulsGuestLoggedin');
         sessionStorage.removeItem('catchingSoulsGuestUsername');
         sessionStorage.removeItem('catchingSoulsGuestPoints');

@@ -6,7 +6,7 @@ window.env = {
   "SHELL": "/bin/zsh",
   "TMPDIR": "/var/folders/sf/tyykyxdd64v8yk7fh085gs3w0000gn/T/",
   "npm_config_global_prefix": "/usr/local",
-  "TERM_PROGRAM_VERSION": "1.84.0",
+  "TERM_PROGRAM_VERSION": "1.84.1",
   "ZDOTDIR": "/Users/jonathandameus",
   "ORIGINAL_XDG_CURRENT_DESKTOP": "undefined",
   "MallocNanoZone": "0",

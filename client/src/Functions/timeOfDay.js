@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TimeOfDay = () => {
     const myDate = new Date();
     var timeOfDay;

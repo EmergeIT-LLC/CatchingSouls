@@ -4,13 +4,9 @@ import './ProfileUpdate.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Entry Checks
-import checkEmail from '../../Functions/EntryCheck/checkEmail';
-import checkPassword from '../../Functions/EntryCheck/checkPassword'
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
+import { CheckEmail, CheckPassword } from '../../Functions/EntryCheck'
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
+import { CheckUserLogin, CheckUser, GetAdminRole, GetUserProps, GetLogoutStatus } from '../../Functions/VerificationCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -20,10 +16,10 @@ const ProfileUpdate = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const logOutStatus = GetLogoutStatus(AccountUsername);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps());
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
     const [firstName, setFirstName] = useState();
@@ -37,17 +33,13 @@ const ProfileUpdate = () => {
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn && !logOutStatus) {
+        if (!logOutStatus) {
             loggedInUserData.then(res => setUsername(res.data.accountUsername));
             loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
             loggedInUserData.then(res => setLastName(res.data.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.accountEmail));
             loggedInUserData.then(res => setConfirmEmail(res.data.accountEmail));
             setIsLoading(false);
-        }
-        else if (logOutStatus) {
-            setIsLoading(false);
-            navigate('/Logout');
         }
         else if (AccountUsername !== loggedInUser) {
             navigate('/');
@@ -67,7 +59,7 @@ const ProfileUpdate = () => {
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (checkEmail(email) == false){
+        else if (CheckEmail(email) == false){
             return setStatusMessage("Email Is Not Acceptable");
         } else if (password != null){
             if (newPassword == null || confirmNewPassword == null){
@@ -76,10 +68,10 @@ const ProfileUpdate = () => {
             else if (newPassword !== confirmNewPassword){
                 return setStatusMessage("Password and confirm password does not match!");
             }
-            else if (checkPassword(password) == false){
+            else if (CheckPassword(password) == false){
                 return setStatusMessage("Current Password Is Incorrect");
             }    
-            else if (checkPassword(newPassword) == false){
+            else if (CheckPassword(newPassword) == false){
                 return setStatusMessage("New Password Is Not Acceptable");
             }    
         } else if (password != null && newPassword == null || password != null && confirmNewPassword == null){

@@ -5,8 +5,6 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import companyLogoGreyedOut from '../../Images/Logo_Transparent_GreyedOut.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
-//Functions
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
 //Repositories
 import Axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
@@ -16,9 +14,6 @@ const AccountVerification = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [foundAccount, setFoundAccount] = useState(false);
     const [verified, setVerified] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(true, {AccountUsername}));
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
 
     useEffect(() => {
         setIsLoading(true);

@@ -4,38 +4,29 @@ import './Header.css'
 import companyLogo from '../../Images/Logo_Transparent.png';
 import farBars from '../../Images/naviconrww752.png';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckGuestLogin, CheckUser, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const reRoute = useNavigate();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const loggedInUser = CheckUser(userLoggedIn);
-  const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
+  const userLoggedIn = CheckUserLogin();
+  const loggedInUser = CheckUser();
+  const guestLoggedIn = CheckGuestLogin();
   const adminLevel = GetAdminRole();
   const [buttonLabel, setButtonLabel] = useState('Login');
   const [showMenu, setShowMenu] = useState(false);
   let menu = null;
-
+  
   useEffect(() => {
-    const cookies = document.cookie.split(';');
-    const loggedInCookie = cookies.find(cookie => cookie.trim().startsWith('loggedIn='));
-    const loggedInValue = loggedInCookie ? loggedInCookie.split('=')[1] : null;
-    setUserLoggedIn(loggedInValue);
-    labelChange();
-  }, [userLoggedIn, guestLoggedIn]);
-
-  const labelChange = () => {
     if (userLoggedIn || guestLoggedIn) {
       setButtonLabel('Logout');
     } else {
       setButtonLabel('Login');
     }
-  }
-  
+  }, [userLoggedIn, guestLoggedIn]);
+
+
   const routeChange = () =>{
     if (userLoggedIn || guestLoggedIn){
       reRoute('/logout');
