@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 // const db = require('../config/database/dbConnection');
-const queries = require('../config/database/storedProcedures');
+const userQueries = require('../config/database/storedProcedures/userStoredProcedures');
+const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
@@ -16,8 +17,8 @@ router.post('/register', async (req, res) => {
   const password = req.body.password;
 
   try {
-    const isDuplicateVerifiedUser = await queries.verifiedUserCheck(email);
-    const isDuplicateUnverifiedUser = await queries.unverifiedUserCheck(email);
+    const isDuplicateVerifiedUser = await userQueries.verifiedUserCheckEmail(email);
+    const isDuplicateUnverifiedUser = await userQueries.unverifiedUserCheckEmail(email);
     
     if (isDuplicateVerifiedUser) {
       return res.json({ message: 'User already registered!' })
@@ -30,7 +31,7 @@ router.post('/register', async (req, res) => {
       bcrypt.hash(password, saltRounds, async function(err, hash) {
         try {
           //Add user to verification table
-          const isUserAdded = await queries.addUser(username, firstName, lastName, email, hash)
+          const isUserAdded = await userQueries.addUser(username, firstName, lastName, email, hash)
 
           if (isUserAdded) {
             emailHandler.sendVerification(email, firstName, lastName, username);
@@ -56,9 +57,9 @@ router.post('/verificationInfo', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const locatedUnverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const isUnverifiedUserFound = await userQueries.unverifiedUserCheckUsername(username);
 
-    if (typeof locatedUnverifiedUser[0][0] !== 'undefined') {
+    if (isUnverifiedUserFound) {
       return res.json({foundAccount: true});
     }
     else {
@@ -75,19 +76,26 @@ router.post('/verifyUser', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
   
   try {
-    const unverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const unverifiedUser = await userQueries.locateUnverifiedUserData(username);
 
-    if (typeof unverifiedUser[0][0] !== 'undefined'){
-      const movingUser = await db.all('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [unverifiedUser[0][0].accountUsername, unverifiedUser[0][0].accountFirstName, unverifiedUser[0][0].accountLastName, unverifiedUser[0][0].accountEmail, unverifiedUser[0][0].accountPassword]);
-      
-      if (movingUser[0].affectedRows > 0) {
-        const deletingUser = await db.all('Delete FROM userverification WHERE accountUsername = ?', [username]);
+    if (unverifiedUser.length > 0){
+      const isVerificationMoveSuccessful = await userQueries.moveUser(username, unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword);
+
+
+      if (isVerificationMoveSuccessful) {
+        const isVerificationDeletionSuccessful = await userQueries.removeUnverifiedUserUsername(username);
         
-        if (deletingUser[0].affectedRows > 0) {
+        if (isVerificationDeletionSuccessful) {
+          console.log('isVerificationDeletionSuccessful')
           return res.json({Verified: true});
         }
+        else {
+          return res.json({Verified: false, message: "An error occured while removing users info from verification state"});
+        }  
       }
-      return res.json({Verified: false});
+      else {
+        return res.json({Verified: false, message: "An error occured while moving users info"});
+      }
     }
   }
   catch (err) {
@@ -101,20 +109,21 @@ router.post('/login', async (req, res) => {
   const password = req.body.password;
 
   try {
-    const userVerification = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
-    const userLogin = await db.all('SELECT * FROM users WHERE accountUsername = ?', [username]);
-    const adminVerification = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
-    const adminLogin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const userVerification = await userQueries.unverifiedUserCheckUsername(username);
+    const userLogin = await userQueries.locateVerifiedUserData(username);
+    const adminVerification = await adminQueries.unverifiedAdminCheckUsername(username);
+    const adminLogin = await adminQueries.locateVerifiedAdminData(username);
 
     // Check User Verification
-    if (typeof userVerification[0][0] !== 'undefined') {
-      emailHandler.sendVerification(userVerification[0][0].accountEmail, userVerification[0][0].accountFirstName, userVerification[0][0].accountLastName, username);
+    if (userVerification) {
+      const unverifiedUser = await userQueries.locateUnverifiedUserData(username);
+      emailHandler.sendVerification(unverifiedUser[0].accountEmail, unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLastName, username);
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check User Table
-    else if (typeof userLogin[0][0] !== 'undefined') {
+    else if (userLogin.length > 0) {
       const result = await new Promise((resolve, reject) => {
-        bcrypt.compare(password, userLogin[0][0].accountPassword, (err, result) => {
+        bcrypt.compare(password, userLogin[0].accountPassword, (err, result) => {
           if (err){
             reject(err);
           }
@@ -140,14 +149,15 @@ router.post('/login', async (req, res) => {
       }
     }
     // Check Admin Verification
-    else if (typeof adminVerification[0][0] !== 'undefined') {
-      emailHandler.sendAdminVerification(adminVerification[0][0].accountEmail, adminVerification[0][0].accountFirstName, adminVerification[0][0].accountLastName, username);
+    else if (adminVerification) {
+      const unverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username);
+      emailHandler.sendAdminVerification(unverifiedAdmin[0].accountEmail, unverifiedAdmin[0].accountFirstName, unverifiedAdmin[0].accountLastName, username);
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check Admin Table
-    else if (typeof adminLogin[0][0] !== 'undefined') {
+    else if (adminLogin.length > 0) {
       const result = await new Promise((resolve, reject) => {
-        bcrypt.compare(password, adminLogin[0][0].accountPassword, (err, result) => {
+        bcrypt.compare(password, adminLogin[0].accountPassword, (err, result) => {
           if (err){
             reject(err);
           }
@@ -194,28 +204,23 @@ router.post('/accountDetail_retrieval', async (req, res) => {
   const username = req.body.username;
 
   try {
-    await db.all('SELECT * FROM users WHERE accountUsername = ?', [username], (err, row) => {
-      if (err) {
-        return res.json({ message: 'A Database Error Occured!', errorMessage: err.message });
-      }
-      return res.send(row);
-    });
-    // const locateUnverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
-    // const locateAdmin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    // const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateUser = await db.all('SELECT * FROM users WHERE accountUsername = ?', [username]);
+    const locateUnverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const locateAdmin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
-    // if (typeof locateUser[0][0] !== 'undefined'){
-    //   return res.send(locateUser[0][0]);
-    // }
-    // else if (typeof locateUnverifiedUser[0][0] !== 'undefined'){
-    //   return res.send(locateUnverifiedUser[0][0]);
-    // }
-    // else if (typeof locateAdmin[0][0] !== 'undefined'){
-    //   return res.send(locateAdmin[0][0]);
-    // }
-    // else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined'){
-    //   return res.send(locateUnverifiedAdmin[0][0]);
-    // }
+    if (typeof locateUser[0][0] !== 'undefined'){
+      return res.send(locateUser[0][0]);
+    }
+    else if (typeof locateUnverifiedUser[0][0] !== 'undefined'){
+      return res.send(locateUnverifiedUser[0][0]);
+    }
+    else if (typeof locateAdmin[0][0] !== 'undefined'){
+      return res.send(locateAdmin[0][0]);
+    }
+    else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined'){
+      return res.send(locateUnverifiedAdmin[0][0]);
+    }
   }
   catch (err) {
     return res.json({ message: 'An Error Occured!', errorMessage: err.message });
