@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
+const db = require('../config/database/dbConnection');
+const emailHandler = require('../config/email/emailTemplate');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const sg = require('../config/emailTemplate');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 function requireAuth(req, res, next) {
   if (req.session.user) {
@@ -28,9 +28,9 @@ router.post('/adminTool/register', async (req, res) => {
   const role = req.body.selectRole;
 
   try {
-    const locateAdminEmail = await db.query('SELECT * FROM adminusers WHERE accountEmail = ?', [email]);
-    const locateAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locatedUnverifiedAdmin = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateAdminEmail = await db.all('SELECT * FROM adminusers WHERE accountEmail = ?', [email]);
+    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locatedUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
     if (typeof locateAdminEmail[0][0] !== 'undefined'){
       return res.json({ message: 'Email already registered!' });
@@ -39,18 +39,18 @@ router.post('/adminTool/register', async (req, res) => {
       return res.json({ message: 'User already registered!' });
     }
     else if (typeof locatedUnverifiedAdmin[0][0] !== 'undefined'){
-      sg.sendAdminVerification(locatedUnverifiedAdmin[0][0].accountEmail, locatedUnverifiedAdmin[0][0].accountFirstName, locatedUnverifiedAdmin[0][0].accountLastName, username);
+      emailHandler.sendAdminVerification(locatedUnverifiedAdmin[0][0].accountEmail, locatedUnverifiedAdmin[0][0].accountFirstName, locatedUnverifiedAdmin[0][0].accountLastName, username);
       return res.json({ message: 'User needs to check email to verify account'});
     }
     else {
-      const verificationStatus = await db.query('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), role]);
+      const verificationStatus = await db.all('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), role]);
       if (verificationStatus[0].affectedRows > 1){
-        return sg.sendAdminVerification(verificationStatus[0][0].accountEmail, verificationStatus[0][0].accountFirstName, verificationStatus[0][0].accountLastName, username);
+        return emailHandler.sendAdminVerification(verificationStatus[0][0].accountEmail, verificationStatus[0][0].accountFirstName, verificationStatus[0][0].accountLastName, username);
       }
     }
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -59,7 +59,7 @@ router.post('/adminTool/UnverifiedInfo', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try  {
-    const foundAdminAccount = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const foundAdminAccount = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
     if (typeof foundAdminAccount[0][0] !== undefined){
       return res.json({ foundAdminAccount: true });
@@ -67,7 +67,7 @@ router.post('/adminTool/UnverifiedInfo', async (req, res) => {
     return res.json({ foundAdminAccount: false });
   }
   catch (err){
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -77,17 +77,17 @@ router.post('/adminTool/Verification', async (req, res) => {
 
   bcrypt.hash(password, saltRounds, async function(err, hash) {
     if (err) {
-      return res.json({ message: 'An Error Occured!' });
+      return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
     else {
       try {
-        const locateAdminUser = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+        const locateAdminUser = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
         if (typeof locateAdminUser[0][0] !== 'undefined') {
-          const verificationStatus = await db.query('INSERT INTO adminusers (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, accountRole) VALUES (?, ?, ?, ?, ?, ?)', [locateAdminUser[0][0].accountUsername, locateAdminUser[0][0].accountFirstName, locateAdminUser[0][0].accountLastName, locateAdminUser[0][0].accountEmail, hash, locateAdminUser[0][0].accountRole]);
+          const verificationStatus = await db.all('INSERT INTO adminusers (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, accountRole) VALUES (?, ?, ?, ?, ?, ?)', [locateAdminUser[0][0].accountUsername, locateAdminUser[0][0].accountFirstName, locateAdminUser[0][0].accountLastName, locateAdminUser[0][0].accountEmail, hash, locateAdminUser[0][0].accountRole]);
 
           if (verificationStatus[0].affectedRows > 1){
-            const deleteStatus = await db.query('Delete FROM adminusersverification WHERE accountUsername = ?', [username]);
+            const deleteStatus = await db.all('Delete FROM adminusersverification WHERE accountUsername = ?', [username]);
             
             if (deleteStatus[0].affectedRows > 1) {
               return res.json({VerificationStatus: "Successful"});
@@ -100,7 +100,7 @@ router.post('/adminTool/Verification', async (req, res) => {
         }
       }
       catch (err) {
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
       }
     }
   });
@@ -110,7 +110,7 @@ router.post('/adminTool/Verification', async (req, res) => {
 router.post('/loggedIn_adminAccountLevel', async (req, res) => {
 
   try {
-    const locateAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
 
     if (typeof locateAdminUser[0][0] !== undefined) {
       if (locateAdminUser[0][0].accountRole == "Root" || locateAdminUser[0][0].accountRole == "Admin"){
@@ -128,7 +128,7 @@ router.post('/loggedIn_adminAccountLevel', async (req, res) => {
 router.post('/account_retrieval', async (req, res) => {
 
   try {
-    const locateAllAdmins = await db.query('SELECT * FROM adminusers');
+    const locateAllAdmins = await db.all('SELECT * FROM adminusers');
 
     if (typeof locateAllAdmins !== 'undefined') {
       return res.send(locateAllAdmins);
@@ -142,7 +142,7 @@ router.post('/account_retrieval', async (req, res) => {
 //Retrieve Unverified Accounts
 router.post('/account_unverifiedRetrieval', async (req, res) => {
   try {
-    const unverifiedAdmin = await  db.query('SELECT * FROM adminusersverification');
+    const unverifiedAdmin = await  db.all('SELECT * FROM adminusersverification');
 
     if (typeof unverifiedAdmin !== 'undefined') {
       return res.send(unverifiedAdmin);
@@ -157,8 +157,8 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
   const username = req.body.SelectedAdmin.SelectedAdmin;
 
   try {
-    const locateAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locateUnverifiedAdmin = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
     if (typeof locateAdminUser[0][0] !== 'undefined') {
       return res.send(locateAdminUser[0][0]);
@@ -179,18 +179,18 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
   const role = req.body.selectRole;
 
   try {
-    const locateAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locateUnverifiedAdmin = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
     if (typeof locateAdminUser[0][0] !== 'undefined') {
-      const updateStatus = await db.query('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username]);
+      const updateStatus = await db.all('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username]);
       if (updateStatus[0].affectedRows > 0) {
         return res.json({updateStatus: "Successful"});
       }
       return res.json({updateStatus: "unSuccessful"});
     }
     else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined') {
-      const updateStatus = await db.query('UPDATE adminusersverification SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username]);
+      const updateStatus = await db.all('UPDATE adminusersverification SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username]);
       if (updateStatus[0].affectedRows > 0) {
         return res.json({updateStatus: "Successful"});
       }
@@ -208,18 +208,18 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
   console.log(username)
 
   try {
-    const locateAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locateUnverifiedAdmin = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
     
     if (typeof locateAdminUser[0][0] !== 'undefined') {
-      const deleteStatus = await db.query('Delete FROM adminusers WHERE accountUsername = ?', [username]);
+      const deleteStatus = await db.all('Delete FROM adminusers WHERE accountUsername = ?', [username]);
       if (deleteStatus[0].affectedRows > 0) {
         return res.json({deleteStatus: "Successful"});
       }
       return res.json({deleteStatus: "unSuccessful"});
     }
     else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined') {
-      const deleteStatus = db.query('Delete FROM adminusersverification WHERE accountUsername = ?', [username]);
+      const deleteStatus = db.all('Delete FROM adminusersverification WHERE accountUsername = ?', [username]);
       if (deleteStatus[0].affectedRows > 0) {
         return res.json({deleteStatus: "Successful"});
       }
@@ -238,13 +238,13 @@ router.post('/adminTool/TriviaUpload', async (req, res) => {
   const difficulty = req.body.selectDifficulty;
 
   try {
-    const checkDuplicateQA = await db.query('SELECT * FROM questionandanswer WHERE triviaquestions = ?', [question]);
+    const checkDuplicateQA = await db.all('SELECT * FROM questionandanswer WHERE triviaquestions = ?', [question]);
 
     if (typeof checkDuplicateQA[0][0] !== 'undefined'){
       return res.json({ message: 'Question Already Exists!'});
     }
     else {
-      const uploadStatus = await db.query('INSERT INTO questionandanswer (triviaquestions, triviaanswers, triviatype, trivialevel) VALUES (?, ?, ?, ?)', [question, answer, qaType, difficulty]);
+      const uploadStatus = await db.all('INSERT INTO questionandanswer (triviaquestions, triviaanswers, triviatype, trivialevel) VALUES (?, ?, ?, ?)', [question, answer, qaType, difficulty]);
       return res.send(uploadStatus);
     }
   } catch (error) {
@@ -255,7 +255,7 @@ router.post('/adminTool/TriviaUpload', async (req, res) => {
 router.post('/adminTool/TriviaRetrieval', async (req, res) => {
 
   try {
-    const triviaQA = await db.query('SELECT * FROM questionandanswer');
+    const triviaQA = await db.all('SELECT * FROM questionandanswer');
     if (typeof triviaQA !== 'undefined'){
       return res.send(triviaQA)
     }    
@@ -268,7 +268,7 @@ router.post('/adminTool/TriviaDetailRetrieval', async (req, res) => {
   const questionID = parseInt(req.body.QuestionID.QuestionID);
 
   try {
-    const trivaQADetail = await db.query('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
+    const trivaQADetail = await db.all('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
 
     if (typeof trivaQADetail[0][0] !== 'undefined'){
       return res.send(trivaQADetail[0][0]);
@@ -287,10 +287,10 @@ router.post('/adminTool/TriviaUpdate', async (req, res) => {
   const difficulty = req.body.selectDifficulty;
 
   try {
-    const checkDuplicateQA = await db.query('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
+    const checkDuplicateQA = await db.all('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
 
     if (typeof checkDuplicateQA[0][0] !== 'undefined'){
-      const updateStatus = await db.query('UPDATE questionandanswer SET triviaquestions = ?, triviaanswers = ?, triviatype = ?, trivialevel = ? WHERE triviaID = ?', [question, answer, qaType, difficulty, questionID]);
+      const updateStatus = await db.all('UPDATE questionandanswer SET triviaquestions = ?, triviaanswers = ?, triviatype = ?, trivialevel = ? WHERE triviaID = ?', [question, answer, qaType, difficulty, questionID]);
       
       if (updateStatus[0].affectedRows > 0) {
         return res.json({ updateStatus: 'Successful'});
@@ -306,10 +306,10 @@ router.post('/adminTool/TriviaDelete', async (req, res) => {
   const questionID = req.body.questionID;
 
   try {
-    const triviaQA = await db.query('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
+    const triviaQA = await db.all('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
 
     if (typeof triviaQA[0][0] !== 'undefined') {
-      const deleteStatus = await db.query('DELETE FROM questionandanswer WHERE triviaID = ?', [questionID]);
+      const deleteStatus = await db.all('DELETE FROM questionandanswer WHERE triviaID = ?', [questionID]);
       
       if (deleteStatus[0].affectedRows > 0) {
         return res.json({ deleteStatus: 'Successful'});

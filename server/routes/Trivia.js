@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
+const db = require('../config/database/dbConnection');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 function setTriviaType(triviaTypeSelection) {
     switch(triviaTypeSelection){
@@ -50,12 +50,12 @@ router.post('/retrievequestion', async (req, res) => {
     let triviaType = setTriviaType(triviaTypeSelection);
                 
     try {    
-        let triviaQA = await db.query('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
+        let triviaQA = await db.all('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
 
         do {
             triviaTypeSelection = randomIntFromInterval(0, 7);
             triviaType = setTriviaType(triviaTypeSelection);
-            triviaQA = await db.query('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
+            triviaQA = await db.all('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
         } while (countTriviaLevelLength(triviaQA[0]) < 5);
         
         if (typeof triviaQA !== 'undefined') {
@@ -169,7 +169,7 @@ router.post('/retrievequestion', async (req, res) => {
     }
     catch (err){
         console.log(err)
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
 });
 
@@ -181,7 +181,7 @@ router.post('/checkanswer', async (req, res) => {
 
     try {
         //Retrieve Prompted QA Detail
-        const triviaQAAsked = await db.query('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
+        const triviaQAAsked = await db.all('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
 
         //Make sure it was found
         if (triviaQAAsked[0][0] !== 'undefined') { 
@@ -200,17 +200,17 @@ router.post('/checkanswer', async (req, res) => {
                 
                 if (loggedUser !== "Guest"){
                     //Locate User or admin to update
-                    const loggedInUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedUser]);
-                    const loggedInAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedUser]);
+                    const loggedInUser = await db.all('SELECT * FROM users WHERE accountUsername = ?', [loggedUser]);
+                    const loggedInAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedUser]);
                     //Award user or admin the points
                     if (typeof loggedInUser[0][0] !== 'undefined') {
                         const updatedPoints = loggedInUser[0][0].savedSouls + pointsToAward;
-                        const updateUserPoints = await db.query('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
+                        const updateUserPoints = await db.all('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
                         return res.json({results: "true"});
                     }
                     else if (typeof loggedInAdminUser[0][0] !== 'undefined') {
                         const updatedPoints = loggedInAdminUser[0][0].savedSouls + pointsToAward;
-                        const updateUserPoints = await db.query('UPDATE adminusers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
+                        const updateUserPoints = await db.all('UPDATE adminusers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
                         return res.json({results: "true"});
                     }
                 }
@@ -224,7 +224,7 @@ router.post('/checkanswer', async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
 });
 
@@ -232,8 +232,8 @@ router.post('/getPlayerPoints', async (req, res) => {
     const loggedInUser = req.body.loggedInUser;
 
     try {
-        const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedInUser]);
-        const locateAdmin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedInUser]);
+        const locateUser = await db.all('SELECT * FROM users WHERE accountUsername = ?', [loggedInUser]);
+        const locateAdmin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedInUser]);
         if (typeof locateUser[0][0] !== 'undefined'){
             return res.json({playerPoints: locateUser[0][0].savedSouls});
         }
@@ -244,7 +244,7 @@ router.post('/getPlayerPoints', async (req, res) => {
             return res.json({playerPoints: -1});
         }
     } catch (error) {
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
 });
 module.exports = router;

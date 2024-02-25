@@ -1,24 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
+// const db = require('../config/database/dbConnection');
+const queries = require('../config/database/storedProcedures');
+const emailHandler = require('../config/email/emailTemplate');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const sg = require('../config/emailTemplate');
-//----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-function requireAuth(req, res, next) {
-  if (req.cookies.username) {
-    next(); // User is authenticated, proceed to the route
-  } else {
-    res.json({ message: 'Unauthorized' });
-  }
-}
-
-// Example usage to protect a route
-router.get('/protected', requireAuth, (req, res) => {
-  res.json({ message: 'This is a protected route' });
-});
-//----------------------------------------- END OF PASSPORT MIDDLEWARE SETUP ---------------------------------------------------
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
 //Register page communication
 router.post('/register', async (req, res) => {
@@ -28,25 +15,25 @@ router.post('/register', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  const checkDuplicateVerifiedUser = await db.query('SELECT * FROM users WHERE accountEmail = ?', [email]);
-  const checkDuplicateUnverifiedUser = await db.query('SELECT * FROM userverification WHERE accountEmail = ?', [email]);
-
   try {
-    if (typeof checkDuplicateVerifiedUser[0][0] !== 'undefined') {
-      return res.json({ message: 'User already registered!' });
+    const isDuplicateVerifiedUser = await queries.verifiedUserCheck(email);
+    const isDuplicateUnverifiedUser = await queries.unverifiedUserCheck(email);
+    
+    if (isDuplicateVerifiedUser) {
+      return res.json({ message: 'User already registered!' })
     }
-    else if (typeof checkDuplicateUnverifiedUser[0][0]  !== 'undefined'){
-      sg.sendVerification(email, firstName, lastName, username);
+    else if (isDuplicateUnverifiedUser) {
+      emailHandler.sendVerification(email, firstName, lastName, username);
       return res.json({ message: 'User needs to check email to verify account'});
     }
     else {
       bcrypt.hash(password, saltRounds, async function(err, hash) {
         try {
           //Add user to verification table
-          const setVerification = await db.query('INSERT INTO userverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), hash]);
+          const isUserAdded = await queries.addUser(username, firstName, lastName, email, hash)
 
-          if (setVerification[0].affectedRows > 0) {
-            sg.sendVerification(email, firstName, lastName, username);
+          if (isUserAdded) {
+            emailHandler.sendVerification(email, firstName, lastName, username);
             return res.json({registerStatus: "Successful"});
           }
           else {
@@ -60,7 +47,7 @@ router.post('/register', async (req, res) => {
     }
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -69,7 +56,7 @@ router.post('/verificationInfo', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const locatedUnverifiedUser = await db.query('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const locatedUnverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
 
     if (typeof locatedUnverifiedUser[0][0] !== 'undefined') {
       return res.json({foundAccount: true});
@@ -79,7 +66,7 @@ router.post('/verificationInfo', async (req, res) => {
     }
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -88,13 +75,13 @@ router.post('/verifyUser', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
   
   try {
-    const unverifiedUser = await db.query('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const unverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
 
     if (typeof unverifiedUser[0][0] !== 'undefined'){
-      const movingUser = await db.query('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [unverifiedUser[0][0].accountUsername, unverifiedUser[0][0].accountFirstName, unverifiedUser[0][0].accountLastName, unverifiedUser[0][0].accountEmail, unverifiedUser[0][0].accountPassword]);
+      const movingUser = await db.all('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [unverifiedUser[0][0].accountUsername, unverifiedUser[0][0].accountFirstName, unverifiedUser[0][0].accountLastName, unverifiedUser[0][0].accountEmail, unverifiedUser[0][0].accountPassword]);
       
       if (movingUser[0].affectedRows > 0) {
-        const deletingUser = await db.query('Delete FROM userverification WHERE accountUsername = ?', [username]);
+        const deletingUser = await db.all('Delete FROM userverification WHERE accountUsername = ?', [username]);
         
         if (deletingUser[0].affectedRows > 0) {
           return res.json({Verified: true});
@@ -104,7 +91,7 @@ router.post('/verifyUser', async (req, res) => {
     }
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   } 
 });
 //----------------------------------------- LOGIN SETUP ---------------------------------------------------
@@ -114,14 +101,14 @@ router.post('/login', async (req, res) => {
   const password = req.body.password;
 
   try {
-    const userVerification = await db.query('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
-    const userLogin = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
-    const adminVerification = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
-    const adminLogin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const userVerification = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    const userLogin = await db.all('SELECT * FROM users WHERE accountUsername = ?', [username]);
+    const adminVerification = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const adminLogin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
 
     // Check User Verification
     if (typeof userVerification[0][0] !== 'undefined') {
-      sg.sendVerification(userVerification[0][0].accountEmail, userVerification[0][0].accountFirstName, userVerification[0][0].accountLastName, username);
+      emailHandler.sendVerification(userVerification[0][0].accountEmail, userVerification[0][0].accountFirstName, userVerification[0][0].accountLastName, username);
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check User Table
@@ -154,7 +141,7 @@ router.post('/login', async (req, res) => {
     }
     // Check Admin Verification
     else if (typeof adminVerification[0][0] !== 'undefined') {
-      sg.sendAdminVerification(adminVerification[0][0].accountEmail, adminVerification[0][0].accountFirstName, adminVerification[0][0].accountLastName, username);
+      emailHandler.sendAdminVerification(adminVerification[0][0].accountEmail, adminVerification[0][0].accountFirstName, adminVerification[0][0].accountLastName, username);
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check Admin Table
@@ -189,7 +176,7 @@ router.post('/login', async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 router.post('/logout', async (req, res) => {
@@ -207,26 +194,31 @@ router.post('/accountDetail_retrieval', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username]);
-    const locateUnverifiedUser = await db.query('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
-    const locateAdmin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locateUnverifiedAdmin = await db.query('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    await db.all('SELECT * FROM users WHERE accountUsername = ?', [username], (err, row) => {
+      if (err) {
+        return res.json({ message: 'A Database Error Occured!', errorMessage: err.message });
+      }
+      return res.send(row);
+    });
+    // const locateUnverifiedUser = await db.all('SELECT * FROM userverification WHERE accountUsername = ?', [username]);
+    // const locateAdmin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    // const locateUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
 
-    if (typeof locateUser[0][0] !== 'undefined'){
-      return res.send(locateUser[0][0]);
-    }
-    else if (typeof locateUnverifiedUser[0][0] !== 'undefined'){
-      return res.send(locateUnverifiedUser[0][0]);
-    }
-    else if (typeof locateAdmin[0][0] !== 'undefined'){
-      return res.send(locateAdmin[0][0]);
-    }
-    else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined'){
-      return res.send(locateUnverifiedAdmin[0][0]);
-    }
+    // if (typeof locateUser[0][0] !== 'undefined'){
+    //   return res.send(locateUser[0][0]);
+    // }
+    // else if (typeof locateUnverifiedUser[0][0] !== 'undefined'){
+    //   return res.send(locateUnverifiedUser[0][0]);
+    // }
+    // else if (typeof locateAdmin[0][0] !== 'undefined'){
+    //   return res.send(locateAdmin[0][0]);
+    // }
+    // else if (typeof locateUnverifiedAdmin[0][0] !== 'undefined'){
+    //   return res.send(locateUnverifiedAdmin[0][0]);
+    // }
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -240,8 +232,8 @@ router.post('/account_Update', async (req, res) => {
   const newPassword = req.body.newPassword;
 
   try {
-    isUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
-    isAdmin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
+    isUser = await db.all('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
+    isAdmin = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
 
     if (typeof isUser[0][0] !== 'undefined') {
       if (currentPassword != null) {
@@ -249,10 +241,10 @@ router.post('/account_Update', async (req, res) => {
           if (result == true) {
             bcrypt.hash(newPassword, saltRounds, async function(err, hash) {
               if (err) {
-                return res.json({ message: 'An Error Occured!' });
+                return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {
-                const userUpdateStatus = await db.query('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, hash, username]);
+                const userUpdateStatus = await db.all('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, hash, username]);
                 if (userUpdateStatus[0].affectedRows > 0){
                   return res.json({ updateStatus: 'Successful'});
                 }
@@ -266,7 +258,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const userUpdateStatus = await db.query('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username]);
+        const userUpdateStatus = await db.all('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username]);
         if (userUpdateStatus[0].affectedRows > 0){
           return res.json({ updateStatus: 'Successful'});
         }
@@ -279,10 +271,10 @@ router.post('/account_Update', async (req, res) => {
           if (result == true) {
             bcrypt.hash(newPassword, saltRounds, async function(err, hash) {
               if (err) {
-                return res.json({ message: 'An Error Occured!' });
+                return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {          
-                const adminUpdateStatus = await db.query('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, hash, username]);
+                const adminUpdateStatus = await db.all('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, hash, username]);
                 if (adminUpdateStatus[0].affectedRows > 0){
                   return res.json({ updateStatus: 'Successful'});
                 }
@@ -296,7 +288,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const adminUpdateStatus = await db.query('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username]);
+        const adminUpdateStatus = await db.all('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username]);
         if (adminUpdateStatus[0].affectedRows > 0){
           return res.json({ updateStatus: 'Successful'});
         }
@@ -305,7 +297,7 @@ router.post('/account_Update', async (req, res) => {
     }
   }
   catch(err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 
@@ -314,14 +306,14 @@ router.post('/account_Delete', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const deleteStatus = await db.query('Delete FROM users WHERE accountUsername = ?', [username]);
+    const deleteStatus = await db.all('Delete FROM users WHERE accountUsername = ?', [username]);
     if (deleteStatus[0].affectedRows > 0){
       return res.json({ deleteStatus: 'Successful'});
     }
     return res.json({ deleteStatus: 'Unsuccessful'});
   }
   catch (err) {
-    return res.json({ message: 'An Error Occured!' });
+    return res.json({ message: 'An Error Occured!', errorMessage: err.message });
   }
 });
 //----------------------------------------- RECOVERY SETUP ---------------------------------------------------
@@ -333,34 +325,34 @@ router.post('/account_Recovery', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const locateUser = db.query('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
-    const locateAdmin = db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
+    const locateUser = db.all('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
+    const locateAdmin = db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
 
     if (typeof locateUser[0][0] !== 'undefined'){
-      const checkDuplicateRecovery = db.query('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+      const checkDuplicateRecovery = db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
 
       if (typeof checkDuplicateRecovery[0][0] !== 'undefined') {
-        return sg.sendVerification(locateUser[0][0].accountEmail, locateUser[0][0].accountFirstName, locateUser[0][0].accountLastName, username);
+        return emailHandler.sendVerification(locateUser[0][0].accountEmail, locateUser[0][0].accountFirstName, locateUser[0][0].accountLastName, username);
       }
       else {
-        const addToReovery = await db.query('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
+        const addToReovery = await db.all('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
       
         if (addToReovery[0].affectedRows > 0) {
-          return sg.sendVerification(locateUser[0][0].accountEmail, locateUser[0][0].accountFirstName, locateUser[0][0].accountLastName, username);
+          return emailHandler.sendVerification(locateUser[0][0].accountEmail, locateUser[0][0].accountFirstName, locateUser[0][0].accountLastName, username);
         }  
       }
     }
     else if (typeof locateAdmin[0][0] !== 'undefined') {
-      const checkDuplicateRecovery = db.query('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+      const checkDuplicateRecovery = db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
 
       if (typeof checkDuplicateRecovery[0][0] !== 'undefined') {
-        return sg.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
+        return emailHandler.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
       }
       else {
-        const addToReovery = await db.query('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
+        const addToReovery = await db.all('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
 
         if (addToReovery[0].affectedRows > 0) {
-          return sg.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
+          return emailHandler.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
         }
       }
     }
@@ -377,7 +369,7 @@ router.post('/locateUnrecovered', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const foundUser = await db.query('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+    const foundUser = await db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
 
     if (typeof foundUser[0][0] !== 'undefined'){
       return res.json({ foundAdminAccount: true });
@@ -394,16 +386,16 @@ router.post('/recoveryverification', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const locateUser = db.query('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
-    const locateAdmin = db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
+    const locateUser = db.all('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
+    const locateAdmin = db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
 
     if(typeof locateUser[0][0] !== 'undefined'){
       if (password != null){
         bcrypt.hash(password, saltRounds, async function(err, hash) {
-          const updateStatus = await db.query('UPDATE users SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
+          const updateStatus = await db.all('UPDATE users SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
             
           if (updateStatus[0].affectedRows > 0) {
-            const deleteStatus = await db.query('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+            const deleteStatus = await db.all('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
             if (deleteStatus[0].affectedRows > 0) {
               return res.json({recoveryStatus: "Successful"});
             }
@@ -415,10 +407,10 @@ router.post('/recoveryverification', async (req, res) => {
     else if (typeof locateAdmin[0][0] !== 'undefined'){
       if (password != null){
         bcrypt.hash(password, saltRounds, async function(err, hash) {
-          const updateStatus = await db.query('UPDATE adminusers SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
+          const updateStatus = await db.all('UPDATE adminusers SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
             
           if (updateStatus[0].affectedRows > 0) {
-            const deleteStatus = await db.query('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+            const deleteStatus = await db.all('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
             if (deleteStatus[0].affectedRows > 0) {
               return res.json({recoveryStatus: "Successful"});
             }
