@@ -157,6 +157,54 @@ async function updateUserAccountWithoutPW(username, firstName, lastName, email) 
     });
 }
 
+async function insertIntoUserRecovery(username, firstName, lastName, email) {
+    return new Promise((resolve, reject) => {
+        db.run('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function locateUserInRecovery(username) {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username], (err, rows) => {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+            }
+        });
+    });
+}
+
+async function recoverAccountInRecoverPW(newPassword, username) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE users SET accountPassword = ? WHERE accountUsername = ?', [newPassword, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function removeUserFromRecovery(username) {
+    return new Promise((resolve, reject) => {
+        db.run('Delete FROM userrecovery WHERE accountUsername = ?', [username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
 module.exports = {
     verifiedUserCheckEmail,
     verifiedUserCheckUsername,
@@ -169,5 +217,9 @@ module.exports = {
     removeUnverifiedUserUsername,
     removeVerifiedUserUsername,
     updateUserAccountWithPW,
-    updateUserAccountWithoutPW
+    updateUserAccountWithoutPW,
+    insertIntoUserRecovery,
+    locateUserInRecovery,
+    recoverAccountInRecoverPW,
+    removeUserFromRecovery
 }

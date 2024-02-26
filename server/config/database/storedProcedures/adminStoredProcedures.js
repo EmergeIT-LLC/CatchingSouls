@@ -48,9 +48,9 @@ async function unverifiedAdminCheckUsername(username) {
     });
 }
 
-async function addAdmin(username, firstName, lastName, email, password) {
+async function addAdmin(username, firstName, lastName, email, role) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password], function (err) {
+        db.run('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), role], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -84,9 +84,9 @@ async function locateUnverifiedAdminData(username) {
     });
 }
 
-async function moveAdmin(username, firstName, lastName, email, password) {
+async function moveAdmin(username, firstName, lastName, email, password, role) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username, firstName, lastName, email, password], function (err) {
+        db.run('INSERT INTO adminusers (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, accountRole) VALUES (?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, role], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -104,6 +104,30 @@ async function removeUnverifiedAdminUsername(username) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
                 resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function locateAllAdmins() {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM adminusers', [], (err, rows) => {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+            }
+        });
+    });
+}
+
+async function locateAllUnverifiedAdmins() {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM adminusers', [], (err, rows) => {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
             }
         });
     });
@@ -133,6 +157,54 @@ async function updateAdminAccountWithoutPW(username, firstName, lastName, email)
     });
 }
 
+async function insertIntoAdminRecovery(username, firstName, lastName, email) {
+    return new Promise((resolve, reject) => {
+        db.run('INSERT INTO adminrecovery (accountUsername) VALUES (?)', [username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function locateAdminInRecovery(username) {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM adminrecovery WHERE accountUsername = ?', [username], (err, rows) => {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+            }
+        });
+    });
+}
+
+async function recoverAccountInRecoverPW(newPassword, username) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE adminUsers SET accountPassword = ? WHERE accountUsername = ?', [newPassword, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function removeAdminFromRecovery(username) {
+    return new Promise((resolve, reject) => {
+        db.run('Delete FROM adminrecovery WHERE accountUsername = ?', [username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
 module.exports = {
     verifiedAdminCheckEmail,
     verifiedAdminCheckUsername,
@@ -143,6 +215,12 @@ module.exports = {
     locateUnverifiedAdminData,
     moveAdmin,
     removeUnverifiedAdminUsername,
+    locateAllAdmins,
+    locateAllUnverifiedAdmins,
     updateAdminAccountWithPW,
-    updateAdminAccountWithoutPW
+    updateAdminAccountWithoutPW,
+    insertIntoAdminRecovery,
+    locateAdminInRecovery,
+    recoverAccountInRecoverPW,
+    removeAdminFromRecovery
 }

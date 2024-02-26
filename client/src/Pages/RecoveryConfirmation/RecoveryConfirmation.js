@@ -36,8 +36,8 @@ const RecoveryConfirmation = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            setFoundAccount(response.data.foundAdminAccount);
-            if (response.data.foundAdminAccount){
+            setFoundAccount(response.data.foundAccount);
+            if (response.data.foundAccount){
                 loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
                 loggedInUserData.then(res => setLastName(res.data.accountLastName));
             }

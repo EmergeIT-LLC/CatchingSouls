@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database/dbConnection');
+//const db = require('../config/database/dbConnection');
+const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
@@ -28,24 +29,24 @@ router.post('/adminTool/register', async (req, res) => {
   const role = req.body.selectRole;
 
   try {
-    const locateAdminEmail = await db.all('SELECT * FROM adminusers WHERE accountEmail = ?', [email]);
-    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
-    const locatedUnverifiedAdmin = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const locateAdminEmail = await adminQueries.verifiedAdminCheckEmail(email.toLowerCase());
+    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username.toLowerCase());
+    const locatedUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
-    if (typeof locateAdminEmail[0][0] !== 'undefined'){
+    if (locateAdminEmail){
       return res.json({ message: 'Email already registered!' });
     }
-    else if (typeof locateAdminUser[0][0] !== 'undefined'){
+    else if (locateAdminUser){
       return res.json({ message: 'User already registered!' });
     }
-    else if (typeof locatedUnverifiedAdmin[0][0] !== 'undefined'){
-      emailHandler.sendAdminVerification(locatedUnverifiedAdmin[0][0].accountEmail, locatedUnverifiedAdmin[0][0].accountFirstName, locatedUnverifiedAdmin[0][0].accountLastName, username);
+    else if (locatedUnverifiedAdmin.length > 0){
+      emailHandler.sendAdminVerification(locatedUnverifiedAdmin[0].accountEmail, locatedUnverifiedAdmin[0].accountFirstName, locatedUnverifiedAdmin[0].accountLastName, username.toLowerCase());
       return res.json({ message: 'User needs to check email to verify account'});
     }
     else {
-      const verificationStatus = await db.all('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), role]);
-      if (verificationStatus[0].affectedRows > 1){
-        return emailHandler.sendAdminVerification(verificationStatus[0][0].accountEmail, verificationStatus[0][0].accountFirstName, verificationStatus[0][0].accountLastName, username);
+      const isAdded = await adminQueries.addAdmin(username.toLowerCase(), firstName, lastName, email.toLowerCase(), role);
+      if (isAdded){
+        return emailHandler.sendAdminVerification(email.toLowerCase(), firstName, lastName, username.toLowerCase());
       }
     }
   }
@@ -59,9 +60,9 @@ router.post('/adminTool/UnverifiedInfo', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try  {
-    const foundAdminAccount = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+    const foundAdminAccount = await adminQueries.unverifiedAdminCheckUsername(username.toLowerCase());
 
-    if (typeof foundAdminAccount[0][0] !== undefined){
+    if (foundAdminAccount){
       return res.json({ foundAdminAccount: true });
     }
     return res.json({ foundAdminAccount: false });
@@ -81,15 +82,15 @@ router.post('/adminTool/Verification', async (req, res) => {
     }
     else {
       try {
-        const locateAdminUser = await db.all('SELECT * FROM adminusersverification WHERE accountUsername = ?', [username]);
+        const unverifiedAdminData = await await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
-        if (typeof locateAdminUser[0][0] !== 'undefined') {
-          const verificationStatus = await db.all('INSERT INTO adminusers (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, accountRole) VALUES (?, ?, ?, ?, ?, ?)', [locateAdminUser[0][0].accountUsername, locateAdminUser[0][0].accountFirstName, locateAdminUser[0][0].accountLastName, locateAdminUser[0][0].accountEmail, hash, locateAdminUser[0][0].accountRole]);
+        if (unverifiedAdminData.length > 0) {
+          const isVerificationMoveSuccessful = await adminQueries.moveAdmin(unverifiedAdminData[0].accountUsername, unverifiedAdminData[0].accountFirstName, unverifiedAdminData[0].accountLastName, unverifiedAdminData[0].accountEmail, hash, unverifiedAdminData[0].accountRole);
 
-          if (verificationStatus[0].affectedRows > 1){
-            const deleteStatus = await db.all('Delete FROM adminusersverification WHERE accountUsername = ?', [username]);
+          if (isVerificationMoveSuccessful){
+            const isVerificationDeletionSuccessful = await adminQueries.removeUnverifiedAdminUsername(username);
             
-            if (deleteStatus[0].affectedRows > 1) {
+            if (isVerificationDeletionSuccessful) {
               return res.json({VerificationStatus: "Successful"});
             }
             return res.json({VerificationStatus: "Unsuccessful"});
@@ -110,10 +111,10 @@ router.post('/adminTool/Verification', async (req, res) => {
 router.post('/loggedIn_adminAccountLevel', async (req, res) => {
 
   try {
-    const locateAdminUser = await db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username]);
+    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username);
 
-    if (typeof locateAdminUser[0][0] !== undefined) {
-      if (locateAdminUser[0][0].accountRole == "Root" || locateAdminUser[0][0].accountRole == "Admin"){
+    if (locateAdminUser.length > 0) {
+      if (locateAdminUser[0].accountRole == "Root" || locateAdminUser[0].accountRole == "Admin"){
         return res.json({ isAdmin: true});
       }
     }
@@ -128,9 +129,9 @@ router.post('/loggedIn_adminAccountLevel', async (req, res) => {
 router.post('/account_retrieval', async (req, res) => {
 
   try {
-    const locateAllAdmins = await db.all('SELECT * FROM adminusers');
+    const locateAllAdmins = await adminQueries.locateAllAdmins();
 
-    if (typeof locateAllAdmins !== 'undefined') {
+    if (locateAllAdmins.length > 0) {
       return res.send(locateAllAdmins);
     }
   }
@@ -142,9 +143,9 @@ router.post('/account_retrieval', async (req, res) => {
 //Retrieve Unverified Accounts
 router.post('/account_unverifiedRetrieval', async (req, res) => {
   try {
-    const unverifiedAdmin = await  db.all('SELECT * FROM adminusersverification');
+    const unverifiedAdmin = await adminQueries.locateAllUnverifiedAdmins();
 
-    if (typeof unverifiedAdmin !== 'undefined') {
+    if (unverifiedAdmin.length > 0) {
       return res.send(unverifiedAdmin);
     }
   }

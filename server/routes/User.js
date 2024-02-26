@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-// const db = require('../config/database/dbConnection');
 const userQueries = require('../config/database/storedProcedures/userStoredProcedures');
 const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
@@ -24,17 +23,17 @@ router.post('/register', async (req, res) => {
       return res.json({ message: 'User already registered!' })
     }
     else if (isDuplicateUnverifiedUser) {
-      emailHandler.sendVerification(email, firstName, lastName, username);
+      emailHandler.sendVerification(email, firstName, lastName, username.toLowerCase());
       return res.json({ message: 'User needs to check email to verify account'});
     }
     else {
       bcrypt.hash(password, saltRounds, async function(err, hash) {
         try {
           //Add user to verification table
-          const isUserAdded = await userQueries.addUser(username, firstName, lastName, email, hash)
+          const isUserAdded = await userQueries.addUser(username.toLowerCase(), firstName, lastName, email, hash)
 
           if (isUserAdded) {
-            emailHandler.sendVerification(email, firstName, lastName, username);
+            emailHandler.sendVerification(email, firstName, lastName, username.toLowerCase());
             return res.json({registerStatus: "Successful"});
           }
           else {
@@ -57,7 +56,7 @@ router.post('/verificationInfo', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const isUnverifiedUserFound = await userQueries.unverifiedUserCheckUsername(username);
+    const isUnverifiedUserFound = await userQueries.unverifiedUserCheckUsername(username.toLowerCase());
 
     if (isUnverifiedUserFound) {
       return res.json({foundAccount: true});
@@ -76,14 +75,14 @@ router.post('/verifyUser', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
   
   try {
-    const unverifiedUser = await userQueries.locateUnverifiedUserData(username);
+    const unverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
 
     if (unverifiedUser.length > 0){
-      const isVerificationMoveSuccessful = await userQueries.moveUser(username, unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword);
+      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword);
 
 
       if (isVerificationMoveSuccessful) {
-        const isVerificationDeletionSuccessful = await userQueries.removeUnverifiedUserUsername(username);
+        const isVerificationDeletionSuccessful = await userQueries.removeUnverifiedUserUsername(username.toLowerCase());
         
         if (isVerificationDeletionSuccessful) {
           console.log('isVerificationDeletionSuccessful')
@@ -109,15 +108,15 @@ router.post('/login', async (req, res) => {
   const password = req.body.password;
 
   try {
-    const userVerification = await userQueries.unverifiedUserCheckUsername(username);
-    const userLogin = await userQueries.locateVerifiedUserData(username);
-    const adminVerification = await adminQueries.unverifiedAdminCheckUsername(username);
-    const adminLogin = await adminQueries.locateVerifiedAdminData(username);
+    const userVerification = await userQueries.unverifiedUserCheckUsername(username.toLowerCase());
+    const userLogin = await userQueries.locateVerifiedUserData(username.toLowerCase());
+    const adminVerification = await adminQueries.unverifiedAdminCheckUsername(username.toLowerCase());
+    const adminLogin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
 
     // Check User Verification
     if (userVerification) {
-      const unverifiedUser = await userQueries.locateUnverifiedUserData(username);
-      emailHandler.sendVerification(unverifiedUser[0].accountEmail, unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLastName, username);
+      const unverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
+      emailHandler.sendVerification(unverifiedUser[0].accountEmail, unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLastName, username.toLowerCase());
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check User Table
@@ -134,15 +133,15 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.session.username = username;
+        req.session.username = username.toLowerCase();
         req.session.loggedIn = true;
         req.session.isAdmin = false;
         res.cookie('BibleTriviaSessionCookies', req.sessionID);
-        res.cookie('username', username);
+        res.cookie('username', username.toLowerCase());
         res.cookie('loggedIn', true);
         res.cookie('isAdmin', false);
         res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=false');
-        return res.json({ loggedIn: true, username: username });
+        return res.json({ loggedIn: true, username: username.toLowerCase() });
       }
       else {
         return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
@@ -150,8 +149,8 @@ router.post('/login', async (req, res) => {
     }
     // Check Admin Verification
     else if (adminVerification) {
-      const unverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username);
-      emailHandler.sendAdminVerification(unverifiedAdmin[0].accountEmail, unverifiedAdmin[0].accountFirstName, unverifiedAdmin[0].accountLastName, username);
+      const unverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
+      emailHandler.sendAdminVerification(unverifiedAdmin[0].accountEmail, unverifiedAdmin[0].accountFirstName, unverifiedAdmin[0].accountLastName, username.toLowerCase());
       res.json({ message: 'User needs to check email to verify account' });
     }
     // Check Admin Table
@@ -168,15 +167,15 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.session.username = username;
+        req.session.username = username.toLowerCase();
         req.session.loggedIn = true;
         req.session.isAdmin = true;
         res.cookie('BibleTriviaSessionCookies', req.sessionID);
-        res.cookie('username', username);
+        res.cookie('username', username.toLowerCase());
         res.cookie('loggedIn', true);
         res.cookie('isAdmin', true);
         res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=true');
-        return res.json({ loggedIn: true, username: username, isAdmin: true });
+        return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true });
       }
       else {
         return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
@@ -204,10 +203,10 @@ router.post('/accountDetail_retrieval', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const locateUser = await userQueries.locateVerifiedUserData(username);
-    const locateUnverifiedUser = await userQueries.locateUnverifiedUserData(username);
-    const locateAdmin = await adminQueries.locateVerifiedAdminData(username);
-    const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username);
+    const locateUser = await userQueries.locateVerifiedUserData(username.toLowerCase());
+    const locateUnverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
+    const locateAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
+    const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateUser.length > 0){
       return res.send(locateUser);
@@ -249,7 +248,7 @@ router.post('/account_Update', async (req, res) => {
                 return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {
-                const userUpdateStatus = await userQueries.updateUserAccountWithPW(username, firstName, lastName, email, hash);
+                const userUpdateStatus = await userQueries.updateUserAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (userUpdateStatus){
                   return res.json({ updateStatus: 'Successful'});
                 }
@@ -263,7 +262,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username, firstName, lastName, email);
+        const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (userUpdateStatus){
           return res.json({ updateStatus: 'Successful'});
         }
@@ -279,7 +278,7 @@ router.post('/account_Update', async (req, res) => {
                 return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {          
-                const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username, firstName, lastName, email, hash);
+                const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (adminUpdateStatus){
                   return res.json({ updateStatus: 'Successful'});
                 }
@@ -293,7 +292,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username, firstName, lastName, email);
+        const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email);
         if (adminUpdateStatus){
           return res.json({ updateStatus: 'Successful'});
         }
@@ -311,7 +310,7 @@ router.post('/account_Delete', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const deleteStatus = await userQueries.removeVerifiedUserUsername(username);
+    const deleteStatus = await userQueries.removeVerifiedUserUsername(username.toLowerCase());
     if (deleteStatus){
       return res.json({ deleteStatus: 'Successful'});
     }
@@ -337,13 +336,13 @@ router.post('/account_Recovery', async (req, res) => {
       const checkDuplicateRecovery = userQueries.locateRecoveryUserData(username.toLowerCase());
 
       if (checkDuplicateRecovery) {
-        return emailHandler.sendVerification(locateUser[0].accountEmail, locateUser[0].accountFirstName, locateUser[0].accountLastName, username);
+        return emailHandler.sendVerification(locateUser[0].accountEmail, locateUser[0].accountFirstName, locateUser[0].accountLastName, username.toLowerCase());
       }
       else {
-        const addToReovery = await db.all('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
+        const addToReovery = await userQueries.insertIntoUserRecovery(username.toLowerCase());
       
-        if (addToReovery[0].affectedRows > 0) {
-          return emailHandler.sendVerification(locateUser[0].accountEmail, locateUser[0].accountFirstName, locateUser[0].accountLastName, username);
+        if (addToReovery) {
+          return emailHandler.sendVerification(locateUser[0].accountEmail, locateUser[0].accountFirstName, locateUser[0].accountLastName, username.toLowerCase());
         }  
       }
     }
@@ -351,13 +350,13 @@ router.post('/account_Recovery', async (req, res) => {
       const checkDuplicateRecovery = userQueries.locateRecoveryUserData(username.toLowerCase());
 
       if (checkDuplicateRecovery) {
-        return emailHandler.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
+        return emailHandler.sendVerification(locateAdmin[0].accountEmail, locateAdmin[0].accountFirstName, locateAdmin[0].accountLastName, username.toLowerCase());
       }
       else {
-        const addToReovery = await db.all('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username.toLowerCase()]);
+        const addToReovery = await adminQueries.insertIntoAdminRecovery(username.toLowerCase());
 
-        if (addToReovery[0].affectedRows > 0) {
-          return emailHandler.sendVerification(locateAdmin[0][0].accountEmail, locateAdmin[0][0].accountFirstName, locateAdmin[0][0].accountLastName, username);
+        if (addToReovery) {
+          return emailHandler.sendVerification(locateAdmin[0].accountEmail, locateAdmin[0].accountFirstName, locateAdmin[0].accountLastName, username.toLowerCase());
         }
       }
     }
@@ -374,12 +373,16 @@ router.post('/locateUnrecovered', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const foundUser = await db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
+    const foundUser = await userQueries.locateUserInRecovery(username.toLowerCase());
+    const foundAdmin = await adminQueries.locateAdminInRecovery(username.toLowerCase());
 
-    if (typeof foundUser[0][0] !== 'undefined'){
-      return res.json({ foundAdminAccount: true });
+    if (foundUser){
+      return res.json({ foundAccount: true });
     }
-    return res.json({ foundAdminAccount: false });
+    else if (foundAdmin){
+      return res.json({ foundAccount: true });
+    }
+    return res.json({ foundAccount: false });
   }
   catch (err) {
     return res.json({ message: 'An Error Occurred!' });
@@ -391,17 +394,17 @@ router.post('/recoveryverification', async (req, res) => {
   const username = req.body.AccountUsername.AccountUsername;
 
   try {
-    const locateUser = db.all('SELECT * FROM users WHERE accountUsername = ?', [username.toLowerCase()]);
-    const locateAdmin = db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()]);
+    const locateUser = await userQueries.locateVerifiedUserData(username.toLowerCase());
+    const locateAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
 
-    if(typeof locateUser[0][0] !== 'undefined'){
+    if(locateUser.length > 0){
       if (password != null){
         bcrypt.hash(password, saltRounds, async function(err, hash) {
-          const updateStatus = await db.all('UPDATE users SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
+          const updateStatus = await userQueries.recoverAccountInRecoverPW(hash, username.toLowerCase());
             
-          if (updateStatus[0].affectedRows > 0) {
-            const deleteStatus = await db.all('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
-            if (deleteStatus[0].affectedRows > 0) {
+          if (updateStatus) {
+            const deleteStatus = await userQueries.removeUserFromRecovery(username.toLowerCase());
+            if (deleteStatus) {
               return res.json({recoveryStatus: "Successful"});
             }
             return res.json({recoveryStatus: "Unsuccessful"})
@@ -409,14 +412,14 @@ router.post('/recoveryverification', async (req, res) => {
         });       
       }
     }
-    else if (typeof locateAdmin[0][0] !== 'undefined'){
+    else if (locateAdmin.length > 0){
       if (password != null){
         bcrypt.hash(password, saltRounds, async function(err, hash) {
-          const updateStatus = await db.all('UPDATE adminusers SET accountPassword = ? WHERE accountUsername = ?', [hash, username]);
+          const updateStatus = await adminQueries.recoverAccountInRecoverPW(hash, username.toLowerCase());
             
-          if (updateStatus[0].affectedRows > 0) {
-            const deleteStatus = await db.all('DELETE FROM userrecovery WHERE accountUsername = ?', [username.toLowerCase()]);
-            if (deleteStatus[0].affectedRows > 0) {
+          if (updateStatus) {
+            const deleteStatus = await adminQueries.removeAdminFromRecovery(username.toLowerCase());
+            if (deleteStatus) {
               return res.json({recoveryStatus: "Successful"});
             }
             return res.json({recoveryStatus: "Unsuccessful"})
