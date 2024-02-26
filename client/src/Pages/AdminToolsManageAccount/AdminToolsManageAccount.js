@@ -46,7 +46,7 @@ const AdminToolsManageAccount = () => {
         
         await Axios.post(url)
         .then((response) =>  {
-            setAccountData(response.data[0]);
+            setAccountData(response.data);
         })
         .catch((error) => {
             console.log(error);
@@ -58,7 +58,7 @@ const AdminToolsManageAccount = () => {
         
         await Axios.post(url)
         .then((response) =>  {
-            setAccountData2(response.data[0]);
+            setAccountData2(response.data);
         })
         .catch((error) => {
             console.log(error);

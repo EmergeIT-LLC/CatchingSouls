@@ -44,7 +44,7 @@ const AdminToolsManageTrivia = () => {
         
         await Axios.post(url)
         .then((response) =>  {
-            setTriviaData(response.data[0]);
+            setTriviaData(response.data);
         })
         .catch((error) => {
             console.log(error);

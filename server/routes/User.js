@@ -209,16 +209,16 @@ router.post('/accountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateUser.length > 0){
-      return res.send(locateUser);
+      return res.send(locateUser[0]);
     }
     else if (locateUnverifiedUser.length > 0){
-      return res.send(locateUnverifiedUser);
+      return res.send(locateUnverifiedUser[0]);
     }
     else if (locateAdmin.length > 0){
-      return res.send(locateAdmin);
+      return res.send(locateAdmin[0]);
     }
     else if (locateUnverifiedAdmin.length > 0){
-      return res.send(locateUnverifiedAdmin);
+      return res.send(locateUnverifiedAdmin[0]);
     }
   }
   catch (err) {
@@ -237,9 +237,9 @@ router.post('/account_Update', async (req, res) => {
 
   try {
     isUser = await userQueries.locateVerifiedUserData(username.toLowerCase());
-    isAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
+    isAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
 
-    if (isUser > 0) {
+    if (isUser.length > 0) {
       if (currentPassword != null) {
         bcrypt.compare(currentPassword, isUser[0].accountPassword, async (err, result) => {
           if (result == true) {
@@ -269,7 +269,7 @@ router.post('/account_Update', async (req, res) => {
         return res.json({ updateStatus: 'Unsuccessful'});
       }
     }
-    else if (isAdmin > 0) {
+    else if (isAdmin.length > 0) {
       if (currentPassword != null) {
         bcrypt.compare(currentPassword, isAdmin[0].accountPassword, async (err, result) => {
           if (result == true) {
@@ -292,7 +292,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email);
+        const adminUpdateStatus = await adminQueries.updateAdminAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (adminUpdateStatus){
           return res.json({ updateStatus: 'Successful'});
         }

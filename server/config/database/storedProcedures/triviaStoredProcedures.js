@@ -42,7 +42,7 @@ async function qaCheckQuestionLevelandType(selectedLevel, triviaType) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
-                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+                resolve(rows); // Resolve with true if duplicate user found, false otherwise
             }
         });
     });

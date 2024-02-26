@@ -67,7 +67,6 @@ const AccountVerification = () => {
                                         <>
                                             <img src={companyLogo} alt ="Catching Souls Logo" />
                                             <h1 style={{color: 'green'}}>Verified!</h1>
-                                            <p>Hello,</p>
                                             <p>Your account has been verified.</p>
                                             <p><strong>Select login</strong> to sign in!</p>
                                             <Link to='/Login'><button className='verifiedButton'>Login</button></Link>

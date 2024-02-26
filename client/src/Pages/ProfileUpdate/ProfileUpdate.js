@@ -90,6 +90,7 @@ const ProfileUpdate = () => {
             newPassword : newPassword
         })
         .then((response) => {
+            console.log(response.data)
             if (response.data.message){
                 setIsLoading(false);
                 setStatusMessage(response.data.message);

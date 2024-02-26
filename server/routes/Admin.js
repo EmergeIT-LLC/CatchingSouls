@@ -162,10 +162,10 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username);
 
     if (locateAdminUser.length > 0) {
-      return res.send(locateAdminUser);
+      return res.send(locateAdminUser[0]);
     }
     else if (locateUnverifiedAdmin.length > 0) {
-      return res.send(locateUnverifiedAdmin);
+      return res.send(locateUnverifiedAdmin[0]);
     }
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
@@ -205,8 +205,6 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
 
 router.post('/adminAccountDetail_Delete', async (req, res) => {
   const username = req.body.username;
-
-  console.log(username)
 
   try {
     const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username);
@@ -259,7 +257,7 @@ router.post('/adminTool/TriviaRetrieval', async (req, res) => {
 
   try {
     const triviaQA = await triviaQueries.qaGetAllQuestionData();
-    if (typeof triviaQA !== 'undefined'){
+    if (triviaQA.length > 0){
       return res.send(triviaQA)
     }    
   } catch (error) {
@@ -273,8 +271,8 @@ router.post('/adminTool/TriviaDetailRetrieval', async (req, res) => {
   try {
     const trivaQADetail = await triviaQueries.qaGetQuestionDataId(questionID);
 
-    if (typeof trivaQADetail[0][0] !== 'undefined'){
-      return res.send(trivaQADetail[0][0]);
+    if (trivaQADetail.length > 0){
+      return res.send(trivaQADetail);
     }
     
   } catch (error) {

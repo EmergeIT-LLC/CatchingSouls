@@ -127,7 +127,7 @@ async function locateAllAdmins() {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
-                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+                resolve(rows); // Resolve with true if duplicate user found, false otherwise
             }
         });
     });
@@ -135,11 +135,11 @@ async function locateAllAdmins() {
 
 async function locateAllUnverifiedAdmins() {
     return new Promise((resolve, reject) => {
-        db.all('SELECT * FROM adminusers', [], (err, rows) => {
+        db.all('SELECT * FROM adminusersverification', [], (err, rows) => {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
-                resolve(rows.length > 0); // Resolve with true if duplicate user found, false otherwise
+                resolve(rows); // Resolve with true if duplicate user found, false otherwise
             }
         });
     });
