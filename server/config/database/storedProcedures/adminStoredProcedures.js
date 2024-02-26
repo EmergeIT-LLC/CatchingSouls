@@ -97,9 +97,21 @@ async function moveAdmin(username, firstName, lastName, email, password, role) {
     });
 }
 
+async function removeVerifiedAdminUsername(username) {
+    return new Promise((resolve, reject) => {
+        db.run('Delete FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
 async function removeUnverifiedAdminUsername(username) {
     return new Promise((resolve, reject) => {
-        db.run('Delete FROM usersverification WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
+        db.run('Delete FROM adminusersverification WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -147,7 +159,31 @@ async function updateAdminAccountWithPW(username, firstName, lastName, email, pa
 
 async function updateAdminAccountWithoutPW(username, firstName, lastName, email) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO adminUsers (accountUsername, accountFirstName, accountLastName, accountEmail) VALUES (?, ?, ?, ?)', [username, firstName, lastName, email], function (err) {
+        db.run('UPDATE adminUsers SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function updateVerifiedAdminAccount(username, firstName, lastName, email, role) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE adminusers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function updateUnverifiedAdminAccount(username, firstName, lastName, email, role) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE adminusersverification SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountRole = ? WHERE accountUsername = ?', [firstName, lastName, email, role, username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -205,6 +241,18 @@ async function removeAdminFromRecovery(username) {
     });
 }
 
+async function updateAdminPoints(updatedPoints, loggedUser) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
 module.exports = {
     verifiedAdminCheckEmail,
     verifiedAdminCheckUsername,
@@ -214,13 +262,17 @@ module.exports = {
     locateVerifiedAdminData,
     locateUnverifiedAdminData,
     moveAdmin,
+    removeVerifiedAdminUsername,
     removeUnverifiedAdminUsername,
     locateAllAdmins,
     locateAllUnverifiedAdmins,
     updateAdminAccountWithPW,
     updateAdminAccountWithoutPW,
+    updateVerifiedAdminAccount,
+    updateUnverifiedAdminAccount,
     insertIntoAdminRecovery,
     locateAdminInRecovery,
     recoverAccountInRecoverPW,
-    removeAdminFromRecovery
+    removeAdminFromRecovery,
+    updateAdminPoints
 }

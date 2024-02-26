@@ -147,7 +147,7 @@ async function updateUserAccountWithPW(username, firstName, lastName, email, pas
 
 async function updateUserAccountWithoutPW(username, firstName, lastName, email) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail) VALUES (?, ?, ?, ?)', [username, firstName, lastName, email], function (err) {
+        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -157,7 +157,7 @@ async function updateUserAccountWithoutPW(username, firstName, lastName, email) 
     });
 }
 
-async function insertIntoUserRecovery(username, firstName, lastName, email) {
+async function insertIntoUserRecovery(username) {
     return new Promise((resolve, reject) => {
         db.run('INSERT INTO userrecovery (accountUsername) VALUES (?)', [username], function (err) {
             if (err) {
@@ -205,6 +205,18 @@ async function removeUserFromRecovery(username) {
     });
 }
 
+async function updateUserPoints(updatedPoints, loggedUser) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
 module.exports = {
     verifiedUserCheckEmail,
     verifiedUserCheckUsername,
@@ -213,6 +225,7 @@ module.exports = {
     addUser,
     locateVerifiedUserData,
     locateUnverifiedUserData,
+    locateRecoveryUserData,
     moveUser,
     removeUnverifiedUserUsername,
     removeVerifiedUserUsername,
@@ -221,5 +234,6 @@ module.exports = {
     insertIntoUserRecovery,
     locateUserInRecovery,
     recoverAccountInRecoverPW,
-    removeUserFromRecovery
+    removeUserFromRecovery,
+    updateUserPoints
 }
