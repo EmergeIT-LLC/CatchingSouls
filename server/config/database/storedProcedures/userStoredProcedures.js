@@ -84,6 +84,18 @@ async function locateUnverifiedUserData(username) {
     });
 }
 
+async function locateRecoveryUserData(username) {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM userrecovery WHERE accountUsername = ?', [username], (err, rows) => {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(rows); // Resolve with data if duplicate user found, false otherwise
+            }
+        });
+    });
+}
+
 async function moveUser(username, firstName, lastName, email, password) {
     return new Promise((resolve, reject) => {
         db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username, firstName, lastName, email, password], function (err) {
@@ -99,7 +111,7 @@ async function moveUser(username, firstName, lastName, email, password) {
 
 async function removeUnverifiedUserUsername(username) {
     return new Promise((resolve, reject) => {
-        db.run('Delete FROM usersverification WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
+        db.run('Delete FROM usersverification WHERE accountUsername = ?', [username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -109,7 +121,41 @@ async function removeUnverifiedUserUsername(username) {
     });
 }
 
+async function removeVerifiedUserUsername(username) {
+    return new Promise((resolve, reject) => {
+        db.run('Delete FROM users WHERE accountUsername = ?', [username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
 
+async function updateUserAccountWithPW(username, firstName, lastName, email, password) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, password, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
+
+async function updateUserAccountWithoutPW(username, firstName, lastName, email) {
+    return new Promise((resolve, reject) => {
+        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail) VALUES (?, ?, ?, ?)', [username, firstName, lastName, email], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
 
 module.exports = {
     verifiedUserCheckEmail,
@@ -120,5 +166,8 @@ module.exports = {
     locateVerifiedUserData,
     locateUnverifiedUserData,
     moveUser,
-    removeUnverifiedUserUsername
+    removeUnverifiedUserUsername,
+    removeVerifiedUserUsername,
+    updateUserAccountWithPW,
+    updateUserAccountWithoutPW
 }

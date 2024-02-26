@@ -109,7 +109,29 @@ async function removeUnverifiedAdminUsername(username) {
     });
 }
 
+async function updateAdminAccountWithPW(username, firstName, lastName, email, password) {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE adminUsers SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, password, username], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
 
+async function updateAdminAccountWithoutPW(username, firstName, lastName, email) {
+    return new Promise((resolve, reject) => {
+        db.run('INSERT INTO adminUsers (accountUsername, accountFirstName, accountLastName, accountEmail) VALUES (?, ?, ?, ?)', [username, firstName, lastName, email], function (err) {
+            if (err) {
+                reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
+            } else {
+                resolve(this.changes > 0); // Resolve with true if row was added successfully, false otherwise
+            }
+        });
+    });
+}
 
 module.exports = {
     verifiedAdminCheckEmail,
@@ -120,5 +142,7 @@ module.exports = {
     locateVerifiedAdminData,
     locateUnverifiedAdminData,
     moveAdmin,
-    removeUnverifiedAdminUsername
+    removeUnverifiedAdminUsername,
+    updateAdminAccountWithPW,
+    updateAdminAccountWithoutPW
 }
