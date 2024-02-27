@@ -1,4 +1,11 @@
 {
+  "name": "server",
+  "version": "2.0.22",
+  "description": "Catching Souls",
+  "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
@@ -18,10 +25,6 @@
   "devDependencies": {
     "nodemon": "^2.0.22"
   },
-  "name": "server",
-  "version": "2.0.22",
-  "description": "Catching Souls",
-  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "devStart": "nodemon index.js"
