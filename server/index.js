@@ -34,7 +34,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + ":" + port + "...")
+  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + "...")
 });
 
 const userRoute = require('./routes/User');
