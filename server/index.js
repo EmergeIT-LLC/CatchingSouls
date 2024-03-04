@@ -4,17 +4,7 @@ const port = process.env.PORT;
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const session = require('express-session');
-const SqlDbStore = require('express-mysql-session')(session); // Import SqlDbStore
 const cookieParser = require('cookie-parser');
-
-const sessionStore = new SqlDbStore({
-  host: process.env.DB_Host,
-  port: process.env.DB_Port,
-  user: process.env.DB_User,
-  password: process.env.DB_Pass,
-  database: process.env.DB_Data,
-});
 
 app.use(cors());
 app.use(express.json());
