@@ -16,7 +16,7 @@ const s3 = new AWS.S3();
 // Function to backup SQLite database file to S3
 function backupDatabaseToS3() {
   const dbFilePath = 'dataStorage.db';
-  const backupFileName = 'dataStorage.db.db'; // Use a consistent backup file name
+  const backupFileName = 'dataStorage.db'; // Use a consistent backup file name
   const backupKey = `backups/${backupFileName}`;
 
   // Check if the backup file already exists in S3
