@@ -3,6 +3,7 @@ const sendGridAPI = process.env.SENDGRID_API_KEY;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(sendGridAPI);
 const businessEmail = 'catchingsoulstrivia@outlook.com';
+const businessPOCEmail = 'jondoetech@outlook.com';
 
 function sendVerification(email, firstName, lastName, username) {
     //Sending Verification Email
@@ -35,8 +36,6 @@ function sendVerification(email, firstName, lastName, username) {
     });
 }
 
-
-
 function sendAdminVerification(email, firstName, lastName, username) {
     const msg = {
         to: email,
@@ -66,8 +65,6 @@ function sendAdminVerification(email, firstName, lastName, username) {
     });
 }
 
-
-
 function sendRecoveryVerification(email, firstName, lastName, username) {
     const msg = {
         to: email,
@@ -90,8 +87,101 @@ function sendRecoveryVerification(email, firstName, lastName, username) {
     });
 }
 
+// DATABASE RELATED EMAILS
+function sendDatabaseBackupNotification() {
+    const msg = {
+        to: businessPOCEmail,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Backup Notification',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database backup has initiated".</p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">You will be notified when the backup has completed. </p>'
+    }
+
+    sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return;
+    });
+}
+
+function sendDatabaseBackupResultsNotification(status, logs) {
+    const msg = {
+        to: businessPOCEmail,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Backup Notification',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database backup".</p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">The database backup completed with a status of </p>' + status + 
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Logs: </p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">' + logs + '</p>'
+    }
+
+    sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return;
+    });
+}
+
+function sendDatabaseImportNotification() {
+    const msg = {
+        to: businessPOCEmail,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Backup Notification',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database import has initiated".</p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">You will be notified when the import has completed. </p>'
+    }
+
+    sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return;
+    });
+}
+
+function sendDatabaseImportResultsNotification(status, logs) {
+    const msg = {
+        to: businessPOCEmail,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Backup Notification',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database import".</p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">The database import completed with a status of </p>' + status + 
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Logs: </p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">' + logs + '</p>'
+    }
+
+    sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return;
+    });    
+}
+
 module.exports = {
     sendVerification,
     sendAdminVerification,
-    sendRecoveryVerification
+    sendRecoveryVerification,
+    sendDatabaseBackupNotification,
+    sendDatabaseBackupResultsNotification,
+    sendDatabaseImportNotification,
+    sendDatabaseImportResultsNotification
 };
