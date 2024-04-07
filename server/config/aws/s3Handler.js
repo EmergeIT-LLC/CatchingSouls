@@ -27,20 +27,19 @@ function backupDatabaseToS3() {
   // Check if the backup file already exists in S3
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
     if (!err) {
-      console.log('Backup file already exists. Overriding...');
-
+      //Backup file already exists. Overriding...
       // If the backup file exists, delete it before uploading the new one
       s3.deleteObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, data) => {
         if (err) {
-          console.error('Error deleting existing backup file:\n\t', err);
+          //Error deleting existing backup file
         } else {
-          console.log('Existing backup file deleted.');
+          //Existing backup file deleted.
         }
         uploadBackup();
       });
     } else {
       if (err.code !== 'NotFound') {
-        console.error('Error checking if backup file exists:\n\t', err);
+        //Error checking if backup file exists
       }
       // If the backup file doesn't exist or error occurred, upload the new one directly
       uploadBackup();
@@ -60,7 +59,8 @@ function backupDatabaseToS3() {
         console.error('Error uploading backup:', err);
         sendDatabaseBackupEmailNotification("Unsuccessful", err.message);
       } else {
-        console.log('Backup uploaded successfully:', data.Location);
+        //Backup uploaded successfully
+        //data.Location
         sendDatabaseBackupEmailNotification("Successful", "");
       }
     });
@@ -76,7 +76,7 @@ function importBackupFromS3() {
   // Check if the backup file exists in S3
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
     if (err) {
-      console.error('Error checking if backup file exists:\n\t', err);
+      //Error checking if backup file exists
       sendDatabaseImportEmailNotification("Unsuccessful", err.message);
       return;
     }
@@ -88,12 +88,12 @@ function importBackupFromS3() {
       .pipe(fileStream);
 
     fileStream.on('error', (err) => {
-      console.error('Error downloading backup file:\n\t', err);
+      //Error downloading backup file
       sendDatabaseImportEmailNotification("Unsuccessful", err.message);
     });
 
     fileStream.on('finish', () => {
-      console.log('Backup file downloaded successfully.');
+      //Backup file downloaded successfully
       sendDatabaseImportEmailNotification("Successful", "");
     });
   });
