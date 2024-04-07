@@ -64,6 +64,7 @@ async function locateVerifiedAdminData(username) {
     return new Promise((resolve, reject) => {
         db.all('SELECT * FROM adminusers WHERE accountUsername = ?', [username], (err, rows) => {
             if (err) {
+                console.log(err)
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
                 resolve(rows); // Resolve with data if duplicate user found, false otherwise

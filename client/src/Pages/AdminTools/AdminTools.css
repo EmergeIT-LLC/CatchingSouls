@@ -38,6 +38,25 @@
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;
 }
+.adminTools_form > .adminToolsButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 18em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminTools_form > .adminToolsButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+
 @media (max-width: 800px) {
     .adminToolsPage_container {
         width: 100%;

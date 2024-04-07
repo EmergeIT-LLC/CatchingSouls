@@ -91,7 +91,7 @@ function sendRecoveryVerification(email, firstName, lastName, username) {
 function sendDatabaseBackupNotification() {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls', email: businessEmail},
+        from: {name:'Catching Souls Database Backup', email: businessEmail},
         subject: 'Database Backup Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database backup has initiated".</p>' +
@@ -112,7 +112,7 @@ function sendDatabaseBackupNotification() {
 function sendDatabaseBackupResultsNotification(status, logs) {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls', email: businessEmail},
+        from: {name:'Catching Souls Database Backup Results', email: businessEmail},
         subject: 'Database Backup Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database backup".</p>' +
@@ -135,7 +135,7 @@ function sendDatabaseBackupResultsNotification(status, logs) {
 function sendDatabaseImportNotification() {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls', email: businessEmail},
+        from: {name:'Catching Souls Database Import', email: businessEmail},
         subject: 'Database Backup Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database import has initiated".</p>' +
@@ -156,7 +156,7 @@ function sendDatabaseImportNotification() {
 function sendDatabaseImportResultsNotification(status, logs) {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls', email: businessEmail},
+        from: {name:'Catching Souls Database Import Results', email: businessEmail},
         subject: 'Database Backup Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database import".</p>' +

@@ -3,6 +3,7 @@ const router = express.Router();
 const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const triviaQueries = require('../config/database/storedProcedures/triviaStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
+const AWS_S3_Bucket_Handler = require('../config/aws/s3Handler');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
@@ -226,6 +227,16 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
     }
   } catch (error) {
     console.log(error)
+    return res.json({ message: 'An Error Occured!'});
+  }
+});
+//----------------------------------------- DATABASE SETUP -------------------------------------------------
+router.post('/adminTool/DatabaseBackup', async (req, res) => {
+  try {
+    AWS_S3_Bucket_Handler.backupDatabaseToS3();
+    return res.json({ message: 'Database backup has begun...'});
+  }
+  catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
 });

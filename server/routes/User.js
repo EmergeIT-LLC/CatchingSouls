@@ -133,14 +133,6 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.session.username = username.toLowerCase();
-        req.session.loggedIn = true;
-        req.session.isAdmin = false;
-        res.cookie('BibleTriviaSessionCookies', req.sessionID);
-        res.cookie('username', username.toLowerCase());
-        res.cookie('loggedIn', true);
-        res.cookie('isAdmin', false);
-        res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=false');
         return res.json({ loggedIn: true, username: username.toLowerCase() });
       }
       else {
@@ -167,14 +159,6 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        req.session.username = username.toLowerCase();
-        req.session.loggedIn = true;
-        req.session.isAdmin = true;
-        res.cookie('BibleTriviaSessionCookies', req.sessionID);
-        res.cookie('username', username.toLowerCase());
-        res.cookie('loggedIn', true);
-        res.cookie('isAdmin', true);
-        res.setHeader('Set-Cookie-Instructions', 'loggedIn=true; username=username; isAdmin=true');
         return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true });
       }
       else {
@@ -189,13 +173,7 @@ router.post('/login', async (req, res) => {
   }
 });
 router.post('/logout', async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.json({ message: 'Error logging out' });
-    }
-    res.clearCookie('BibleTriviaSessionCookies');
-    res.json({ loggedIn: false, message: 'Logged out' });
-  });
+  return res.json({ loggedIn: false, message: 'Logged out' });
 });
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
 //Get Account Profile Information
@@ -329,8 +307,8 @@ router.post('/account_Recovery', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const locateUser = userQueries.locateVerifiedUserData(username.toLowerCase());
-    const locateAdmin = adminQueries.locateVerifiedAdminData(username.toLowerCase());
+    const locateUser = await userQueries.locateVerifiedUserData(username.toLowerCase());
+    const locateAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
 
     if (locateUser.length > 0){
       const checkDuplicateRecovery = userQueries.locateRecoveryUserData(username.toLowerCase());
@@ -353,7 +331,7 @@ router.post('/account_Recovery', async (req, res) => {
         return emailHandler.sendVerification(locateAdmin[0].accountEmail, locateAdmin[0].accountFirstName, locateAdmin[0].accountLastName, username.toLowerCase());
       }
       else {
-        const addToReovery = await adminQueries.insertIntoAdminRecovery(username.toLowerCase());
+        const addToReovery = await userQueries.insertIntoUserRecovery(username.toLowerCase());
 
         if (addToReovery) {
           return emailHandler.sendVerification(locateAdmin[0].accountEmail, locateAdmin[0].accountFirstName, locateAdmin[0].accountLastName, username.toLowerCase());

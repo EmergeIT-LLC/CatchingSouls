@@ -13,10 +13,13 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+// Define your routes before the middleware for handling 404 errors
+// Define your root route
 app.get('/', (req, res) => {
   res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + "...")
 });
 
+// Define other routes here (userRoute, adminRoute, triviaRoute, etc.)
 const userRoute = require('./routes/User');
 app.use('/user', userRoute);
 
@@ -26,6 +29,26 @@ app.use('/admin', adminRoute);
 const triviaRoute = require('./routes/Trivia');
 app.use('/trivia', triviaRoute);
 
-app.listen(port, (req, res) => (
-  console.log("Server running on port " + port + "...")
-));
+// Middleware for handling 404 errors
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
+
+// Middleware for handling errors
+app.use((err, req, res, next) => {
+  // Redirect only if it's a 404 error
+  if (err.status === 404) {
+    console.log("Redirect URL:", process.env.ClientHost); // Debug statement
+    res.redirect(process.env.ClientHost);
+  } else {
+    // For other errors, handle as needed
+    // For example, you can send an error response
+    res.status(err.status || 500).send(err.message || 'Internal Server Error');
+  }
+});
+
+app.listen(port, () => {
+  console.log("Server running on port " + port + "...");
+});

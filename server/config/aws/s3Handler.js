@@ -119,5 +119,6 @@ cron.schedule('0 0 * * 3', () => {
 });
 
 module.exports = {
+  backupDatabaseToS3,
   importBackupFromS3
 };
