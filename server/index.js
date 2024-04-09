@@ -40,7 +40,6 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // Redirect only if it's a 404 error
   if (err.status === 404) {
-    console.log("Redirect URL:", process.env.ClientHost); // Debug statement
     res.redirect(process.env.ClientHost);
   } else {
     // For other errors, handle as needed
