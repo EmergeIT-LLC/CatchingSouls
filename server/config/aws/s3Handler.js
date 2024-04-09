@@ -56,7 +56,7 @@ function backupDatabaseToS3() {
     };
     s3.upload(params, (err, data) => {
       if (err) {
-        console.error('Error uploading backup:', err);
+        //error uploading backup
         sendDatabaseBackupEmailNotification("Unsuccessful", err.message);
       } else {
         //Backup uploaded successfully
