@@ -22,7 +22,6 @@ const s3 = new AWS.S3();
 function backupDatabaseToS3() {
   const dbFilePath = AWSDBFilePath;
   const backupKey = AWSBackupKey;
-  emailHandler.sendDatabaseBackupNotification();
 
   // Check if the backup file already exists in S3
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
@@ -48,6 +47,7 @@ function backupDatabaseToS3() {
 
   // Function to upload the backup file to S3
   function uploadBackup() {
+    emailHandler.sendDatabaseBackupNotification();
     const fileContent = fs.readFileSync(dbFilePath);
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
@@ -69,9 +69,9 @@ function backupDatabaseToS3() {
 
 // Function to import backup from S3
 function importBackupFromS3() {
+  emailHandler.sendDatabaseImportNotification();
   const dbFilePath = AWSDBFilePath;
   const backupKey = AWSBackupKey;
-  emailHandler.sendDatabaseImportNotification();
 
   // Check if the backup file exists in S3
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
