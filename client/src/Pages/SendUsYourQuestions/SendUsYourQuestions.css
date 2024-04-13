@@ -1,0 +1,86 @@
+.SendUsYourQuestionsPage_container {
+    display: block;
+    background-color: white;
+    margin-top: -1.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    height: auto;
+    border: .012em solid black;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.SendUsYourQuestionsPage_container > h2 {
+    margin-top: -8%;
+    margin-bottom: 10%;
+}
+.SendUsYourQuestions_form {
+    margin: 10% auto 10% auto;
+    width: 45em;
+    border:0.25em solid purple;
+    border-radius: 2em;
+}
+.SendUsYourQuestions_form > h1 {
+    color: red;
+    font-size: 2.50em;
+    margin: 1em;
+}
+.SendUsYourQuestions_form > input::placeholder{
+    color: purple;
+}
+.SendUsYourQuestions_form > input {
+    display: inline-block;
+    width: 16em;
+    height: 2em;
+    margin: 0 1em 2em 1em;
+}
+.SendUsYourQuestions_form > .question {
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    width: 16em;
+    height: 10em;
+    margin: 0 auto 2em auto;
+}
+.SendUsYourQuestions_form > .answer {
+    display: block;
+    width: 16em;
+    height: 10em;
+    margin: 0 auto 2em auto;
+}
+.SendUsYourQuestions_form > input:focus{
+    outline: none;
+    border:0.15em solid gold;
+}
+.SendUsYourQuestions_form > .SendUsYourQuestionsButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    height: 2.50em;
+    width: 16em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+}
+.SendUsYourQuestions_form > .SendUsYourQuestionsButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
+@media (max-width: 800px) {
+    .SendUsYourQuestionsPage_container {
+        width: 100%;
+        height: 100%;
+    }
+    .SendUsYourQuestions_form {
+        width: 75%;
+    }
+    .SendUsYourQuestions_form > input, .SendUsYourQuestions_form > .SendUsYourQuestionsButton {
+        display: block;
+        margin: 3em auto 3em auto;
+        width: 14em;
+    }
+}

@@ -15,6 +15,7 @@ import Dashboard from './Pages/Dashboard/Dashboard';
 import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import PageNotFound from './Pages/PageNotFound/PageNotFound';
+import SendUsYourQuestions from './Pages/SendUsYourQuestions/SendUsYourQuestions';
 //Admin
 import AdminTools from './Pages/AdminTools/AdminTools';
 import AdminToolsVerification from './Pages/AdminToolsVerification/AdminToolsVerification';
@@ -43,6 +44,7 @@ function App() {
           <Route exact path='/Logout' element={<Logout/>} />;
           <Route exact path='/AboutCatchingSouls' element={<About/>} />;
           <Route exact path='/ContactCatchingSouls' element={<Contact/>} />;
+          <Route exact path='/SendUsYourQuestions' element={<SendUsYourQuestions/>} />;
           <Route exact path='/AccountVerification/:AccountUsername' element={<AccountVerification/>} />;
           <Route exact path='/Profile/:AccountUsername' element={<Profile/>} />;
           <Route exact path='/Profile/:AccountUsername/Delete' element={<ProfileDelete/>} />;
