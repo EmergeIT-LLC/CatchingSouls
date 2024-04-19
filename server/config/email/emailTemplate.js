@@ -21,7 +21,6 @@ function sendVerification(email, firstName, lastName, username) {
     .then(() => {
         return;
     })
-
     .catch(error => {
         // Log friendly error
         console.error(error);
@@ -83,15 +82,17 @@ function sendRecoveryVerification(email, firstName, lastName, username) {
     })
     .catch((error) => {
         console.log(error);
-        return;
+        return false;
     });
+
+    return true;
 }
 
 // DATABASE RELATED EMAILS
 function sendDatabaseBackupNotification() {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls Database Backup', email: businessEmail},
+        from: {name:'Catching Souls', email: businessEmail},
         subject: 'Database Backup Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database backup has initiated".</p>' +
@@ -105,15 +106,17 @@ function sendDatabaseBackupNotification() {
     })
     .catch((error) => {
         console.log(error);
-        return;
+        return false;
     });
+
+    return true;
 }
 
 function sendDatabaseBackupResultsNotification(status, logs) {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls Database Backup Results', email: businessEmail},
-        subject: 'Database Backup Notification',
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Backup Results Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database backup".</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">The database backup completed with a status of </p>' + status + 
@@ -128,15 +131,17 @@ function sendDatabaseBackupResultsNotification(status, logs) {
     })
     .catch((error) => {
         console.log(error);
-        return;
+        return false;
     });
+
+    return true;
 }
 
 function sendDatabaseImportNotification() {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls Database Import', email: businessEmail},
-        subject: 'Database Backup Notification',
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Database Import Notification',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database import has initiated".</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">You will be notified when the import has completed. </p>'
@@ -149,15 +154,17 @@ function sendDatabaseImportNotification() {
     })
     .catch((error) => {
         console.log(error);
-        return;
+        return false;
     });
+
+    return true;
 }
 
 function sendDatabaseImportResultsNotification(status, logs) {
     const msg = {
         to: businessPOCEmail,
-        from: {name:'Catching Souls Database Import Results', email: businessEmail},
-        subject: 'Database Backup Notification',
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Catching Souls Database Import Results',
         html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the status of the database import".</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">The database import completed with a status of </p>' + status + 
@@ -172,8 +179,59 @@ function sendDatabaseImportResultsNotification(status, logs) {
     })
     .catch((error) => {
         console.log(error);
-        return;
+        return false;
     });    
+
+    return true;
+}
+
+function sendUsersQuestionAnswerNotice(firstName, lastName, triviaQ, triviaA, triviaS) {
+    const msg = {
+        to: businessPOCEmail,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'New Catching Souls Trivia Question Recieved',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello Jonathan Dameus, </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know that you have recieved a new trivia question".</p>' +
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Sender: ' + firstName + " " + lastName + '</p>' + 
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Question: ' + triviaQ + '</p>' + 
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Answer: ' + triviaA + '</p>'  + 
+        '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Supporting Verse: ' + triviaS + '</p>' 
+    }
+
+sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return false;
+    });    
+
+    return true;
+}
+
+function sendUsersQuestionAnswerRecievedNotice(email, firstName, lastName) {
+    const msg = {
+        to: email,
+        from: {name:'Catching Souls', email: businessEmail},
+        subject: 'Your Trivia Question Has Recieved',
+        html: '<h1 style="font-size: 22px; font-family: Montserrat, sans-serif;">Hello ' + firstName + ' ' + lastName + ', </h1>' + 
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know that we have received your trivia question".</p>' +
+        '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">We will review your question and add it to the list if applicable".</p>'
+    }
+
+    sgMail
+    .send(msg)
+    .then(() => {
+        return;
+    })
+    .catch((error) => {
+        console.log(error);
+        return false;
+    });    
+
+    return true;
 }
 
 module.exports = {
@@ -183,5 +241,7 @@ module.exports = {
     sendDatabaseBackupNotification,
     sendDatabaseBackupResultsNotification,
     sendDatabaseImportNotification,
-    sendDatabaseImportResultsNotification
+    sendDatabaseImportResultsNotification,
+    sendUsersQuestionAnswerNotice,
+    sendUsersQuestionAnswerRecievedNotice
 };

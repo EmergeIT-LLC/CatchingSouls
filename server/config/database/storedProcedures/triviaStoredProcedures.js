@@ -1,8 +1,8 @@
 const db = require('../dbConnection');
 
-async function addQA(question, answer, qaType, difficulty) {
+async function addQA(question, answer, qaType, difficulty, verse) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO questionandanswer (triviaquestions, triviaanswers, triviatype, trivialevel) VALUES (?, ?, ?, ?)', [question, answer, qaType, difficulty], function (err) {
+        db.run('INSERT INTO questionandanswer (triviaquestions, triviaanswers, triviatype, trivialevel, supportingVerse) VALUES (?, ?, ?, ?, ?)', [question, answer, qaType, difficulty, verse], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -84,9 +84,9 @@ async function qaGetQuestionDataId(questionID) {
     });
 }
 
-async function updateQAQuestionID(questionID, question, answer, qaType, difficulty) {
+async function updateQAQuestionID(questionID, question, answer, qaType, difficulty, verse) {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE questionandanswer SET triviaquestions = ?, triviaanswers = ?, triviatype = ?, trivialevel = ? WHERE triviaID = ?', [question, answer, qaType, difficulty, questionID], function (err) {
+        db.run('UPDATE questionandanswer SET triviaquestions = ?, triviaanswers = ?, triviatype = ?, trivialevel = ?, supportingVerse = ? WHERE triviaID = ?', [question, answer, qaType, difficulty, verse, questionID], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {

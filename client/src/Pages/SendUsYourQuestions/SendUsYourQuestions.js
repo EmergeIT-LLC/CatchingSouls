@@ -9,7 +9,7 @@ import { CheckEmail } from '../../Functions/EntryCheck';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Register = () => {
+const SendUsYourQuestions = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [firstName, setFirstName] = useState(null);
@@ -30,7 +30,7 @@ const Register = () => {
         }
 
         setIsLoading(true);
-        const url = process.env.REACT_APP_Backend_URL + '/User/register';
+        const url = process.env.REACT_APP_Backend_URL + '/User/sendUsYourQuestions';
                 
         Axios.post(url, {
             firstName : firstName,
@@ -41,14 +41,11 @@ const Register = () => {
             verse : verse
         })
         .then((response) => {
-            if (response.data.message){
+            if (response.data.successStatus === "Successful") {
                 setIsLoading(false);
-                setStatusMessage(response.data.message);
+                setStatusMessage("Question Sent Successfully");
             }
-            else if (response.data.registerStatus === "Successful") {
-                navigate('/Login');
-            }
-            else if (response.data.registerStatus === "Unsuccessful") {
+            else if (response.data.successStatus === "Unsuccessful") {
                 setIsLoading(false);
                 setStatusMessage("An error occurred");
             }
@@ -81,4 +78,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default SendUsYourQuestions;

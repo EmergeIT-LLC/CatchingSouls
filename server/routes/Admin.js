@@ -246,6 +246,7 @@ router.post('/adminTool/TriviaUpload', async (req, res) => {
   const answer = req.body.answer;
   const qaType = req.body.selectQAType;
   const difficulty = req.body.selectDifficulty;
+  const verse = req.body.verse;
 
   try {
     const checkDuplicateQA = await triviaQueries.qaCheckQuestion(question);
@@ -254,7 +255,7 @@ router.post('/adminTool/TriviaUpload', async (req, res) => {
       return res.json({ message: 'Question Already Exists!'});
     }
     else {
-      const uploadStatus = await triviaQueries.addQA(question, answer, qaType, difficulty);
+      const uploadStatus = await triviaQueries.addQA(question, answer, qaType, difficulty, verse);
       if (uploadStatus)
         return res.json({uploadStatus: "Successful"});
       }
@@ -297,12 +298,13 @@ router.post('/adminTool/TriviaUpdate', async (req, res) => {
   const answer = req.body.answer;
   const qaType = req.body.selectQAType;
   const difficulty = req.body.selectDifficulty;
+  const verse = req.body.verse;
 
   try {
     const foundQA = await triviaQueries.qaCheckQuestionID(questionID);
 
     if (foundQA){
-      const updateStatus = await triviaQueries.updateQAQuestionID(question, answer, qaType, difficulty, questionID);
+      const updateStatus = await triviaQueries.updateQAQuestionID(questionID, question, answer, qaType, difficulty, verse);
       
       if (updateStatus) {
         return res.json({ updateStatus: 'Successful'});

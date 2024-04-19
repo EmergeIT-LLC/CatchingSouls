@@ -106,7 +106,7 @@ router.post('/verifyUser', async (req, res) => {
 router.post('/login', async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-
+  
   try {
     const userVerification = await userQueries.unverifiedUserCheckUsername(username.toLowerCase());
     const userLogin = await userQueries.locateVerifiedUserData(username.toLowerCase());
@@ -413,4 +413,22 @@ router.post('/recoveryverification', async (req, res) => {
     return res.json({ message: 'An Error Occurred!' });
   }
 });
+
+router.post('/sendUsYourQuestions', async (req, res) => {
+  const sendersFirstName = req.body.firstName;
+  const sendersLastName = req.body.lastName;
+  const sendersEmail = req.body.email;
+  const sendersTriviaQ = req.body.question;
+  const sendersTriviaA = req.body.answer;
+  const sendersTriviaS = req.body.verse;
+
+  const noticeSentToAdmin = emailHandler.sendUsersQuestionAnswerNotice(sendersFirstName, sendersLastName, sendersTriviaQ, sendersTriviaA, sendersTriviaS);
+  const noticeSentToClient = emailHandler.sendUsersQuestionAnswerRecievedNotice(sendersEmail, sendersFirstName, sendersLastName)
+
+  if (noticeSentToAdmin && noticeSentToClient) {
+    return res.json({successStatus: "Successful"});
+  }
+  return res.json({successStatus: "Unsuccessful"});
+});
+
 module.exports = router;

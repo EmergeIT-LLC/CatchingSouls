@@ -55,6 +55,7 @@ const Header = () => {
           {userLoggedIn ? <>{adminLevel ? <li><a href={`/${loggedInUser}/AdminTools`}>Admin Controls</a></li> : <></>}</> : <></>}
           <li><a href='/AboutCatchingSouls'>About Us</a></li>
           <li><a href='/ContactCatchingSouls'>Contact Us</a></li>
+          <li><a href='/SendUsYourQuestions'>Send Us Your Questions</a></li>
         </ul>
     </nav>
   }
@@ -73,6 +74,7 @@ const Header = () => {
                 {userLoggedIn ? <>{adminLevel ? <li><a href={`/${loggedInUser}/AdminTools`}>Admin Controls</a></li> : <></>}</> : <></>}
                 <li><a href='/AboutCatchingSouls'>About Us</a></li>
                 <li><a href='/ContactCatchingSouls'>Contact Us</a></li>
+                <li><a href='/SendUsYourQuestions'>Send Us Your Questions</a></li>
               </ul>
           </nav>
       </div>
