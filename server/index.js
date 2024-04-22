@@ -1,5 +1,6 @@
 require('dotenv').config();
 const AWS_S3_Bucket_Handler = require('./config/aws/s3Handler');
+const jsonHandler = require('./functions/jsonHandler');
 const host = process.env.HOST;
 const port = process.env.PORT;
 const prodStatus = process.env.IN_PROD
@@ -8,6 +9,7 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+jsonHandler.testJson();
 AWS_S3_Bucket_Handler.importBackupFromS3();
 
 app.use(cors());

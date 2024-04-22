@@ -17,7 +17,11 @@ const AdminToolsManageDatabase = () => {
     const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
-    
+    const [backupExecutionDate, setBackupExecutionDate] = useState('');
+    const [backupExecutionResults, setBackupExecutionResults] = useState('');
+    const [importExecutionDate, setImportExecutionDate] = useState('');
+    const [importExecutionResults, setImportExecutionResults] = useState('');
+
     useEffect(() => {
         if (!userLoggedIn) {
             navigate('/Login', {
@@ -36,6 +40,21 @@ const AdminToolsManageDatabase = () => {
         gatherBackupImportInfo();
     }, [userLoggedIn]);
 
+    const gatherBackupImportInfo = async() => {
+        const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/BackupImportInfo';
+
+        await Axios.post(url)
+        .then((response) =>  {
+            setBackupExecutionDate(response.data.BackupImportInfo.backupDetail.executionDate);
+            setBackupExecutionResults(response.data.BackupImportInfo.backupDetail.successfulCompletion);
+            setImportExecutionDate(response.data.BackupImportInfo.importDetail.executionDate);
+            setImportExecutionResults(response.data.BackupImportInfo.importDetail.successfulCompletion);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
+    
     const backupDB = async (e) => {
         e.PreventDefault();
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseBackup';
