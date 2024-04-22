@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const cron = require('node-cron');
 const sqlite3 = require('sqlite3').verbose();
-const jsonHandler = require('../../functions/jsonHandler');
 const emailHandler = require('../email/emailTemplate');
 const AWSbackupFileName = 'dataStorage.db'; // Backup file name
 const AWSDBFilePath = `./config/database/${AWSbackupFileName}`;
@@ -58,12 +57,10 @@ function backupDatabaseToS3() {
     s3.upload(params, (err, data) => {
       if (err) {
         //error uploading backup
-        updateBackupImportStatus("backup", "Unsccessful");
         sendDatabaseBackupImportEmailNotification("backup", "Unsuccessful", err.message);
       } else {
         //Backup uploaded successfully
         //data.Location
-        updateBackupImportStatus("backup", "Successful");
         sendDatabaseBackupImportEmailNotification("backup", "Successful", "");
       }
     });
@@ -80,7 +77,6 @@ function importBackupFromS3() {
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
     if (err) {
       //Error checking if backup file exists
-      updateBackupImportStatus("import", "Unsuccessful");
       sendDatabaseBackupImportEmailNotification("import", "Unsuccessful", err.message);
       return;
     }
@@ -93,13 +89,11 @@ function importBackupFromS3() {
 
     fileStream.on('error', (err) => {
       //Error downloading backup file
-      updateBackupImportStatus("import", "Unsuccessful");
       sendDatabaseBackupImportEmailNotification("import", "Unsuccessful", err.message);
     });
 
     fileStream.on('finish', () => {
       //Backup file downloaded successfully
-      updateBackupImportStatus("import", "Successful");
       sendDatabaseBackupImportEmailNotification("import", "Successful", "");
     });
   });
@@ -112,15 +106,6 @@ function sendDatabaseBackupImportEmailNotification(backupOrImport, status, logs)
   }
   if (backupOrImport == "import") {
     emailHandler.sendDatabaseImportResultsNotification(status, logs);
-  }
-}
-
-const updateBackupImportStatus = async (backupOrImport, successOrUnsuccess) => {
-  if (backupOrImport == "backup") {
-    await jsonHandler.updateBackupDetails(successOrUnsuccess);
-  }
-  if (backupOrImport == "import") {
-    await jsonHandler.updateImportDetails(successOrUnsuccess);
   }
 }
 

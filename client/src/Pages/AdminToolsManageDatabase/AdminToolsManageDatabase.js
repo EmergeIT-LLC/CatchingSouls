@@ -17,10 +17,6 @@ const AdminToolsManageDatabase = () => {
     const loggedInUser = CheckUser();
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
-    const [backupExecutionDate, setBackupExecutionDate] = useState('');
-    const [backupExecutionResults, setBackupExecutionResults] = useState('');
-    const [importExecutionDate, setImportExecutionDate] = useState('');
-    const [importExecutionResults, setImportExecutionResults] = useState('');
     
     useEffect(() => {
         if (!userLoggedIn) {
@@ -39,21 +35,6 @@ const AdminToolsManageDatabase = () => {
 
         gatherBackupImportInfo();
     }, [userLoggedIn]);
-
-    const gatherBackupImportInfo = async() => {
-        const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/BackupImportInfo';
-
-        await Axios.post(url)
-        .then((response) =>  {
-            setBackupExecutionDate(response.data.BackupImportInfo.backupDetail.executionDate);
-            setBackupExecutionResults(response.data.BackupImportInfo.backupDetail.successfulCompletion);
-            setImportExecutionDate(response.data.BackupImportInfo.importDetail.executionDate);
-            setImportExecutionResults(response.data.BackupImportInfo.importDetail.successfulCompletion);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    }
 
     const backupDB = async (e) => {
         e.PreventDefault();
@@ -92,8 +73,6 @@ const AdminToolsManageDatabase = () => {
                         :
                     <>
                         <h1>Would you like to backup or import?</h1>
-                        <h2>Import execution was {importExecutionResults}, as of {importExecutionDate}</h2>
-                        <h2>Backup execution was {backupExecutionResults}, as of {backupExecutionDate}</h2>
                         <button className='adminToolsManageDatabaseButton' onClick={() => importDB()}>Import Database Table</button>
                         <button className='adminToolsManageDatabaseButton' onClick={() => backupDB()}>Backup Database Table</button>
                         </>

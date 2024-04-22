@@ -6,7 +6,6 @@ const emailHandler = require('../config/email/emailTemplate');
 const AWS_S3_Bucket_Handler = require('../config/aws/s3Handler');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const jsonHandler = require('../functions/jsonHandler');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 function requireAuth(req, res, next) {
   if (req.session.user) {
@@ -248,16 +247,6 @@ router.post('/adminTool/DatabaseImport', async (req, res) => {
   }
   catch (error) {
     return res.json({ executionStatus: "Unsuccessful", message: 'An Error Occured!'});
-  }
-});
-router.post('/adminTool/BackupImportInfo', async (req, res) => {
-  try {
-    const backupImportData = await jsonHandler.getBackupImportInfo();
-    res.json({BackupImportInfo: backupImportData})
-  }
-  catch (error) {
-    console.log(error)
-    return res.json({ message: 'An Error Occured!'});
   }
 });
 //----------------------------------------- TRIVIA SETUP ---------------------------------------------------
