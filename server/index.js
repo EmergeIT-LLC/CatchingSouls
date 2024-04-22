@@ -10,7 +10,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 jsonHandler.testJson();
-//AWS_S3_Bucket_Handler.importBackupFromS3();
+AWS_S3_Bucket_Handler.importBackupFromS3();
 
 app.use(cors());
 app.use(express.json());
