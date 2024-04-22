@@ -92,6 +92,8 @@ const AdminToolsManageDatabase = () => {
                         :
                     <>
                         <h1>Would you like to backup or import?</h1>
+                        <h2>Import execution was {importExecutionResults}, as of {importExecutionDate}</h2>
+                        <h2>Backup execution was {backupExecutionResults}, as of {backupExecutionDate}</h2>
                         <button className='adminToolsManageDatabaseButton' onClick={() => importDB()}>Import Database Table</button>
                         <button className='adminToolsManageDatabaseButton' onClick={() => backupDB()}>Backup Database Table</button>
                         </>

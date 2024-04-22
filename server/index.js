@@ -8,11 +8,18 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+let corsOrigin = 'http://localhost:3000';
 
-jsonHandler.testJson();
-AWS_S3_Bucket_Handler.importBackupFromS3();
+if (prodStatus === "true") {
+  jsonHandler.testJson();
+  AWS_S3_Bucket_Handler.importBackupFromS3();
+  corsOrigin = 'https://catchingsouls.net';
+}
 
-app.use(cors());
+app.use(cors({
+  origin: corsOrigin
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
