@@ -252,8 +252,8 @@ router.post('/adminTool/DatabaseImport', async (req, res) => {
 });
 router.post('/adminTool/BackupImportInfo', async (req, res) => {
   try {
-    const backupImortData = await jsonHandler.getBackupImportInfo();
-    res.json({BackupImportInfo: backupImortData})
+    const backupImportData = await jsonHandler.getBackupImportInfo();
+    res.json({BackupImportInfo: backupImportData})
   }
   catch (error) {
     console.log(error)
