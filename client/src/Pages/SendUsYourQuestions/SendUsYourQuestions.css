@@ -94,6 +94,12 @@
     .SendUsYourQuestions_form {
         width: 75%;
     }
+    .SendUsYourQuestions_form > .question, .SendUsYourQuestions_form > .answer {
+        display: block;
+        min-width: 14em;
+        max-width: 14em;
+        margin: 3em auto 3em auto;
+    }    
     .SendUsYourQuestions_form > input, .SendUsYourQuestions_form > .SendUsYourQuestionsButton {
         display: block;
         margin: 3em auto 3em auto;

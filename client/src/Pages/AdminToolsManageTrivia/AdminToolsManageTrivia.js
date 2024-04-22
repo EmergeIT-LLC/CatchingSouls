@@ -75,6 +75,7 @@ const AdminToolsManageTrivia = () => {
                                     <th>Answer</th>
                                     <th>Answer Relation</th>
                                     <th>Question Level</th>
+                                    <th>Supporting Verse</th>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -85,6 +86,7 @@ const AdminToolsManageTrivia = () => {
                                     <td>{questions.triviaanswers}</td>
                                     <td>{questions.triviatype}</td>
                                     <td>{questions.trivialevel}</td>
+                                    <td>{questions.supportingVerse}</td>
                                 </tr>
                             ))}
                             </tbody>

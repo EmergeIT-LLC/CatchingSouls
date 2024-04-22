@@ -6,7 +6,7 @@ const businessEmail = 'catchingsoulstrivia@outlook.com';
 const businessPOCEmail = 'jondoetech@outlook.com';
 
 function sendVerification(email, firstName, lastName, username) {
-    //Sending Verification Email
+    const sentEmail = false;
     const msg = {
     to: email,
     from: {name:'Catching Souls', email: businessEmail},
@@ -19,23 +19,18 @@ function sendVerification(email, firstName, lastName, username) {
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
     .catch(error => {
-        // Log friendly error
         console.error(error);
-
-        if (error.response) {
-            // Extract error msg
-            const {message, code, response} = error;
-            // Extract response msg
-            const {headers, body} = response;
-            console.error(body);
-        }
+        return;
     });
+    return sentEmail;
 }
 
 function sendAdminVerification(email, firstName, lastName, username) {
+    sentEmail = false;
     const msg = {
         to: email,
         from: {name:'Catching Souls Admin', email: businessEmail},
@@ -49,22 +44,18 @@ function sendAdminVerification(email, firstName, lastName, username) {
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
     .catch(error => {
-        // Log friendly error
         console.error(error);
-        if (error.response) {
-            // Extract error msg
-            const {message, code, response} = error;
-            // Extract response msg
-            const {headers, body} = response;
-            console.error(body);
-        }
+        return;
     });
+    return sentEmail;
 }
 
 function sendRecoveryVerification(email, firstName, lastName, username) {
+    sentEmail = false;
     const msg = {
         to: email,
         from: {name:'Catching Souls', email: businessEmail},
@@ -74,22 +65,22 @@ function sendRecoveryVerification(email, firstName, lastName, username) {
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Kindly click "Recover my account" below to verify your account.</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;"><a href="'+ process.env.ClientHost + '/ForgotPasswordVerification/' + username.toLowerCase() + '">Recover my account</a></p>'
     }
-
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
+    .catch(error => {
+        console.error(error);
+        return;
     });
-
-    return true;
+    return sentEmail;
 }
 
 // DATABASE RELATED EMAILS
 function sendDatabaseBackupNotification() {
+    sentEmail = false;
     const msg = {
         to: businessPOCEmail,
         from: {name:'Catching Souls', email: businessEmail},
@@ -98,21 +89,21 @@ function sendDatabaseBackupNotification() {
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database backup has initiated".</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">You will be notified when the backup has completed. </p>'
     }
-
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
+    .catch(error => {
+        console.error(error);
+        return;
     });
-
-    return true;
+    return sentEmail;
 }
 
 function sendDatabaseBackupResultsNotification(status, logs) {
+    sentEmail = false;
     const msg = {
         to: businessPOCEmail,
         from: {name:'Catching Souls', email: businessEmail},
@@ -127,17 +118,18 @@ function sendDatabaseBackupResultsNotification(status, logs) {
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
+    .catch(error => {
+        console.error(error);
+        return;
     });
-
-    return true;
+    return sentEmail;
 }
 
 function sendDatabaseImportNotification() {
+    sentEmail = false;
     const msg = {
         to: businessPOCEmail,
         from: {name:'Catching Souls', email: businessEmail},
@@ -146,21 +138,21 @@ function sendDatabaseImportNotification() {
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know the database import has initiated".</p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">You will be notified when the import has completed. </p>'
     }
-
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
+    .catch(error => {
+        console.error(error);
+        return;
     });
-
-    return true;
+    return sentEmail;
 }
 
 function sendDatabaseImportResultsNotification(status, logs) {
+    sentEmail = false;
     const msg = {
         to: businessPOCEmail,
         from: {name:'Catching Souls', email: businessEmail},
@@ -171,21 +163,21 @@ function sendDatabaseImportResultsNotification(status, logs) {
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Logs: </p>' +
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">' + logs + '</p>'
     }
-
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
-    });    
-
-    return true;
+    .catch(error => {
+        console.error(error);
+        return;
+    });
+    return sentEmail;
 }
 
 function sendUsersQuestionAnswerNotice(firstName, lastName, triviaQ, triviaA, triviaS) {
+    sentEmail = false;
     const msg = {
         to: businessPOCEmail,
         from: {name:'Catching Souls', email: businessEmail},
@@ -197,21 +189,21 @@ function sendUsersQuestionAnswerNotice(firstName, lastName, triviaQ, triviaA, tr
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Answer: ' + triviaA + '</p>'  + 
         '\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">Supporting Verse: ' + triviaS + '</p>' 
     }
-
-sgMail
+    sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
-    });    
-
-    return true;
+    .catch(error => {
+        console.error(error);
+        return;
+    });
+    return sentEmail;
 }
 
 function sendUsersQuestionAnswerRecievedNotice(email, firstName, lastName) {
+    sentEmail = false;
     const msg = {
         to: email,
         from: {name:'Catching Souls', email: businessEmail},
@@ -220,18 +212,17 @@ function sendUsersQuestionAnswerRecievedNotice(email, firstName, lastName) {
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">This email is to let you know that we have received your trivia question".</p>' +
         '\n\n<p style="font-size: 16px; font-family: Montserrat, sans-serif;">We will review your question and add it to the list if applicable".</p>'
     }
-
     sgMail
     .send(msg)
     .then(() => {
+        sentEmail = true;
         return;
     })
-    .catch((error) => {
-        console.log(error);
-        return false;
-    });    
-
-    return true;
+    .catch(error => {
+        console.error(error);
+        return;
+    });
+    return sentEmail;
 }
 
 module.exports = {

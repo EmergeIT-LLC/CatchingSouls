@@ -6,6 +6,7 @@ const emailHandler = require('../config/email/emailTemplate');
 const AWS_S3_Bucket_Handler = require('../config/aws/s3Handler');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
+const jsonHandler = require('../functions/jsonHandler');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 function requireAuth(req, res, next) {
   if (req.session.user) {
@@ -234,9 +235,28 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
 router.post('/adminTool/DatabaseBackup', async (req, res) => {
   try {
     AWS_S3_Bucket_Handler.backupDatabaseToS3();
-    return res.json({ message: 'Database backup has begun...'});
+    return res.json({ executionStatus: "Successful", message: 'Database backup has begun...'});
   }
   catch (error) {
+    return res.json({ executionStatus: "Unsuccessful", message: 'An Error Occured!'});
+  }
+});
+router.post('/adminTool/DatabaseImport', async (req, res) => {
+  try {
+    AWS_S3_Bucket_Handler.importBackupFromS3();
+    return res.json({ executionStatus: "Successful", message: 'Database backup has begun...'});
+  }
+  catch (error) {
+    return res.json({ executionStatus: "Unsuccessful", message: 'An Error Occured!'});
+  }
+});
+router.post('/adminTool/BackupImportInfo', async (req, res) => {
+  try {
+    const backupImortData = await jsonHandler.getBackupImportInfo();
+    res.json({BackupImportInfo: backupImortData})
+  }
+  catch (error) {
+    console.log(error)
     return res.json({ message: 'An Error Occured!'});
   }
 });

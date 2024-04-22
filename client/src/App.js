@@ -32,6 +32,7 @@ import AdminToolsManageTriviaUpdate from './Pages/AdminToolsManageTriviaUpdate/A
 //Game Page
 import LevelChoice from './Pages/LevelChoice/LevelChoice';
 import LevelChoiceSelected from './Pages/LevelChoiceSelected/LevelChoiceSelected';
+import AdminToolsManageDatabase from './Pages/AdminToolsManageDatabase/AdminToolsManageDatabase';
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Delete' element={<AdminToolsManageTriviaDelete/>} />;
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Detail' element={<AdminToolsManageTriviaDetail/>} />;
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Update' element={<AdminToolsManageTriviaUpdate/>} />;
+          <Route exact path='/:AccountUsername/AdminTools/ManageDatabase/' element={<AdminToolsManageDatabase/>} />;
           <Route exact path='/*' element={<PageNotFound/>} />;
         </Routes>
       </BrowserRouter>

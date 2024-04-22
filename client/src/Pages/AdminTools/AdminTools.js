@@ -33,19 +33,6 @@ const AdminTools = () => {
             navigate('/');
         }
     }, [userLoggedIn]);
-
-    const backupDB = async (e) => {
-        e.PreventDefault();
-        const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseBackup';
-
-        await Axios.post(url)
-        .then((response) =>  {
-            console.log(response.data.message);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    }
     
     return (
         <>
@@ -61,7 +48,7 @@ const AdminTools = () => {
                         <h1>Pick A Tool</h1>
                         <Link to={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsButton'>Manage Admin Accounts</button></Link>
                         <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsButton'>Manage Trivia Questions</button></Link>
-                        <button className='adminToolsButton' onClick={() => backupDB()}>Backup Database Table</button>
+                        <Link to={`/${loggedInUser}/AdminTools/ManageDatabase`}><button className='adminToolsButton'>Manage Databse</button></Link>
                         </>
                     }
                 </form>

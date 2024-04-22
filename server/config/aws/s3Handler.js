@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const cron = require('node-cron');
 const sqlite3 = require('sqlite3').verbose();
+const jsonHandler = require('../../functions/jsonHandler');
 const emailHandler = require('../email/emailTemplate');
 const AWSbackupFileName = 'dataStorage.db'; // Backup file name
 const AWSDBFilePath = `./config/database/${AWSbackupFileName}`;
@@ -57,11 +58,13 @@ function backupDatabaseToS3() {
     s3.upload(params, (err, data) => {
       if (err) {
         //error uploading backup
-        sendDatabaseBackupEmailNotification("Unsuccessful", err.message);
+        updateBackupImportStatus("backup", "Unsccessful");
+        sendDatabaseBackupImportEmailNotification("backup", "Unsuccessful", err.message);
       } else {
         //Backup uploaded successfully
         //data.Location
-        sendDatabaseBackupEmailNotification("Successful", "");
+        updateBackupImportStatus("backup", "Successful");
+        sendDatabaseBackupImportEmailNotification("backup", "Successful", "");
       }
     });
   }
@@ -77,7 +80,8 @@ function importBackupFromS3() {
   s3.headObject({ Bucket: process.env.S3_BUCKET_NAME, Key: backupKey }, (err, metadata) => {
     if (err) {
       //Error checking if backup file exists
-      sendDatabaseImportEmailNotification("Unsuccessful", err.message);
+      updateBackupImportStatus("import", "Unsuccessful");
+      sendDatabaseBackupImportEmailNotification("import", "Unsuccessful", err.message);
       return;
     }
 
@@ -89,23 +93,35 @@ function importBackupFromS3() {
 
     fileStream.on('error', (err) => {
       //Error downloading backup file
-      sendDatabaseImportEmailNotification("Unsuccessful", err.message);
+      updateBackupImportStatus("import", "Unsuccessful");
+      sendDatabaseBackupImportEmailNotification("import", "Unsuccessful", err.message);
     });
 
     fileStream.on('finish', () => {
       //Backup file downloaded successfully
-      sendDatabaseImportEmailNotification("Successful", "");
+      updateBackupImportStatus("import", "Successful");
+      sendDatabaseBackupImportEmailNotification("import", "Successful", "");
     });
   });
 }
 
 // Function to send email notification
-function sendDatabaseBackupEmailNotification(status, logs) {
-  emailHandler.sendDatabaseBackupResultsNotification(status, logs);
+function sendDatabaseBackupImportEmailNotification(backupOrImport, status, logs) {
+  if (backupOrImport == "backup") {
+    emailHandler.sendDatabaseBackupResultsNotification(status, logs);
+  }
+  if (backupOrImport == "import") {
+    emailHandler.sendDatabaseImportResultsNotification(status, logs);
+  }
 }
 
-function sendDatabaseImportEmailNotification(status, logs) {
-  emailHandler.sendDatabaseImportResultsNotification(status, logs);
+const updateBackupImportStatus = async (backupOrImport, successOrUnsuccess) => {
+  if (backupOrImport == "backup") {
+    await jsonHandler.updateBackupDetails(successOrUnsuccess);
+  }
+  if (backupOrImport == "import") {
+    await jsonHandler.updateImportDetails(successOrUnsuccess);
+  }
 }
 
 // Schedule backup to run every Sunday at 12:00 AM
