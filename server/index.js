@@ -3,7 +3,8 @@ const AWS_S3_Bucket_Handler = require('./config/aws/s3Handler');
 const jsonHandler = require('./functions/jsonHandler');
 const host = process.env.HOST;
 const port = process.env.PORT;
-const prodStatus = process.env.IN_PROD
+const prodStatus = process.env.IN_PROD;
+const allowedOrigin = process.env.ClientHost;
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -14,16 +15,10 @@ if (prodStatus === "true") {
   AWS_S3_Bucket_Handler.importBackupFromS3();
 }
 
-app.use(cors());
+// Use the cors middleware with specific configuration options
+app.use(cors({origin: allowedOrigin}));
 app.use(express.json());
 app.use(cookieParser());
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
-  res.header("Access-Control-Allow-Headers", "Origion, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 // Define your routes before the middleware for handling 404 errors
 // Define your root route
