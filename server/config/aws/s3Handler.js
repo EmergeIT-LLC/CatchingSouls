@@ -8,6 +8,7 @@ const AWSbackupFileName = 'dataStorage.db'; // Backup file name
 const AWSDBFilePath = `./config/database/${AWSbackupFileName}`;
 const AWSBackupKey = `catchingsouls/${AWSbackupFileName}`;
 const jsonHandler = require('../../functions/jsonHandler');
+const prodStatus = process.env.IN_PROD;
 
 // Configure AWS credentials
 AWS.config.update({
@@ -107,20 +108,24 @@ function importBackupFromS3() {
 
 // Function to send email notification
 function sendDatabaseBackupImportEmailNotification(backupOrImport, status, logs) {
-  if (backupOrImport == "backup") {
-    emailHandler.sendDatabaseBackupResultsNotification(status, logs);
-  }
-  if (backupOrImport == "import") {
-    emailHandler.sendDatabaseImportResultsNotification(status, logs);
+  if (prodStatus === "true") {
+    if (backupOrImport === "backup") {
+      emailHandler.sendDatabaseBackupResultsNotification(status, logs);
+    }
+    if (backupOrImport === "import") {
+      emailHandler.sendDatabaseImportResultsNotification(status, logs);
+    }
   }
 }
 
-const updateBackupImportStatus = async (backupOrImport, successOrUnsuccess) => {
-  if (backupOrImport == "backup") {
-    await jsonHandler.updateBackupDetails(successOrUnsuccess);
-  }
-  if (backupOrImport == "import") {
-    await jsonHandler.updateImportDetails(successOrUnsuccess);
+function updateBackupImportStatus(backupOrImport, successOrUnsuccess) {
+  if (prodStatus === "true") {
+    if (backupOrImport === "backup") {
+      jsonHandler.updateBackupDetails(successOrUnsuccess);
+    }
+    if (backupOrImport === "import") {
+      jsonHandler.updateImportDetails(successOrUnsuccess);
+    }
   }
 }
 
