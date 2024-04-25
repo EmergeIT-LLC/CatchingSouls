@@ -68,7 +68,7 @@ function updateBackupDetails(successfulCompletion) {
         }
         
         let jsonData = JSON.parse(data);
-        jsonData.backupDetail.executionDate = convertedDate + " EST";
+        jsonData.backupDetail.executionDate = convertedDate;
         jsonData.backupDetail.successfulCompletion = successfulCompletion;
         
         fs.writeFile(backupImportInfoPath, JSON.stringify(jsonData, null, 2), (err) => {
@@ -90,7 +90,7 @@ function updateImportDetails(successfulCompletion) {
         }
         
         let jsonData = JSON.parse(data);
-        jsonData.importDetail.executionDate = convertedDate + " EST";
+        jsonData.importDetail.executionDate = convertedDate;
         jsonData.importDetail.successfulCompletion = successfulCompletion;
         
         fs.writeFile(backupImportInfoPath, JSON.stringify(jsonData, null, 2), (err) => {
