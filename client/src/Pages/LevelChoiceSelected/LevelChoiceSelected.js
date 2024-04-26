@@ -34,7 +34,7 @@ const LevelChoiceSelected = () => {
     const [answerC, setAnswerC] = useState(null);
     const [answerD, setAnswerD] = useState(null);
     //Answer Selection
-    const [selectedAnswer, setSelectedAnser] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(false);
     const [checkingAnswer, setCheckingAnswer] = useState(false);
     const [answerCorrect, setAnswerCorrect] = useState(true);
     //Additional
@@ -99,7 +99,7 @@ const LevelChoiceSelected = () => {
             SelectedLevel : {SelectedLevel}
         })
         .then((response) => {
-            if (response.data.questionType == "TrueOrFalse"){
+            if (response.data.questionType === "TrueOrFalse"){
                 setIsTrueFalse(true)
             }
             else {
@@ -125,12 +125,12 @@ const LevelChoiceSelected = () => {
 
     const checkSelectedAnswer = async (selectedAnswerChoice) => {
         setTimer(null);
-        setSelectedAnser(true);
+        setSelectedAnswer(true);
         setCheckingAnswer(true);
 
-        if(selectedAnswerChoice == null){
+        if(selectedAnswerChoice === null){
             setCheckingAnswer(false);
-            return setAnswerCorrect(false);
+            setAnswerCorrect(false);
         }
 
         const url = process.env.REACT_APP_Backend_URL + '/trivia/checkanswer';
@@ -141,24 +141,23 @@ const LevelChoiceSelected = () => {
             loggedInUser : loggedInUser
         })
         .then((response) => {
-            if(response.data.results == "true"){
+            if(response.data.results === "true"){
                 setAnswerCorrect(true)
                 if (guestLoggedIn) {
                     let currentPoints = parseInt(sessionStorage.getItem('catchingSoulsGuestPoints'));
                     
-                    if (SelectedLevel == "Beginner"){
+                    if (SelectedLevel === "Beginner"){
                         currentPoints += 1;
                     }
-                    else if (SelectedLevel == "Intermediate"){
+                    else if (SelectedLevel === "Intermediate"){
                         currentPoints += 2;
                     }
-                    else if (SelectedLevel == "Advance"){
+                    else if (SelectedLevel === "Advance"){
                         currentPoints += 3;
                     }
                     else {
                         currentPoints += 0;
                     }
-                    
                     sessionStorage.setItem('catchingSoulsGuestPoints', currentPoints);
                 }
             }
@@ -178,7 +177,7 @@ const LevelChoiceSelected = () => {
         getPlayerPoints();
         getTiviaQandA();
         setTimerLimit();
-        setSelectedAnser(false);
+        setSelectedAnswer(false);
     }
 
     const leaveTrivia = () => {

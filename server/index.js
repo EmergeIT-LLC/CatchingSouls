@@ -4,7 +4,7 @@ const jsonHandler = require('./functions/jsonHandler');
 const host = process.env.HOST;
 const port = process.env.PORT;
 const prodStatus = process.env.IN_PROD;
-const allowedOrigin = process.env.ClientHost;
+const clientOrigin = process.env.ClientHost;
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -16,7 +16,7 @@ if (prodStatus === "true") {
 }
 
 // Use the cors middleware with specific configuration options
-app.use(cors({origin: allowedOrigin}));
+app.use(cors({origin: clientOrigin}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // Redirect only if it's a 404 error
   if (err.status === 404) {
-    res.redirect(process.env.ClientHost);
+    res.redirect(clientOrigin);
   } else {
     // For other errors, handle as needed
     // For example, you can send an error response

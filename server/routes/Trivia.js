@@ -116,7 +116,6 @@ router.post('/checkanswer', async (req, res) => {
                 else if (triviaQAAsked[0].trivialevel === "Advance") {
                     pointsToAward = 3;
                 }
-                
                 if (loggedUser !== "Guest"){
                     //Locate User or admin to update
                     const loggedInUser = await userQueries.locateVerifiedUserData(loggedUser);
