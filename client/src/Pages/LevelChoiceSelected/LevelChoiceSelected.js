@@ -45,7 +45,7 @@ const LevelChoiceSelected = () => {
         setIsLoading(true);
         if (userLoggedIn || guestLoggedIn){
             getPlayerPoints();
-            getTiviaQandA();
+            getTriviaQandA();
             setTimerLimit();
             setIsLoading(false);
         }
@@ -91,7 +91,7 @@ const LevelChoiceSelected = () => {
         }
     }
 
-    const getTiviaQandA = async () => {
+    const getTriviaQandA = async () => {
         setIsLoading(true);
         const url = process.env.REACT_APP_Backend_URL + '/trivia/retrievequestion';
                 
@@ -175,7 +175,7 @@ const LevelChoiceSelected = () => {
 
     const nextQuestion = () => {
         getPlayerPoints();
-        getTiviaQandA();
+        getTriviaQandA();
         setTimerLimit();
         setSelectedAnswer(false);
     }

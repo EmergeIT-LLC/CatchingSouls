@@ -244,7 +244,7 @@ async function removeAdminFromRecovery(username) {
 
 async function updateAdminPoints(updatedPoints, loggedUser) {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser], function (err) {
+        db.run('UPDATE adminUsers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
