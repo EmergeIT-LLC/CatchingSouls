@@ -5,16 +5,10 @@ const host = process.env.HOST;
 const port = process.env.PORT;
 const prodStatus = process.env.IN_PROD;
 const clientOrigin = process.env.ClientHost;
-const amplifyOrigin = process.env.AmplifyHost;
 const cors = require('cors');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
-
-const allowedOrigins = [
-  clientOrigin,
-  amplifyOrigin
-];
 
 app.use(cors());
 app.use(express.json());
@@ -52,12 +46,7 @@ app.use((err, req, res, next) => {
   // For 404 errors, send a 404 response
   if (err.status === 404) {
     res.redirect(clientOrigin);
-  } else {
-    // Set CORS headers to allow requests from the allowed origins
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    res.header("Access-Control-Allow-Origin", allowedOrigins.join(', ')); // Use your environment variable for the allowed origin
-    res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
-  
+  } else {  
     // For other errors, send 500 error response
     res.status(err.status || 500).send(err.message || 'Internal Server Error');
   }
