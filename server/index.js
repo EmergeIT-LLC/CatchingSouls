@@ -16,9 +16,7 @@ const allowedOrigins = [
   amplifyOrigin
 ];
 
-app.use(cors({origin: allowedOrigins,
-  optionsSuccessStatus: 200
-}));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 

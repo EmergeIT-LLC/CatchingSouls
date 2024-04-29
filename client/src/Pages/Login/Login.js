@@ -40,20 +40,11 @@ const Login = () => {
             setIsLoading(true);
         }
 
-        // Define custom headers
-        const headers = {
-            'Content-Type': 'application/json',
-            // You can add more headers here if needed
-        };
-
         const url = process.env.REACT_APP_Backend_URL + '/user/login';
 
         await Axios.post(url, {
         username: username,
         password: password,
-        },
-        {
-            headers: headers
         })
         .then((response) => {
             setIsLoading(false);

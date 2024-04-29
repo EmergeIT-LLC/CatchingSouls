@@ -52,5 +52,6 @@ window.env = {
   "npm_node_execpath": "/usr/local/bin/node",
   "npm_config_prefix": "/usr/local",
   "COLORTERM": "truecolor",
-  "REACT_APP_Backend_URL": "http://localhost:3001"
+  "REACT_APP_Backend_URL": "http://localhost:3001",
+  "REACT_APP_Client_URL": "http://localhost:3000"
 };
