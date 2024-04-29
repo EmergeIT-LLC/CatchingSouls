@@ -10,15 +10,15 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+// Use the cors middleware with specific configuration options
+app.use(cors({}));
+app.use(express.json());
+app.use(cookieParser());
+
 if (prodStatus === "true") {
   jsonHandler.testJson();
   AWS_S3_Bucket_Handler.importBackupFromS3();
 }
-
-// Use the cors middleware with specific configuration options
-app.use(cors({origin: clientOrigin}));
-app.use(express.json());
-app.use(cookieParser());
 
 // Define your routes before the middleware for handling 404 errors
 // Define your root route
@@ -49,8 +49,7 @@ app.use((err, req, res, next) => {
   if (err.status === 404) {
     res.redirect(clientOrigin);
   } else {
-    // For other errors, handle as needed
-    // For example, you can send an error response
+    // For other errors, send 500 error response
     res.status(err.status || 500).send(err.message || 'Internal Server Error');
   }
 });
