@@ -5,13 +5,20 @@ const host = process.env.HOST;
 const port = process.env.PORT;
 const prodStatus = process.env.IN_PROD;
 const clientOrigin = process.env.ClientHost;
+const amplifyOrigin = process.env.AmplifyHost;
+const cors = require('cors');
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-// Use the cors middleware with specific configuration options
-app.use(cors({}));
+const allowedOrigins = [
+  clientOrigin,
+  amplifyOrigin
+];
+
+app.use(cors({origin: allowedOrigins,
+  optionsSuccessStatus: 200
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -21,7 +28,6 @@ if (prodStatus === "true") {
 }
 
 // Define your routes before the middleware for handling 404 errors
-// Define your root route
 app.get('/', (req, res) => {
   res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + "...")
 });
@@ -43,12 +49,17 @@ app.use((req, res, next) => {
   next(error);
 });
 
-// Middleware for handling errors
+// Middleware for handling errors and setting CORS headers
 app.use((err, req, res, next) => {
-  // Redirect only if it's a 404 error
+  // For 404 errors, send a 404 response
   if (err.status === 404) {
     res.redirect(clientOrigin);
   } else {
+    // Set CORS headers to allow requests from the allowed origins
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Origin", allowedOrigins.join(', ')); // Use your environment variable for the allowed origin
+    res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
+  
     // For other errors, send 500 error response
     res.status(err.status || 500).send(err.message || 'Internal Server Error');
   }
