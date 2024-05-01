@@ -50,6 +50,7 @@ const AdminToolsManageDatabase = () => {
             setBackupExecutionResults(response.data.BackupImportInfo.backupDetail.successfulCompletion);
             setImportExecutionDate(response.data.BackupImportInfo.importDetail.executionDate);
             setImportExecutionResults(response.data.BackupImportInfo.importDetail.successfulCompletion);
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
             setIsLoading(false);
