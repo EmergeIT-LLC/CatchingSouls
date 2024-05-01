@@ -43,62 +43,62 @@ const AdminToolsManageDatabase = () => {
     const gatherBackupImportInfo = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/BackupImportInfo';
 
-        await Axios.post(url)
-        .then((response) =>  {
+        try {
+            const response = await Axios.post(url);
             setBackupExecutionDate(response.data.BackupImportInfo.backupDetail.executionDate);
             setBackupExecutionResults(response.data.BackupImportInfo.backupDetail.successfulCompletion);
             setImportExecutionDate(response.data.BackupImportInfo.importDetail.executionDate);
             setImportExecutionResults(response.data.BackupImportInfo.importDetail.successfulCompletion);
-        })
-        .catch((error) => {
+        } catch (error) {
             console.log(error);
-        })
+        }
     }
-    
-    const backupDB = async () => {
+
+    const backupDB = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseBackup';
 
-        await Axios.post(url)
-        .then((response) =>  {
+        try {
+            const response = await Axios.post(url);
             console.log(response.data.message);
-        })
-        .catch((error) => {
+            gatherBackupImportInfo(); // Refresh info after backup
+        } catch (error) {
             console.log(error);
-        })
+        }
     }
 
-    const importDB = async () => {
+    const importDB = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseImport';
 
-        await Axios.post(url)
-        .then((response) =>  {
+        try {
+            const response = await Axios.post(url);
             console.log(response.data.message);
-        })
-        .catch((error) => {
+            gatherBackupImportInfo(); // Refresh info after import
+        } catch (error) {
             console.log(error);
-        })
+        }
     }
+
     return (
         <>
-            <Header/>
+            <Header />
             <div className='adminToolsManageDatabasePage_container'>
                 <form className='adminToolsManageDatabase_form'>
                     {isLoading ?
-                    <>
-                        <h1>Loading...</h1>
-                    </>
+                        <>
+                            <h1>Loading...</h1>
+                        </>
                         :
-                    <>
-                        <h1>Would you like to backup or import?</h1>
-                        <h2>Import execution was {importExecutionResults}, as of {importExecutionDate}</h2>
-                        <h2>Backup execution was {backupExecutionResults}, as of {backupExecutionDate}</h2>
-                        <button className='adminToolsManageDatabaseButton' onClick={() => importDB()}>Import Database Table</button>
-                        <button className='adminToolsManageDatabaseButton' onClick={() => backupDB()}>Backup Database Table</button>
+                        <>
+                            <h1>Would you like to backup or import?</h1>
+                            <h2>Import execution was {importExecutionResults}, as of {importExecutionDate}</h2>
+                            <h2>Backup execution was {backupExecutionResults}, as of {backupExecutionDate}</h2>
+                            <button className='adminToolsManageDatabaseButton' onClick={() => importDB()}>Import Database Table</button>
+                            <button className='adminToolsManageDatabaseButton' onClick={() => backupDB()}>Backup Database Table</button>
                         </>
                     }
                 </form>
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 }
