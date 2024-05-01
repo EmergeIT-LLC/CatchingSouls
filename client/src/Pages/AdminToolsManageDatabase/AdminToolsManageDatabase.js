@@ -55,8 +55,7 @@ const AdminToolsManageDatabase = () => {
         })
     }
     
-    const backupDB = async (e) => {
-        e.PreventDefault();
+    const backupDB = async () => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseBackup';
 
         await Axios.post(url)
@@ -68,8 +67,7 @@ const AdminToolsManageDatabase = () => {
         })
     }
 
-    const importDB = async (e) => {
-        e.PreventDefault();
+    const importDB = async () => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseImport';
 
         await Axios.post(url)

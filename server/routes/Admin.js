@@ -244,7 +244,7 @@ router.post('/adminTool/DatabaseBackup', async (req, res) => {
 router.post('/adminTool/DatabaseImport', async (req, res) => {
   try {
     AWS_S3_Bucket_Handler.importBackupFromS3();
-    return res.json({ executionStatus: "Successful", message: 'Database backup has begun...'});
+    return res.json({ executionStatus: "Successful", message: 'Database import has begun...'});
   }
   catch (error) {
     return res.json({ executionStatus: "Unsuccessful", message: 'An Error Occured!'});
