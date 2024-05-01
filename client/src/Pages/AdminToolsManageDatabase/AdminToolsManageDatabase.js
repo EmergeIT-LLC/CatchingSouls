@@ -65,6 +65,7 @@ const AdminToolsManageDatabase = () => {
             const response = await Axios.post(url);
             console.log(response.data.message);
             gatherBackupImportInfo(); // Refresh info after backup
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
             setIsLoading(false);
@@ -79,6 +80,7 @@ const AdminToolsManageDatabase = () => {
             const response = await Axios.post(url);
             console.log(response.data.message);
             gatherBackupImportInfo(); // Refresh info after import
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
             setIsLoading(false);
