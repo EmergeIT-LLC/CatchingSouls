@@ -42,7 +42,7 @@ const AdminToolsManageTriviaAdd = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (question == null || answer == null || selectQAType == "null" || selectDifficulty == "null"){
+        if (question === null || answer === null || selectQAType === "null" || selectDifficulty === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         
@@ -58,20 +58,20 @@ const AdminToolsManageTriviaAdd = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.uploadStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageTriviaQuestions`);
             }
             else if (response.data.uploadStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Question upload failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 

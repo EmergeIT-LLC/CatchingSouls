@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Logout.css'
 //Components
 import companyLogo from '../../Images/Logo_Transparent.png';
@@ -10,14 +10,17 @@ import {CheckUserLogin, CheckGuestLogin} from '../../Functions/VerificationCheck
 import Axios from 'axios';
 
 const Logout = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
 
     const logout = async () => {
         const url = process.env.REACT_APP_Backend_URL + '/user/logout';
+        setIsLoading(true);
 
         await Axios.post(url)
         .then((response) => {
             setStatusMessage(response.data.message);
+            setIsLoading(false);
         });
     }
 

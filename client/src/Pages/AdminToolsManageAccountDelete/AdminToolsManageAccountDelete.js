@@ -37,7 +37,7 @@ const AdminToolsManageAccountDelete = () => {
         else if (!isAdmin) {
             navigate('/');
         }
-        else if (AccountUsername.toLowerCase() == SelectedAdmin.toLowerCase()) {
+        else if (AccountUsername.toLowerCase() === SelectedAdmin.toLowerCase()) {
             navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`);
         }
         else {

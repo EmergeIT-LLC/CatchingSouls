@@ -40,11 +40,13 @@ const AdminToolsManageAccountDetail = () => {
             navigate('/');
         }
         else {
+            setIsLoading(true);
             getSelectedAdminProps();
 
-            if (AccountUsername.toLowerCase() == SelectedAdmin.toLowerCase()) {
+            if (AccountUsername.toLowerCase() === SelectedAdmin.toLowerCase()) {
                 setShowButtons(false);
             }
+            setIsLoading(false);
         }
     }, [userLoggedIn]);
 
@@ -61,6 +63,7 @@ const AdminToolsManageAccountDetail = () => {
         })
         .catch((error) => {
             console.log(error);
+            setIsLoading(false);
         })
     }
 

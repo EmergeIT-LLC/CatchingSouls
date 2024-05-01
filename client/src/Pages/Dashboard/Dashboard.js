@@ -30,6 +30,7 @@ const Dashboard = () => {
             });
         }
         else {
+            setIsLoading(true);
             if (guestLoggedIn) {
                 setFirstName("Guest")
             }
@@ -38,6 +39,7 @@ const Dashboard = () => {
                 loggedInUserData.then(res => setLastName(res.data.accountLastName));
             }
         }
+        setIsLoading(false);
     }, [userLoggedIn, guestLoggedIn]);
 
     return (

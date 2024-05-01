@@ -56,7 +56,7 @@ const Login = () => {
                     localStorage.setItem('catchingSoulsAdmin', true);
                 }
 
-                if (location.state == null) {
+                if (location.state === null) {
                     navigate('/');
                 }
                 else if (location.state.previousUrl !== location.pathname){
@@ -68,6 +68,7 @@ const Login = () => {
         })
         .catch((error) => {
             console.error("Axios network error:", error);
+            setIsLoading(false);
         });
     }
 

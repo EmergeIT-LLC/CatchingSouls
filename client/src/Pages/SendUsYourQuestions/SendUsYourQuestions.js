@@ -22,7 +22,7 @@ const SendUsYourQuestions = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (firstName == null || lastName == null || email == null){
+        if (firstName === null || lastName === null || email === null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (CheckEmail(email) === false){
@@ -42,17 +42,17 @@ const SendUsYourQuestions = () => {
         })
         .then((response) => {
             if (response.data.successStatus === "Successful") {
-                setIsLoading(false);
                 setStatusMessage("Question Sent Successfully");
+                setIsLoading(false);
             }
             else if (response.data.successStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("An error occurred");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
       

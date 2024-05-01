@@ -63,7 +63,7 @@ const AdminToolsManageTriviaUpdate = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (question == null || answer == null || selectQAType == "null" || selectDifficulty == "null"){
+        if (question === null || answer === null || selectQAType === "null" || selectDifficulty === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         
@@ -80,20 +80,20 @@ const AdminToolsManageTriviaUpdate = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.updateStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`);
             }
             else if (response.data.updateStatus === "Successful") {
-                setIsLoading(false);
                 setStatusMessage("Update failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 

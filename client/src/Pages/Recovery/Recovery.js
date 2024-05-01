@@ -36,12 +36,13 @@ const Recovery = () => {
         username: username,
         })
         .then((response) => {
-            setIsLoading(false);
             if (response.data.message){
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else {
                 setStatusMessage('Verification Email Sent!');
+                setIsLoading(false);
                 setCount(3);           
                 setRedirect(true);
             }

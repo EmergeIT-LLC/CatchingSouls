@@ -26,7 +26,7 @@ const AccountVerification = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            if (response.data.foundAccount == true){
+            if (response.data.foundAccount === true){
                 setFoundAccount(true);
                 verifyUserAccount();
             }
@@ -41,7 +41,7 @@ const AccountVerification = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            if (response.data.Verified == true) {
+            if (response.data.Verified === true) {
                 setVerified(true);
             }
         })

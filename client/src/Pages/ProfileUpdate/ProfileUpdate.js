@@ -59,22 +59,22 @@ const ProfileUpdate = () => {
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (CheckEmail(email) == false){
+        else if (CheckEmail(email) === false){
             return setStatusMessage("Email Is Not Acceptable");
         } else if (password != null){
-            if (newPassword == null || confirmNewPassword == null){
+            if (newPassword === null || confirmNewPassword === null){
                 return setStatusMessage("All Password fields must be filled in!");
             }
             else if (newPassword !== confirmNewPassword){
                 return setStatusMessage("Password and confirm password does not match!");
             }
-            else if (CheckPassword(password) == false){
+            else if (CheckPassword(password) === false){
                 return setStatusMessage("Current Password Is Incorrect");
             }    
-            else if (CheckPassword(newPassword) == false){
+            else if (CheckPassword(newPassword) === false){
                 return setStatusMessage("New Password Is Not Acceptable");
             }    
-        } else if (password != null && newPassword == null || password != null && confirmNewPassword == null){
+        } else if (password != null && newPassword === null || password != null && confirmNewPassword === null){
             return setStatusMessage("All Password fields must be filled in!");
         }
 
@@ -92,20 +92,20 @@ const ProfileUpdate = () => {
         .then((response) => {
             console.log(response.data)
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.updateStatus === "Successful") {
                 navigate(`/Profile/${loggedInUser}`);
             }
             else if (response.data.updateStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Update failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 

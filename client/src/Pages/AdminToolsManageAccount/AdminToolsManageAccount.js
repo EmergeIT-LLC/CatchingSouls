@@ -36,8 +36,10 @@ const AdminToolsManageAccount = () => {
             navigate('/');
         }
         else {
+            setIsLoading(true);
             getVerifiedListProps();
             getUnverifiedListProps();
+            setIsLoading(false);
         }
     }, [userLoggedIn]);
     

@@ -45,7 +45,7 @@ const AdminToolsManageAccountAdd = () => {
 
     const submitForm = (e) => {
         e.PreventDefault();
-        if (firstName == null || lastName == null || email == null || confirmEmail == null || selectRole == "null"){
+        if (firstName === null || lastName === null || email === null || confirmEmail === null || selectRole === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (email !== confirmEmail){
@@ -66,23 +66,23 @@ const AdminToolsManageAccountAdd = () => {
         })
         .then((response) => {
             if (response.data.message === "User needs to check email to verify account"){
-                setIsLoading(false);
                 setStatusMessage("User Is Already In Verification Stage!");
+                setIsLoading(false);
                 setTimeout(() => {
                     navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
                 }, 2000);
             }
             else if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else {
                 navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 

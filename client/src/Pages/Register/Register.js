@@ -23,7 +23,7 @@ const Register = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (firstName == null || lastName == null || username == null || email == null || confirmEmail == null || password == null || confirmPassword == null){
+        if (firstName === null || lastName === null || username === null || email === null || confirmEmail === null || password === null || confirmPassword === null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (CheckUsername(username) === false){
@@ -54,20 +54,20 @@ const Register = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.registerStatus === "Successful") {
                 navigate('/Login');
             }
             else if (response.data.registerStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("An error occurred");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
       

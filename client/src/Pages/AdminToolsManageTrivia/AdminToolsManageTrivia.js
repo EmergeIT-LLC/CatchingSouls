@@ -41,13 +41,16 @@ const AdminToolsManageTrivia = () => {
 
     const getTriviaProps = async () => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/TriviaRetrieval';
-        
+        setIsLoading(true);
+
         await Axios.post(url)
         .then((response) =>  {
             setTriviaData(response.data);
+            setIsLoading(false);
         })
         .catch((error) => {
             console.log(error);
+            setIsLoading(false);
         })
     };
 

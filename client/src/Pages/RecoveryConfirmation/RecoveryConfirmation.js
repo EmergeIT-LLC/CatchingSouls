@@ -49,13 +49,13 @@ const RecoveryConfirmation = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (password == null || confirmPassword == null){
+        if (password === null || confirmPassword === null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (password !== confirmPassword){
             return setStatusMessage("Password and confirm password does not match!");
         }
-        else if (CheckPassword(password) == false){
+        else if (CheckPassword(password) === false){
             return setStatusMessage("Password Is Not Acceptable");
         }
 
@@ -68,20 +68,20 @@ const RecoveryConfirmation = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.recoveryStatus === "Successful") {
                 navigate('/Login');
             }
             else if (response.data.recoveryStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Recovery failed");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             console.log(error);
+            setIsLoading(false);
         });
     };
 

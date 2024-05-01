@@ -42,6 +42,7 @@ const AdminToolsManageDatabase = () => {
 
     const gatherBackupImportInfo = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/BackupImportInfo';
+        setIsLoading(true);
 
         try {
             const response = await Axios.post(url);
@@ -51,11 +52,13 @@ const AdminToolsManageDatabase = () => {
             setImportExecutionResults(response.data.BackupImportInfo.importDetail.successfulCompletion);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const backupDB = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseBackup';
+        setIsLoading(true);
 
         try {
             const response = await Axios.post(url);
@@ -63,11 +66,13 @@ const AdminToolsManageDatabase = () => {
             gatherBackupImportInfo(); // Refresh info after backup
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
     const importDB = async() => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/DatabaseImport';
+        setIsLoading(true);
 
         try {
             const response = await Axios.post(url);
@@ -75,6 +80,7 @@ const AdminToolsManageDatabase = () => {
             gatherBackupImportInfo(); // Refresh info after import
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 

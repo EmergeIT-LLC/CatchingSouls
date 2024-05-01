@@ -65,20 +65,20 @@ const AdminToolsManageTriviaDelete = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.deleteStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`);
             }
             else if (response.data.deleteStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Deletion failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 

@@ -43,7 +43,7 @@ const AdminToolsManageAccountUpdate = () => {
         else if (!isAdmin) {
             navigate('/');
         }
-        else if (AccountUsername.toLowerCase() == SelectedAdmin.toLowerCase()) {
+        else if (AccountUsername.toLowerCase() === SelectedAdmin.toLowerCase()) {
             navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`);
         }
         else {
@@ -56,10 +56,10 @@ const AdminToolsManageAccountUpdate = () => {
         if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (CheckEmail(email) == false){
+        else if (CheckEmail(email) === false){
             return setStatusMessage("Email Is Not Acceptable");
         }
-        else if (selectRole == "null"){
+        else if (selectRole === "null"){
             return setStatusMessage("Please Select A Role");
         }
 
@@ -75,20 +75,20 @@ const AdminToolsManageAccountUpdate = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.updateStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`);
             }
             else if (response.data.updateStatus === "Successful") {
-                setIsLoading(false);
                 setStatusMessage("Update Failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             console.log(error);
+            setIsLoading(false);
         });
     };
 

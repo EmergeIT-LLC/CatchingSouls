@@ -33,7 +33,6 @@ const ProfileDelete = () => {
             if (isAdmin){
                 navigate(`/Profile/${username}`);
             }
-
             setIsLoading(false);
         }
         else if (AccountUsername.toLowerCase() !== loggedInUser.toLowerCase()) {
