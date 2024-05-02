@@ -1,7 +1,5 @@
 const fs = require('fs');
-const backupImportInfoPath = './config/database/backupImportInfo.json'
-const currentDate = new Date();
-const convertedDate = currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' });;
+const backupImportInfoPath = './config/database/backupImportInfo.json';
 
 function testJson () {
     // Read the JSON file
@@ -60,6 +58,8 @@ const getImportInfo = () => {
 };
 
 function updateBackupDetails(successfulCompletion) {
+    const currentDate = new Date();
+    const convertedDate = currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' });
     // Read the JSON file
     fs.readFile(backupImportInfoPath, 'utf8', (err, data) => {
         if (err) {
@@ -68,7 +68,7 @@ function updateBackupDetails(successfulCompletion) {
         }
         
         let jsonData = JSON.parse(data);
-        jsonData.backupDetail.executionDate = convertedDate;
+        jsonData.backupDetail.executionDate = convertedDate + " EST";
         jsonData.backupDetail.successfulCompletion = successfulCompletion;
         
         fs.writeFile(backupImportInfoPath, JSON.stringify(jsonData, null, 2), (err) => {
@@ -82,6 +82,8 @@ function updateBackupDetails(successfulCompletion) {
 }
 
 function updateImportDetails(successfulCompletion) {
+    const currentDate = new Date();
+    const convertedDate = currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' });
     // Read the JSON file
     fs.readFile(backupImportInfoPath, 'utf8', (err, data) => {
         if (err) {
@@ -90,7 +92,7 @@ function updateImportDetails(successfulCompletion) {
         }
         
         let jsonData = JSON.parse(data);
-        jsonData.importDetail.executionDate = convertedDate;
+        jsonData.importDetail.executionDate = convertedDate + " EST";
         jsonData.importDetail.successfulCompletion = successfulCompletion;
         
         fs.writeFile(backupImportInfoPath, JSON.stringify(jsonData, null, 2), (err) => {
