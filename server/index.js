@@ -73,7 +73,8 @@ app.use((err, req, res, next) => {
   
   // Check if it's a 404 error
   if (err.status && err.status === 404) {
-    res.status(404).send('404 Page Not Found');
+    //res.status(404).send('404 Page Not Found');
+    res.redirect(clientOrigin);
   } else if (err.status) {  
     // For other errors with status codes, send corresponding error response
     res.status(err.status).send(err.message || 'Internal Server Error');
