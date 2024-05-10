@@ -1,5 +1,9 @@
 const fs = require('fs');
+<<<<<<< Updated upstream
 const backupImportInfoPath = './config/database/backupImportInfo.json';
+=======
+const backupImportInfoPath = './config/database/backupImportInfo.json'
+>>>>>>> Stashed changes
 
 function testJson () {
     // Read the JSON file

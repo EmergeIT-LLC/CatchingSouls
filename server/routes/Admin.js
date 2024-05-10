@@ -3,6 +3,7 @@ const router = express.Router();
 const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const triviaQueries = require('../config/database/storedProcedures/triviaStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
+const cookieMonster = require('../config/cookies/cookieHandler');
 const AWS_S3_Bucket_Handler = require('../config/aws/s3Handler');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
@@ -15,7 +16,6 @@ function requireAuth(req, res, next) {
     res.json({ message: 'Unauthorized' });
   }
 }
-
 // Example usage to protect a route
 router.get('/adminprotected', requireAuth, (req, res) => {
   res.json({ message: 'This is a protected route' });

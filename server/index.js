@@ -10,6 +10,7 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
+let prodHost = process.env.HOST + ":" + process.env.PORT;
 
 // Define allowed origins
 const allowedOrigins = [clientOrigin, amplifyOrigin];
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 if (prodStatus === "true") {
+  prodHost = host;
   jsonHandler.testJson();
   AWS_S3_Bucket_Handler.importBackupFromS3();
 }
@@ -44,7 +46,7 @@ const setHeadersForAllowedRoutes = (req, res, next) => {
 
 // Define your routes before the middleware for handling 404 errors
 app.get('/', (req, res) => {
-  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + host + "...")
+  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + prodHost + "...");
 });
 
 // Define other routes here (userRoute, adminRoute, triviaRoute, etc.)
@@ -70,12 +72,17 @@ app.use((err, req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins.join(', '));
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   // Check if it's a 404 error
   if (err.status && err.status === 404) {
+<<<<<<< Updated upstream
     //res.status(404).send('404 Page Not Found');
     res.redirect(clientOrigin);
   } else if (err.status) {  
+=======
+    res.redirect(host + '/PageNotFound');
+  } else if (err.status) {
+>>>>>>> Stashed changes
     // For other errors with status codes, send corresponding error response
     res.status(err.status).send(err.message || 'Internal Server Error');
   }

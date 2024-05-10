@@ -4,6 +4,7 @@ const router = express.Router();
 const userQueries = require('../config/database/storedProcedures/userStoredProcedures');
 const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
 const emailHandler = require('../config/email/emailTemplate');
+const cookieMonster = require('../config/cookies/cookieHandler');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
@@ -133,6 +134,7 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
+        cookieMonster.setCookie('csAuthServices', username.toLowerCase());
         return res.json({ loggedIn: true, username: username.toLowerCase() });
       }
       else {
@@ -159,6 +161,7 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
+        cookieMonster.setCookie('csAuthServices', username.toLowerCase());
         return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true });
       }
       else {

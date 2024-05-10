@@ -3,6 +3,7 @@ const router = express.Router();
 const triviaQueries = require('../config/database/storedProcedures/triviaStoredProcedures');
 const userQueries = require('../config/database/storedProcedures/userStoredProcedures');
 const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
+const cookieMonster = require('../config/cookies/cookieHandler');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 function setTriviaType(triviaTypeSelection) {
     switch(triviaTypeSelection){
