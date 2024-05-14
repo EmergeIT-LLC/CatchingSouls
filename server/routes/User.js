@@ -134,8 +134,8 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        cookieMonster.setCookie('csAuthServices', username.toLowerCase());
-        return res.json({ loggedIn: true, username: username.toLowerCase() });
+        let cookieSettings = cookieMonster.setCookie('csAuthServices-' + username.toLowerCase(), username.toLowerCase());
+        return res.json({ loggedIn: true, username: username.toLowerCase(), cookieSetting: cookieSettings});
       }
       else {
         return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
@@ -161,8 +161,8 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        cookieMonster.setCookie('csAuthServices', username.toLowerCase());
-        return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true });
+        let cookieSettings = cookieMonster.setCookie('csAuthServices-' + username.toLowerCase(), username.toLowerCase());
+        return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true, cookieSetting: cookieSettings });
       }
       else {
         return res.json({ loggedIn: false, message: 'Account Does Not Exist or Password Is Incorrect!' });
@@ -176,7 +176,8 @@ router.post('/login', async (req, res) => {
   }
 });
 router.post('/logout', async (req, res) => {
-  return res.json({ loggedIn: false, message: 'Logged out' });
+  let cookieSettings = cookieMonster.deleteCookie('csAuthServices-' + username.toLowerCase())
+  return res.json({ loggedIn: false, message: 'Logged out', cookieSetting: cookieSettings });
 });
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
 //Get Account Profile Information
