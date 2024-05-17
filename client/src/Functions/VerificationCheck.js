@@ -47,10 +47,10 @@ export const GetUserProps = async () => {
             const url = process.env.REACT_APP_Backend_URL + '/user/accountDetail_retrieval';
             const response = await Axios.post(url, { username: CheckUser() });
 
-            if (response.data.cookieSettings) {
-                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            if (response.data.cookieSetting) {
+                CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
             }
-    
+
             return response; // Assuming your response contains the data you're interested in
         }
     } catch (error) {
@@ -76,8 +76,8 @@ export const GetUserVerificationProps = async (AccountUsername) => {
         const url = process.env.REACT_APP_Backend_URL + '/user/accountDetail_retrieval';
         const response = await Axios.post(url, { username: AccountUsername });
 
-        if (response.data.cookieSettings) {
-            CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+        if (response.data.cookieSetting) {
+            CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
         }
 
         return response; // Assuming your response contains the data you're interested in

@@ -164,12 +164,12 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username);
 
     if (locateAdminUser.length > 0) {
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       return res.json({user: locateAdminUser[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin.length > 0) {
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       return res.send({user: locateUnverifiedAdmin[0], cookieSetting: cookieSettings});
     }
@@ -192,7 +192,7 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
     if (locateAdminUser) {
       const updateStatus = await adminQueries.updateVerifiedAdminAccount(firstName, lastName, email, role, username);
       if (updateStatus) {
-        let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+        let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
         return res.json({updateStatus: "Successful", cookieSetting: cookieSettings});
       }
@@ -201,7 +201,7 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
     else if (locateUnverifiedAdmin) {
       const updateStatus = await adminQueries.updateUnverifiedAdminAccount(firstName, lastName, email, role, username);
       if (updateStatus) {
-        let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+        let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
         return res.json({updateStatus: "Successful", cookieSetting: cookieSettings});
       }
@@ -222,7 +222,7 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
     
     if (locateAdminUser) {
       const deleteStatus = await adminQueries.removeVerifiedAdminUsername(username);
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       if (deleteStatus) {
         return res.json({deleteStatus: "Successful", cookieSetting: cookieSettings});
@@ -231,7 +231,7 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
     }
     else if (locateUnverifiedAdmin) {
       const deleteStatus = await adminQueries.removeUnverifiedAdminUsername(username);
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       if (deleteStatus) {
         return res.json({deleteStatus: "Successful", cookieSetting: cookieSettings});

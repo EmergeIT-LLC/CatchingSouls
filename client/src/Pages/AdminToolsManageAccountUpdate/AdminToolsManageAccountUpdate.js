@@ -109,8 +109,8 @@ const AdminToolsManageAccountUpdate = () => {
             setConfirmEmail(response.data.user.accountEmail);
             setSelectRole(response.data.user.accountRole)
             
-            if (response.data.cookieSettings) {
-                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            if (response.data.cookieSetting) {
+                CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
             }
         })
         .catch((error) => {

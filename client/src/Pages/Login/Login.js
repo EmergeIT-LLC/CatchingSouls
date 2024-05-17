@@ -56,11 +56,9 @@ const Login = () => {
                 if (response.data.isAdmin){
                     localStorage.setItem('catchingSoulsAdmin', true);
                 }
-
-                if (response.data.cookieSettings) {
-                    CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
-                }
-
+                if (response.data.cookieSetting) {
+                    CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
+                }        
                 if (location.state === null) {
                     navigate('/');
                 }

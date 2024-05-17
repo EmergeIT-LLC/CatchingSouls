@@ -34,7 +34,6 @@ const setCookie = async (res, name, options = {}) => {
         if (Array.isArray(domain)) {
             domain.forEach((domainItem) => {
                 res.cookie(name, randomValue, { ...cookieOptions, domain: domainItem });
-                console.log(`Cookie set: ${name}=${randomValue}; Domain=${domainItem}`);
             });
         } else {
             res.cookie(name, randomValue, cookieOptions);

@@ -191,19 +191,19 @@ router.post('/accountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateUser.length > 0){
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
       return res.json({user: locateUser[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedUser.length > 0){
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
       return res.json({user: locateUnverifiedUser[0], cookieSetting: cookieSettings});
     }
     else if (locateAdmin.length > 0){
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
       return res.json({user: locateAdmin[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin.length > 0){
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
       return res.json({user: locateUnverifiedAdmin[0], cookieSetting: cookieSettings});
     }
   }
@@ -236,7 +236,7 @@ router.post('/account_Update', async (req, res) => {
               else {
                 const userUpdateStatus = await userQueries.updateUserAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (userUpdateStatus){
-                  let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+                  let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
                   return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
                 }
                 return res.json({ updateStatus: 'Unsuccessful'});
@@ -251,7 +251,7 @@ router.post('/account_Update', async (req, res) => {
       else {
         const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (userUpdateStatus){
-          let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+          let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
           return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
         }
         return res.json({ updateStatus: 'Unsuccessful'});
@@ -268,7 +268,7 @@ router.post('/account_Update', async (req, res) => {
               else {          
                 const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (adminUpdateStatus){
-                  let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+                  let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
                   return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
                 }
                 return res.json({ updateStatus: 'Unsuccessful'});
@@ -283,7 +283,7 @@ router.post('/account_Update', async (req, res) => {
       else {
         const adminUpdateStatus = await adminQueries.updateAdminAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (adminUpdateStatus){
-          let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+          let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
           return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
         }
         return res.json({ updateStatus: 'Unsuccessful'});
@@ -302,7 +302,7 @@ router.post('/account_Delete', async (req, res) => {
   try {
     const deleteStatus = await userQueries.removeVerifiedUserUsername(username.toLowerCase());
     if (deleteStatus){
-      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
       return res.json({ deleteStatus: 'Successful', cookieSetting: cookieSettings});
     }
     return res.json({ deleteStatus: 'Unsuccessful'});
