@@ -27,8 +27,8 @@ const ProfileDelete = () => {
     useEffect(()=> {
         setIsLoading(true);
         if (!logOutStatus){
-            loggedInUserData.then(res => setUsername(res.data.accountUsername));
-            loggedInUserData.then(res => setFirstName(res.data.accountFirstName));
+            loggedInUserData.then(res => setUsername(res.data.user.accountUsername));
+            loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName));
 
             if (isAdmin){
                 navigate(`/Profile/${username}`);

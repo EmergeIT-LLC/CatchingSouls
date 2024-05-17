@@ -56,10 +56,11 @@ const AdminToolsManageAccountDetail = () => {
         
         await Axios.post(url, {SelectedAdmin : {SelectedAdmin}})
         .then((response) => {
-            setFirstName(response.data.accountFirstName);
-            setLastName(response.data.accountLastName);
-            setEmail(response.data.accountEmail);
-            setSelectRole(response.data.accountRole)
+            console.log(response)
+            setFirstName(response.data.user.accountFirstName);
+            setLastName(response.data.user.accountLastName);
+            setEmail(response.data.user.accountEmail);
+            setSelectRole(response.data.user.accountRole)
         })
         .catch((error) => {
             console.log(error);

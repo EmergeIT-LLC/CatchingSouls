@@ -34,11 +34,11 @@ const ProfileUpdate = () => {
     useEffect(()=> {
         setIsLoading(true);
         if (!logOutStatus) {
-            loggedInUserData.then(res => setUsername(res.data.accountUsername));
-            loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
-            loggedInUserData.then(res => setLastName(res.data.accountLastName));
-            loggedInUserData.then(res => setEmail(res.data.accountEmail));
-            loggedInUserData.then(res => setConfirmEmail(res.data.accountEmail));
+            loggedInUserData.then(res => setUsername(res.data.user.accountUsername));
+            loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
+            loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
+            loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
+            loggedInUserData.then(res => setConfirmEmail(res.data.user.accountEmail));
             setIsLoading(false);
         }
         else if (AccountUsername !== loggedInUser) {

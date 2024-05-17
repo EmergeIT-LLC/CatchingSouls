@@ -50,8 +50,8 @@ const AdminToolsManageAccountDelete = () => {
         
         await Axios.post(url, {SelectedAdmin : {SelectedAdmin}})
         .then((response) => {
-            setUsername(response.data.accountUsername)
-            setFirstName(response.data.accountFirstName);
+            setUsername(response.data.user.accountUsername)
+            setFirstName(response.data.user.accountFirstName);
         })
         .catch((error) => {
             console.log(error);

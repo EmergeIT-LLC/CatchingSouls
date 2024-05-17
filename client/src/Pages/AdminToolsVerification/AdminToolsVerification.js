@@ -38,8 +38,8 @@ const AdminToolsVerification = () => {
         .then((response) => {
             setFoundAdminAccount(response.data.foundAdminAccount);
             if (response.data.foundAdminAccount){
-                loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
-                loggedInUserData.then(res => setLastName(res.data.accountLastName));
+                loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
+                loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             }
         })
         .catch((error) => {

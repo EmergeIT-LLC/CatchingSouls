@@ -134,7 +134,7 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        let cookieSettings = cookieMonster.setCookie('csAuthServices-' + username.toLowerCase(), username.toLowerCase());
+        let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
         return res.json({ loggedIn: true, username: username.toLowerCase(), cookieSetting: cookieSettings});
       }
       else {
@@ -161,7 +161,8 @@ router.post('/login', async (req, res) => {
       });
 
       if (result === true) {
-        let cookieSettings = cookieMonster.setCookie('csAuthServices-' + username.toLowerCase(), username.toLowerCase());
+        let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
+        console.log(cookieSettings); //Delete
         return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true, cookieSetting: cookieSettings });
       }
       else {
@@ -176,7 +177,8 @@ router.post('/login', async (req, res) => {
   }
 });
 router.post('/logout', async (req, res) => {
-  let cookieSettings = cookieMonster.deleteCookie('csAuthServices-' + username.toLowerCase())
+  const username = req.body.username;
+  let cookieSettings = await cookieMonster.deleteCookie(res, 'csAuthServices-' + username.toLowerCase())
   return res.json({ loggedIn: false, message: 'Logged out', cookieSetting: cookieSettings });
 });
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------
@@ -191,16 +193,21 @@ router.post('/accountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateUser.length > 0){
-      return res.send(locateUser[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      return res.json({user: locateUser[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedUser.length > 0){
-      return res.send(locateUnverifiedUser[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      return res.json({user: locateUnverifiedUser[0], cookieSetting: cookieSettings});
     }
     else if (locateAdmin.length > 0){
-      return res.send(locateAdmin[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      console.log(cookieSettings); //Delete
+      return res.json({user: locateAdmin[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin.length > 0){
-      return res.send(locateUnverifiedAdmin[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      return res.json({user: locateUnverifiedAdmin[0], cookieSetting: cookieSettings});
     }
   }
   catch (err) {
@@ -232,7 +239,8 @@ router.post('/account_Update', async (req, res) => {
               else {
                 const userUpdateStatus = await userQueries.updateUserAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (userUpdateStatus){
-                  return res.json({ updateStatus: 'Successful'});
+                  let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+                  return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
                 }
                 return res.json({ updateStatus: 'Unsuccessful'});
               }
@@ -246,7 +254,8 @@ router.post('/account_Update', async (req, res) => {
       else {
         const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (userUpdateStatus){
-          return res.json({ updateStatus: 'Successful'});
+          let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+          return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
         }
         return res.json({ updateStatus: 'Unsuccessful'});
       }
@@ -262,7 +271,8 @@ router.post('/account_Update', async (req, res) => {
               else {          
                 const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
                 if (adminUpdateStatus){
-                  return res.json({ updateStatus: 'Successful'});
+                  let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+                  return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
                 }
                 return res.json({ updateStatus: 'Unsuccessful'});
               }
@@ -276,7 +286,8 @@ router.post('/account_Update', async (req, res) => {
       else {
         const adminUpdateStatus = await adminQueries.updateAdminAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
         if (adminUpdateStatus){
-          return res.json({ updateStatus: 'Successful'});
+          let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+          return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
         }
         return res.json({ updateStatus: 'Unsuccessful'});
       }
@@ -294,7 +305,8 @@ router.post('/account_Delete', async (req, res) => {
   try {
     const deleteStatus = await userQueries.removeVerifiedUserUsername(username.toLowerCase());
     if (deleteStatus){
-      return res.json({ deleteStatus: 'Successful'});
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+      return res.json({ deleteStatus: 'Successful', cookieSetting: cookieSettings});
     }
     return res.json({ deleteStatus: 'Unsuccessful'});
   }

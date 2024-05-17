@@ -19,6 +19,7 @@ const Profile = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [savedSouls, setSavedSouls] = useState('');
     const [showButtons, setShowButtons] = useState(true);
     const isAdmin = GetAdminRole();
 
@@ -34,9 +35,11 @@ const Profile = () => {
             navigate('/');
         }
         else {
-            loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
-            loggedInUserData.then(res => setLastName(res.data.accountLastName));
-            loggedInUserData.then(res => setEmail(res.data.accountEmail));
+            loggedInUserData.then(res => console.log(res.data))
+            loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
+            loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
+            loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
+            loggedInUserData.then(res => setSavedSouls(res.data.user.savedSouls));
             if (isAdmin) {
                 setShowButtons(false);
             }
@@ -58,6 +61,7 @@ const Profile = () => {
                         <div className='profileInfo_form'>
                             <p><b>Username:</b> {loggedInUser}</p>
                             <p><b>Email:</b> {email}</p>
+                            <p><b>Saved Souls:</b> {savedSouls}</p>
                         </div>
                         <a href={`/Profile/${loggedInUser}/Update`}><button className='profileButton'>Update Profile</button></a>
                         {showButtons ? <a href={`/Profile/${loggedInUser}/Delete`}><button className='profileButton'>Delete Profile</button></a> : <></>}

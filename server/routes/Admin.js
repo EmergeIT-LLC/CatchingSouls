@@ -164,10 +164,14 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
     const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username);
 
     if (locateAdminUser.length > 0) {
-      return res.send(locateAdminUser[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
+      return res.json({user: locateAdminUser[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin.length > 0) {
-      return res.send(locateUnverifiedAdmin[0]);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
+      return res.send({user: locateUnverifiedAdmin[0], cookieSetting: cookieSettings});
     }
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
@@ -188,14 +192,18 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
     if (locateAdminUser) {
       const updateStatus = await adminQueries.updateVerifiedAdminAccount(firstName, lastName, email, role, username);
       if (updateStatus) {
-        return res.json({updateStatus: "Successful"});
+        let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
+        return res.json({updateStatus: "Successful", cookieSetting: cookieSettings});
       }
       return res.json({updateStatus: "Unsuccessful"});
     }
     else if (locateUnverifiedAdmin) {
       const updateStatus = await adminQueries.updateUnverifiedAdminAccount(firstName, lastName, email, role, username);
       if (updateStatus) {
-        return res.json({updateStatus: "Successful"});
+        let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
+        return res.json({updateStatus: "Successful", cookieSetting: cookieSettings});
       }
       return res.json({updateStatus: "Unsuccessful"});
     }
@@ -214,17 +222,21 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
     
     if (locateAdminUser) {
       const deleteStatus = await adminQueries.removeVerifiedAdminUsername(username);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
       if (deleteStatus) {
-        return res.json({deleteStatus: "Successful"});
+        return res.json({deleteStatus: "Successful", cookieSetting: cookieSettings});
       }
-      return res.json({deleteStatus: "Unsuccessful"});
+      return res.json({deleteStatus: "Unsuccessful", cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin) {
       const deleteStatus = await adminQueries.removeUnverifiedAdminUsername(username);
+      let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
+
       if (deleteStatus) {
-        return res.json({deleteStatus: "Successful"});
+        return res.json({deleteStatus: "Successful", cookieSetting: cookieSettings});
       }
-      return res.json({deleteStatus: "Unsuccessful"});
+      return res.json({deleteStatus: "Unsuccessful", cookieSetting: cookieSettings});
     }
   } catch (error) {
     console.log(error)

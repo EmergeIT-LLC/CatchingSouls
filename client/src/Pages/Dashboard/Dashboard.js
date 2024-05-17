@@ -35,8 +35,8 @@ const Dashboard = () => {
                 setFirstName("Guest")
             }
             else {
-                loggedInUserData.then(res => setFirstName(res.data.accountFirstName));
-                loggedInUserData.then(res => setLastName(res.data.accountLastName));
+                loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName));
+                loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             }
         }
         setIsLoading(false);
