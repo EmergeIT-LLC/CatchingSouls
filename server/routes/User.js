@@ -86,7 +86,6 @@ router.post('/verifyUser', async (req, res) => {
         const isVerificationDeletionSuccessful = await userQueries.removeUnverifiedUserUsername(username.toLowerCase());
         
         if (isVerificationDeletionSuccessful) {
-          console.log('isVerificationDeletionSuccessful')
           return res.json({Verified: true});
         }
         else {
@@ -162,7 +161,6 @@ router.post('/login', async (req, res) => {
 
       if (result === true) {
         let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
-        console.log(cookieSettings); //Delete
         return res.json({ loggedIn: true, username: username.toLowerCase(), isAdmin: true, cookieSetting: cookieSettings });
       }
       else {
@@ -202,7 +200,6 @@ router.post('/accountDetail_retrieval', async (req, res) => {
     }
     else if (locateAdmin.length > 0){
       let cookieSettings = await cookieMonster.updateCookieExpiration(req, res, 'csAuthServices-' + username.toLowerCase());
-      console.log(cookieSettings); //Delete
       return res.json({user: locateAdmin[0], cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin.length > 0){
