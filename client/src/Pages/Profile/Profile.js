@@ -35,7 +35,6 @@ const Profile = () => {
             navigate('/');
         }
         else {
-            loggedInUserData.then(res => console.log(res.data))
             loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
