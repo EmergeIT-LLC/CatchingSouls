@@ -7,6 +7,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckEmail } from '../../Functions/EntryCheck';
 //Functions
 import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { CookieCheck } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -85,6 +86,10 @@ const AdminToolsManageAccountUpdate = () => {
                 setStatusMessage("Update Failed!");
                 setIsLoading(false);
             }
+
+            if (response.data.cookieSettings) {
+                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -103,6 +108,10 @@ const AdminToolsManageAccountUpdate = () => {
             setEmail(response.data.user.accountEmail);
             setConfirmEmail(response.data.user.accountEmail);
             setSelectRole(response.data.user.accountRole)
+            
+            if (response.data.cookieSettings) {
+                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            }
         })
         .catch((error) => {
             console.log(error);

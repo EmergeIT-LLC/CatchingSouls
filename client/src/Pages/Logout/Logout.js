@@ -6,6 +6,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import {CheckUser, CheckUserLogin, CheckGuestLogin} from '../../Functions/VerificationCheck';
+import { CookieCheck } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 
@@ -19,6 +20,9 @@ const Logout = () => {
 
         await Axios.post(url, {username: loggedInUser})
         .then((response) => {
+            if (response.data.cookieSettings) {
+                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            }
             setStatusMessage(response.data.message);
         });
     }

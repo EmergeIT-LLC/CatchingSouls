@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { CookieCheck } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -60,7 +61,11 @@ const AdminToolsManageAccountDetail = () => {
             setFirstName(response.data.user.accountFirstName);
             setLastName(response.data.user.accountLastName);
             setEmail(response.data.user.accountEmail);
-            setSelectRole(response.data.user.accountRole)
+            setSelectRole(response.data.user.accountRole);
+
+            if (response.data.cookieSettings) {
+                CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
+            }
         })
         .catch((error) => {
             console.log(error);

@@ -8,6 +8,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckUsername, CheckPassword } from '../../Functions/EntryCheck';
 //Functions
 import {CheckUserLogin} from '../../Functions/VerificationCheck';
+import { CookieCheck } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -54,6 +55,10 @@ const Login = () => {
 
                 if (response.data.isAdmin){
                     localStorage.setItem('catchingSoulsAdmin', true);
+                }
+
+                if (response.data.cookieSettings) {
+                    CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
                 }
 
                 if (location.state === null) {
