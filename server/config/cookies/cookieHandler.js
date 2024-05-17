@@ -14,7 +14,7 @@ const setCookie = async (res, name, options = {}) => {
         const defaultOptions = {
             daysToExpire: 1 / 3, // Default expiration time: 8 hours
             path: '/',
-            domain: prodStatus === "true" ? clientOrigin : undefined,
+            domain: prodStatus === "true" ? [clientOrigin, amplifyOrigin] : clientOrigin,
             secure: prodStatus === "true",
             sameSite: 'Lax',
             httpOnly: true // Set the cookie as HTTP-only by default
