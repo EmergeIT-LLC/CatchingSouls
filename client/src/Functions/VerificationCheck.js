@@ -46,7 +46,7 @@ export const GetUserProps = async () => {
         if (CheckUserLogin()) {
             const url = process.env.REACT_APP_Backend_URL + '/user/accountDetail_retrieval';
             const response = await Axios.post(url, { username: CheckUser() });
-            
+
             if (response.data.cookieSettings) {
                 CookieCheck(response.data.cookieSettings.name, response.data.cookieSettings.value, response.data.cookieSettings.options);
             }
