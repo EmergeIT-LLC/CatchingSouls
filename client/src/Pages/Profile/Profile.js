@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckUser, GetUserProps, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
@@ -22,9 +23,10 @@ const Profile = () => {
     const [savedSouls, setSavedSouls] = useState('');
     const [showButtons, setShowButtons] = useState(true);
     const isAdmin = GetAdminRole();
+    const validCookie = isCookieValid()
 
     useEffect(() => {
-        if (userLoggedIn === false) {
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,

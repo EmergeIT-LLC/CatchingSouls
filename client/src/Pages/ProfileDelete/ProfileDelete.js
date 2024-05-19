@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckUser, GetAdminRole, GetUserProps, GetLogoutStatus } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -21,12 +22,13 @@ const ProfileDelete = () => {
     const [username, setUsername] = useState(null);
     const [firstName, setFirstName] = useState();
     const [statusMessage, setStatusMessage] = useState(null);
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
 
 
     useEffect(()=> {
         setIsLoading(true);
-        if (!logOutStatus){
+        if (!logOutStatus & validCookie){
             loggedInUserData.then(res => setUsername(res.data.user.accountUsername));
             loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName));
 

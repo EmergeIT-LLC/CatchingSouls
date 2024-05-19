@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
@@ -16,6 +17,7 @@ const AdminToolsManageTriviaDelete = () => {
     const {QuestionID} = useParams();
     const userLoggedIn = CheckUserLogin();
     const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
@@ -24,7 +26,7 @@ const AdminToolsManageTriviaDelete = () => {
 
     useEffect(() => {
         GetLogoutStatus(AccountUsername)
-        if (!userLoggedIn) {
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,

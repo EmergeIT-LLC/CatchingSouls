@@ -7,6 +7,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckEmail, CheckPassword } from '../../Functions/EntryCheck'
 //Functions
 import { CheckUserLogin, CheckUser, GetAdminRole, GetUserProps, GetLogoutStatus } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -19,6 +20,7 @@ const ProfileUpdate = () => {
     const userLoggedIn = CheckUserLogin();
     const loggedInUser = CheckUser();
     const logOutStatus = GetLogoutStatus(AccountUsername);
+    const validCookie = isCookieValid()
     const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps());
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
@@ -33,7 +35,7 @@ const ProfileUpdate = () => {
 
     useEffect(()=> {
         setIsLoading(true);
-        if (!logOutStatus) {
+        if (!logOutStatus && validCookie) {
             loggedInUserData.then(res => setUsername(res.data.user.accountUsername));
             loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));

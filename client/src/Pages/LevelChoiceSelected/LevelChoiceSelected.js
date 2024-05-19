@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckGuestLogin, CheckUser } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -16,6 +17,7 @@ const LevelChoiceSelected = () => {
     const guestLoggedIn = CheckGuestLogin();
     const userLoggedIn = CheckUserLogin();
     let loggedInUser;
+    const validCookie = isCookieValid()
 
     if (!guestLoggedIn) {
         loggedInUser = CheckUser();    
@@ -43,7 +45,7 @@ const LevelChoiceSelected = () => {
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn || guestLoggedIn){
+        if (userLoggedIn && validCookie || guestLoggedIn){
             getPlayerPoints();
             getTriviaQandA();
             setTimerLimit();

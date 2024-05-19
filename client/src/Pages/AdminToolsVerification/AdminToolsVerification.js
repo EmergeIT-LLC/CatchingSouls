@@ -7,6 +7,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { GetUserVerificationProps } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Entry Checks
 import { CheckPassword } from '../../Functions/EntryCheck'
 //Repositories
@@ -16,6 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const AdminToolsVerification = () => {
     const navigate = useNavigate();
     const {AccountUsername} = useParams();
+    const validCookie = isCookieValid()
     const [foundAdminAccount, setFoundAdminAccount] = useState(false);
     const [loggedInUserData, setLoggedInUserData] = useState(GetUserVerificationProps(AccountUsername));
     const [password, setPassword] = useState(null);
@@ -59,7 +61,7 @@ const AdminToolsVerification = () => {
         }
 
         setIsLoading(true);
-        const url = 'http://localhost:3001/admin/adminTool/Verification';
+        const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/Verification';
                 
         Axios.post(url, {
             AccountUsername : {AccountUsername},

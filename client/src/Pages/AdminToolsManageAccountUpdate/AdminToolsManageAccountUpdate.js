@@ -7,7 +7,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckEmail } from '../../Functions/EntryCheck';
 //Functions
 import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
-import { CookieCheck } from '../../Functions/CookieCheck';
+import { CookieCheck, isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -19,6 +19,7 @@ const AdminToolsManageAccountUpdate = () => {
     const {SelectedAdmin} = useParams();
     const userLoggedIn = CheckUserLogin();
     const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
@@ -31,7 +32,7 @@ const AdminToolsManageAccountUpdate = () => {
 
     useEffect(() => {
         GetLogoutStatus(AccountUsername);
-        if (!userLoggedIn) {
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,

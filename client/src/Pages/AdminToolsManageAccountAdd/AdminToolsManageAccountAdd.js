@@ -5,6 +5,7 @@ import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
 import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Entry Checks
 import { CheckEmail } from '../../Functions/EntryCheck'
 //Repositories
@@ -17,6 +18,7 @@ const AdminToolsManageAccountAdd = () => {
     const {AccountUsername} = useParams();
     const userLoggedIn = CheckUserLogin();
     const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -28,7 +30,7 @@ const AdminToolsManageAccountAdd = () => {
 
     useEffect(() => {
         GetLogoutStatus(AccountUsername);
-        if (!userLoggedIn) {
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
