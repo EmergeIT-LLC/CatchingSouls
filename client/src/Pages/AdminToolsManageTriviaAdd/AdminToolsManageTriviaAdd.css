@@ -80,6 +80,27 @@
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;
 }
+.adminToolsManageTriviaAdd_form > a {
+    text-decoration: none;
+}
+.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddButton {
+    display: block;
+    text-decoration: none;
+	background-color: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 2.50em;
+    width: 15em;
+    margin: 1em auto 1.50em auto;
+    border: 0.15em solid purple;
+    border-radius: 1em;
+}
+.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddButton:hover {
+    color: white;
+	background-color: purple;
+    border: 0.15em solid darkgoldenrod;
+}
 @media (max-width: 800px) {
     .adminToolsManageTriviaAddPage_container {
         width: 100%;

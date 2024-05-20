@@ -22,6 +22,7 @@ const AdminToolsManageTriviaUpdate = () => {
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const [supportingVerse, setSupportingVerse] = useState("null");
     const [selectQAType, setSelectQAType] = useState("null");
     const [selectDifficulty, setSelectDifficulty] = useState("null");
     const [statusMessage, setStatusMessage] = useState('');
@@ -52,11 +53,12 @@ const AdminToolsManageTriviaUpdate = () => {
         
         await Axios.post(url, {QuestionID : {QuestionID}})
         .then((response) => {
-            setQuestionID(response.data.triviaID);
-            setQuestion(response.data.triviaquestions);
-            setAnswer(response.data.triviaanswers);
-            setSelectQAType(response.data.triviatype);
-            setSelectDifficulty(response.data.trivialevel);
+            setQuestionID(response.data[0].triviaID);
+            setQuestion(response.data[0].triviaquestions);
+            setAnswer(response.data[0].triviaanswers);
+            setSupportingVerse(response.data[0].supportingVerse);
+            setSelectQAType(response.data[0].triviatype);
+            setSelectDifficulty(response.data[0].trivialevel);
         })
         .catch((error) => {
             console.log(error);
@@ -107,6 +109,7 @@ const AdminToolsManageTriviaUpdate = () => {
                     <h1>Update Question ID {questionID}</h1>
                     <textarea name='question' placeholder='Enter Question' required autoComplete="off" defaultValue={question} onChange={(e) => setQuestion(e.target.value)} />
                     <input name='answer' placeholder='Enter Answer' required autoComplete="off" defaultValue={answer} onChange={(e) => setAnswer(e.target.value)} />
+                    <input name='supportingVerse' placeholder='Enter Supporting Verse' required autoComplete="off" defaultValue={supportingVerse} onChange={(e) => setSupportingVerse(e.target.value)} />
                     <select value={selectQAType} options={selectQAType} required onChange={(e) => {setSelectQAType(e.target.value)}}>
                         <option value="null">Select Q&A Type</option>
                         <option value="TrueOrFalse">True or False</option>

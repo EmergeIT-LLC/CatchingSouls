@@ -99,7 +99,7 @@ const AdminToolsManageTriviaDelete = () => {
                             <p><b>Question:</b></p>
                             <p>{question}</p>
                             <button className='adminToolsManageTriviaDeleteButton' type='submit' onClick={submitForm}>Yes</button>
-                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaDeleteButton'>No</button></Link>
+                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${QuestionID}/Detail`}><button className='adminToolsManageTriviaDeleteButton'>No</button></Link>
                             <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDeleteButton'>Return to Questions</button></Link>
                         </>
                     }

@@ -28,6 +28,7 @@ const AdminToolsManageAccountUpdate = () => {
     const [email, setEmail] = useState(null);
     const [confirmEmail, setConfirmEmail] = useState(null);
     const [selectRole, setSelectRole] = useState("null");
+    const [showRoleSelection, setShowRoleSelection] = useState("null");
     const [statusMessage, setStatusMessage] = useState(null);
 
     useEffect(() => {
@@ -52,6 +53,15 @@ const AdminToolsManageAccountUpdate = () => {
             getSelectedAdminProps();
         }
     }, [userLoggedIn]);
+
+    const isRootUser = (role) => {
+        if (role === "Root") {
+            setShowRoleSelection(false);
+        }
+        else {
+            setShowRoleSelection(true);
+        }
+    }
 
     const submitUpdateForm = async (e) => {
         e.preventDefault();
@@ -83,7 +93,7 @@ const AdminToolsManageAccountUpdate = () => {
             else if (response.data.updateStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`);
             }
-            else if (response.data.updateStatus === "Successful") {
+            else if (response.data.updateStatus === "Unsuccessful") {
                 setStatusMessage("Update Failed!");
                 setIsLoading(false);
             }
@@ -108,7 +118,8 @@ const AdminToolsManageAccountUpdate = () => {
             setLastName(response.data.user.accountLastName);
             setEmail(response.data.user.accountEmail);
             setConfirmEmail(response.data.user.accountEmail);
-            setSelectRole(response.data.user.accountRole)
+            setSelectRole(response.data.user.accountRole);
+            isRootUser(response.data.user.accountRole);
             
             if (response.data.cookieSetting) {
                 CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
@@ -130,10 +141,14 @@ const AdminToolsManageAccountUpdate = () => {
                     <input className='lastName' placeholder='Last Name' defaultValue={lastName} required autoComplete="off" onChange={(e) => setLastName(e.target.value)} />
                     <input className='email' placeholder='Email Address' type='email' defaultValue={email} required autoComplete="off" onChange={(e) => setEmail(e.target.value)} />
                     <input className='confirmEmail' placeholder='Confirm Email Address' type='email' defaultValue={confirmEmail} required autoComplete="off" onChange={(e) => setConfirmEmail(e.target.value)} />
+                    {showRoleSelection ?
                     <select value={selectRole} options={selectRole} required onChange={(e) => {setSelectRole(e.target.value)}}>
                         <option value="null">Make Selection</option>
                         <option value="Admin">Admin</option>
                     </select>
+                    :
+                    <></>
+                    }
                     {isLoading && <button className='adminToolsManageAccountUpdateButton' disabled>Loading...</button>}
                     {!isLoading && <button className='adminToolsManageAccountUpdateButton' type='submit' onClick={submitUpdateForm}>Update</button>}
                     {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`}><button className='adminToolsManageAccountUpdateButton'>Cancel</button></a>}

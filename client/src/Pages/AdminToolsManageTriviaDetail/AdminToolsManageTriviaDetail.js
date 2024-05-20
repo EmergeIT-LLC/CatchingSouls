@@ -25,6 +25,7 @@ const AdminToolsManageTriviaDetail = () => {
     const [answer, setAnswer] = useState("");
     const [triviaType, setTriviaType] = useState("null");
     const [triviaLevel, setTriviaLevel] = useState("null");
+    const [supportingVerse, setSupportingVerse] = useState("null");
     const [showButtons, setShowButtons] = useState(true);
 
     useEffect(() => {
@@ -53,11 +54,12 @@ const AdminToolsManageTriviaDetail = () => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/TriviaDetailRetrieval';
         await Axios.post(url, {QuestionID : {QuestionID}})
         .then((response) => {
-            setQuestionID(response.data.triviaID);
-            setQuestion(response.data.triviaquestions);
-            setAnswer(response.data.triviaanswers);
-            setTriviaType(response.data.triviatype);
-            setTriviaLevel(response.data.trivialevel);
+            setQuestionID(response.data[0].triviaID);
+            setQuestion(response.data[0].triviaquestions);
+            setAnswer(response.data[0].triviaanswers);
+            setTriviaType(response.data[0].triviatype);
+            setTriviaLevel(response.data[0].trivialevel);
+            setSupportingVerse(response.data[0].supportingVerse)
         })
         .catch((error) => {
             console.log(error);
@@ -79,6 +81,7 @@ const AdminToolsManageTriviaDetail = () => {
                             <div className='adminToolsManageTriviaDetailInfo_form'>
                                 <p><b>Question:</b> {question}</p>
                                 <p><b>Answer:</b> {answer}</p>
+                                <p><b>Supporting Verse:</b> {supportingVerse}</p>
                                 <p><b>Answer Relation:</b> {triviaType}</p>
                                 <p><b>Question Level:</b> {triviaLevel}</p>
                             </div>

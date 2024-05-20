@@ -8,7 +8,7 @@ import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../
 import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
 
 const AdminToolsManageTriviaAdd = () => {
     const navigate = useNavigate();
@@ -21,6 +21,7 @@ const AdminToolsManageTriviaAdd = () => {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [selectQAType, setSelectQAType] = useState("null");
+    const [supportingVerse, setSupportingVerse] = useState("null");
     const [selectDifficulty, setSelectDifficulty] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -85,6 +86,7 @@ const AdminToolsManageTriviaAdd = () => {
                     <h1>Upload Question & Answer</h1>
                     <textarea name='question' placeholder='Enter Question' required autoComplete="off" onChange={(e) => setQuestion(e.target.value)} />
                     <input name='answer' placeholder='Enter Answer' required autoComplete="off" onChange={(e) => setAnswer(e.target.value)} />
+                    <input name='supportingVerse' placeholder='Enter Supporting Verse' required autoComplete="off" onChange={(e) => setSupportingVerse(e.target.value)} />
                     <select value={selectQAType} required onChange={(e) => {setSelectQAType(e.target.value)}}>
                         <option value="null">Select Q&A Type</option>
                         <option value="TrueOrFalse">True or False</option>
@@ -104,6 +106,7 @@ const AdminToolsManageTriviaAdd = () => {
                     </select>
                     {isLoading && <button className='adminToolsManageTriviaAddButton' disabled>Loading...</button>}
                     {!isLoading && <button className='adminToolsManageTriviaAddButton' type='submit' onClick={submitForm}>Add Q&A</button>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaAddButton'>Return to Questions</button></Link>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>
