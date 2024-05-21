@@ -42,6 +42,13 @@
     outline: none;
     border:0.15em solid gold;
 }
+.register_form > select {
+    display: block;
+    margin: 0em auto 2em auto;
+    width: 16em;
+    height: 2em;
+}
+
 .register_form > .registerButton {
     display: block;
     text-decoration: none;

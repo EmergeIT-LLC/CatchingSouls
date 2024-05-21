@@ -90,13 +90,11 @@ const AdminToolsManageAccountDetail = () => {
                                 <p><b>Email:</b> {email}</p>
                                 <p><b>Role:</b> {selectRole}</p>
                             </div>
-                            {showButtons ?
+                            {showButtons &&
                                 <>
                                     <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Update`}><button className='adminToolsManageAccountDetailButton'>Update Admin</button></a>
                                     <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Delete`}><button className='adminToolsManageAccountDetailButton'>Delete Admin</button></a>
                                 </>
-                            :
-                            <></>
                             }
                         <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailButton'>Return to Accounts</button></a>
                     </>

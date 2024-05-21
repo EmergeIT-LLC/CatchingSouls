@@ -21,6 +21,8 @@ const Profile = () => {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [savedSouls, setSavedSouls] = useState('');
+    const [churchName, setChurchName] = useState(null);
+    const [churchLocation, setChurchLocation] = useState(null);
     const [showButtons, setShowButtons] = useState(true);
     const isAdmin = GetAdminRole();
     const validCookie = isCookieValid()
@@ -41,6 +43,8 @@ const Profile = () => {
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
             loggedInUserData.then(res => setSavedSouls(res.data.user.savedSouls));
+            loggedInUserData.then(res => setChurchName(res.data.user.churchName));
+            loggedInUserData.then(res => setChurchLocation(res.data.user.churchLocation));
             if (isAdmin) {
                 setShowButtons(false);
             }
@@ -63,6 +67,15 @@ const Profile = () => {
                             <p><b>Username:</b> {loggedInUser}</p>
                             <p><b>Email:</b> {email}</p>
                             <p><b>Saved Souls:</b> {savedSouls}</p>
+                            {churchName ?
+                                <> 
+                                    <p><b>Church:</b> {churchName}, {churchLocation}</p>
+                                </>
+                                :
+                                <>
+                                    <p><b>Church:</b></p>
+                                </>
+                            }
                         </div>
                         <a href={`/Profile/${loggedInUser}/Update`}><button className='profileButton'>Update Profile</button></a>
                         {showButtons ? <a href={`/Profile/${loggedInUser}/Delete`}><button className='profileButton'>Delete Profile</button></a> : <></>}

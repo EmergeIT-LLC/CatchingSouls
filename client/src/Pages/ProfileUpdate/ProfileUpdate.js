@@ -31,6 +31,13 @@ const ProfileUpdate = () => {
     const [password, setPassword] = useState(null);
     const [newPassword, setNewPassword] = useState(null);
     const [confirmNewPassword, setConfirmNewPassword] = useState(null);
+    const [selectDenomination, setSelectDenomination] = useState(null);
+    const [showChurchInfoFields, setShowChurchInfoFields] = useState(false);
+    const [showOtherDenominationField, setShowOtherDenominationfield] = useState(false);
+    const [otherDenominationField, setOtherDenominationField] = useState(null);
+    const [churchName, setChurchName] = useState(null);
+    const [showNamingConvention, setShowNamingConvention] = useState(false);
+    const [churchLocation, setChurchLocation] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
 
     useEffect(()=> {
@@ -41,6 +48,9 @@ const ProfileUpdate = () => {
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
             loggedInUserData.then(res => setConfirmEmail(res.data.user.accountEmail));
+            loggedInUserData.then(res => setSelectDenomination(res.data.user.selectDenomination));
+            loggedInUserData.then(res => setChurchName(res.data.user.churchName));
+            loggedInUserData.then(res => setChurchLocation(res.data.user.churchLocation));
             setIsLoading(false);
         }
         else if (AccountUsername !== loggedInUser) {
@@ -55,6 +65,40 @@ const ProfileUpdate = () => {
             });
         }
     }, [userLoggedIn]);
+
+    const churchInfoChecker = (denominationType) => {
+        if (denominationType === "null" || denominationType === "Not Applicable") {
+            setSelectDenomination(denominationType === "null" ? null : denominationType);
+            setShowOtherDenominationfield(false);
+            setOtherDenominationField(null);
+            setShowChurchInfoFields(false);
+        } else if (denominationType === "Other") {
+            setSelectDenomination(otherDenominationField);
+            setShowOtherDenominationfield(true);
+            setShowChurchInfoFields(true);
+        } else {
+            setSelectDenomination(denominationType);
+            setShowOtherDenominationfield(false);
+            setOtherDenominationField(null);
+            setShowChurchInfoFields(true);
+        }
+    }
+
+    const displayNaming = (churchNaming) => {
+        // Resetting boolean for display name
+        setShowNamingConvention(churchNaming.length > 0);
+        let namingConvention;
+
+        // Ensuring Appropriate naming format
+        if (selectDenomination === 'Non-denominational') {
+            namingConvention = churchNaming + ' Church';
+        }
+        else {
+            namingConvention = churchNaming + ' ' + selectDenomination + ' Church';
+        }
+        // Setting church name to pass over the api
+        setChurchName(namingConvention);
+    }
 
     const submitUpdateForm = (e) => {
         e.preventDefault();
@@ -78,6 +122,14 @@ const ProfileUpdate = () => {
             }    
         } else if (password != null && newPassword === null || password != null && confirmNewPassword === null){
             return setStatusMessage("All Password fields must be filled in!");
+        } else if (selectDenomination !== null || selectDenomination !== "Not Applicable") {
+            if (churchName.length < 2) {
+                return setStatusMessage("Church Name Is Not Acceptable"); 
+            }
+
+            if (churchLocation.length < 2) {
+                return setStatusMessage("Church Location Is Not Acceptable"); 
+            }
         }
 
         setIsLoading(true);
@@ -89,7 +141,10 @@ const ProfileUpdate = () => {
             lastName : lastName,
             email : email,
             password : password,
-            newPassword : newPassword
+            newPassword : newPassword,
+            churchName : churchName,
+            churchLocation : churchLocation
+
         })
         .then((response) => {
             console.log(response.data)
@@ -131,6 +186,31 @@ const ProfileUpdate = () => {
                         <input className='currentpassword' placeholder='Enter Current Password' type='password' required autoComplete="off" onChange={(e) => {setPassword(e.target.value); }} />
                         <input className='password' placeholder='Enter New Password' type='password' required autoComplete="off" onChange={(e) => {setNewPassword(e.target.value); }} />
                         <input className='confirmPassword' placeholder='Confirm New Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmNewPassword(e.target.value); }} />
+                        <h1>Church Info</h1>
+                        {showNamingConvention && <h2>{churchName}</h2>}
+                        <select value={selectDenomination} option={selectDenomination} required onChange={(e) => churchInfoChecker(e.target.value)} >
+                            <option value="null">Select Denomination Type</option>
+                            <option value="Not Applicable">--Not Applicable--</option>
+                            <option value="Other">--Other--</option>
+                            <option value="Baptist">Baptist</option>
+                            <option value="Catholic">Catholic</option>
+                            <option value="Lutheran">Lutheran</option>
+                            <option value="Methodism">Methodism</option>
+                            <option value="Non-denominational">Non-denominational</option>
+                            <option value="Orthodox">Orthodox</option>
+                            <option value="Pentecostal">Pentecostal</option>
+                            <option value="Presbyterian">Presbyterian</option>
+                            <option value="Seventh-Day Adventist">Seventh-Day Adventist</option>
+                        </select>
+                        {showOtherDenominationField && 
+                            <input className='otherDenomination' placeholder='Enter Denomination' autoComplete="off" onChange={(e) => setOtherDenominationField(e.target.value)} />
+                        }
+                        {showChurchInfoFields &&
+                            <> 
+                            <input className='churchName' placeholder='Enter Church Name' autoComplete="off" onChange={(e) => displayNaming(e.target.value)} />
+                            <input className='churchLocation' placeholder='Enter Church Location' autoComplete="off" onChange={(e) => setChurchLocation(e.target.value)} />
+                            </>
+                        }
                         {isLoading && <button className='profileUpdateButton' disabled>Loading...</button>}
                         {!isLoading && <button className='profileUpdateButton' type='submit' onClick={submitUpdateForm}>Update</button>}
                         {!isLoading && <a href={`/Profile/${loggedInUser}`}><button className='profileUpdateButton'>Cancel</button></a>}

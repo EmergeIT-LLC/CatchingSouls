@@ -61,6 +61,7 @@ router.post('/retrievequestion', async (req, res) => {
         const questionID = selectedQuestion.triviaID;
         const question = selectedQuestion.triviaquestions;
         const selectedQuestionAnswer = selectedQuestion.triviaanswers;
+        const supportingVerse = selectedQuestion.supportingVerse;
     
         // Shuffle triviaQA array
         const shuffledTriviaQA = shuffleArray(triviaQA);
@@ -79,6 +80,7 @@ router.post('/retrievequestion', async (req, res) => {
             questionType: triviaType,
             questionID: questionID,
             question: question,
+            supportingVerse: supportingVerse,
             a: answerPool[0],
             b: answerPool[1],
             c: answerPool[2],
@@ -143,7 +145,7 @@ router.post('/checkanswer', async (req, res) => {
                 }
             }
             else {
-                return res.json({results: "false"});
+                return res.json({results: "false", correctAnswer: triviaQAAsked[0].triviaanswers});
             }
         }
     } catch (error) {

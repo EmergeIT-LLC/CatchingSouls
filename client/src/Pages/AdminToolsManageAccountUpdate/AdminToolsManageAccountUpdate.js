@@ -141,13 +141,11 @@ const AdminToolsManageAccountUpdate = () => {
                     <input className='lastName' placeholder='Last Name' defaultValue={lastName} required autoComplete="off" onChange={(e) => setLastName(e.target.value)} />
                     <input className='email' placeholder='Email Address' type='email' defaultValue={email} required autoComplete="off" onChange={(e) => setEmail(e.target.value)} />
                     <input className='confirmEmail' placeholder='Confirm Email Address' type='email' defaultValue={confirmEmail} required autoComplete="off" onChange={(e) => setConfirmEmail(e.target.value)} />
-                    {showRoleSelection ?
+                    {showRoleSelection &&
                     <select value={selectRole} options={selectRole} required onChange={(e) => {setSelectRole(e.target.value)}}>
                         <option value="null">Make Selection</option>
                         <option value="Admin">Admin</option>
                     </select>
-                    :
-                    <></>
                     }
                     {isLoading && <button className='adminToolsManageAccountUpdateButton' disabled>Loading...</button>}
                     {!isLoading && <button className='adminToolsManageAccountUpdateButton' type='submit' onClick={submitUpdateForm}>Update</button>}

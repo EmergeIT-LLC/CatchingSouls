@@ -79,7 +79,7 @@ router.post('/verifyUser', async (req, res) => {
     const unverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
 
     if (unverifiedUser.length > 0){
-      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword);
+      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword, unverifiedUser[0].churchName, unverifiedUser[0].churchLocation);
 
 
       if (isVerificationMoveSuccessful) {

@@ -48,9 +48,9 @@ async function unverifiedUserCheckUsername(username) {
     });
 }
 
-async function addUser(username, firstName, lastName, email, password) {
+async function addUser(username, firstName, lastName, email, password, churchName, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password], function (err) {
+        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password, churchName, churchLocation], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -96,9 +96,9 @@ async function locateRecoveryUserData(username) {
     });
 }
 
-async function moveUser(username, firstName, lastName, email, password) {
+async function moveUser(username, firstName, lastName, email, password, churchName, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword) VALUES (?, ?, ?, ?, ?)', [username, firstName, lastName, email, password], function (err) {
+        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, churchName, churchLocation], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {

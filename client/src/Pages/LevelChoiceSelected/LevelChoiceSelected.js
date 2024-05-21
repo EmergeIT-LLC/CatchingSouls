@@ -35,6 +35,8 @@ const LevelChoiceSelected = () => {
     const [answerB, setAnswerB] = useState(null);
     const [answerC, setAnswerC] = useState(null);
     const [answerD, setAnswerD] = useState(null);
+    const [correctAnswer, setCorrectAnswer] = useState(null);
+    const [supportingVerse, setSupportingVerse] = useState(null)
     //Answer Selection
     const [selectedAnswer, setSelectedAnswer] = useState(false);
     const [checkingAnswer, setCheckingAnswer] = useState(false);
@@ -95,6 +97,7 @@ const LevelChoiceSelected = () => {
 
     const getTriviaQandA = async () => {
         setIsLoading(true);
+        setCorrectAnswer(null);
         const url = process.env.REACT_APP_Backend_URL + '/trivia/retrievequestion';
                 
         Axios.post(url, {
@@ -113,6 +116,7 @@ const LevelChoiceSelected = () => {
             setAnswerB(response.data.b);
             setAnswerC(response.data.c);
             setAnswerD(response.data.d);
+            setSupportingVerse(response.data.supportingVerse);
             setIsLoading(false);
         })
         .catch((error) => {
@@ -164,6 +168,7 @@ const LevelChoiceSelected = () => {
                 }
             }
             else {
+                setCorrectAnswer(response.data.correctAnswer)
                 setAnswerCorrect(false);
             }
             
@@ -204,12 +209,15 @@ const LevelChoiceSelected = () => {
                                     {answerCorrect ?
                                         <>
                                             <h1 style={{color: 'green'}}>Correct Answer</h1>
+                                            <h2>Supporting Verse: {supportingVerse}</h2>
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
                                             <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     :
                                         <>
                                             <h1 style={{color: 'crimson'}}>Incorrect Answer</h1>
+                                            <h2>Correct: {correctAnswer}</h2>
+                                            <h2>Supporting Verse: {supportingVerse}</h2>
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
                                             <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>

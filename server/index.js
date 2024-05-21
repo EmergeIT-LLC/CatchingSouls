@@ -46,7 +46,12 @@ const setHeadersForAllowedRoutes = (req, res, next) => {
 
 // Define your routes before the middleware for handling 404 errors
 app.get('/', (req, res) => {
-  res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + prodHost + "...");
+  if (prodStatus === "true") {
+    res.send("The server is running successfully. <br/>The server url is " + prodHost + "...");
+  }
+  else {
+    res.send("The server is running successfully. <br/>The server is running on port " + port + "... <br/>The server url is " + prodHost + "...");
+  }
 });
 
 // Define other routes here (userRoute, adminRoute, triviaRoute, etc.)
