@@ -209,15 +209,15 @@ const LevelChoiceSelected = () => {
                                     {answerCorrect ?
                                         <>
                                             <h1 style={{color: 'green'}}>Correct Answer</h1>
-                                            <h2>Supporting Verse: {supportingVerse}</h2>
+                                            {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
                                             <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     :
                                         <>
                                             <h1 style={{color: 'crimson'}}>Incorrect Answer</h1>
-                                            <h2>Correct: {correctAnswer}</h2>
-                                            <h2>Supporting Verse: {supportingVerse}</h2>
+                                            <h2>Correct Answer: {correctAnswer}</h2>
+                                            {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
                                             <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>

@@ -330,7 +330,7 @@ router.post('/adminTool/TriviaUpdate', async (req, res) => {
   const answer = req.body.answer;
   const qaType = req.body.selectQAType;
   const difficulty = req.body.selectDifficulty;
-  const verse = req.body.verse;
+  const verse = req.body.supportingVerse;
 
   try {
     const foundQA = await triviaQueries.qaCheckQuestionID(questionID);

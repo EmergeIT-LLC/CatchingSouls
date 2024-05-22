@@ -36,6 +36,7 @@ const ProfileUpdate = () => {
     const [showOtherDenominationField, setShowOtherDenominationfield] = useState(false);
     const [otherDenominationField, setOtherDenominationField] = useState(null);
     const [churchName, setChurchName] = useState(null);
+    const [churchNameToDisplay, setChurchNameToDisplay] = useState(null);
     const [showNamingConvention, setShowNamingConvention] = useState(false);
     const [churchLocation, setChurchLocation] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -48,7 +49,7 @@ const ProfileUpdate = () => {
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
             loggedInUserData.then(res => setConfirmEmail(res.data.user.accountEmail));
-            loggedInUserData.then(res => setSelectDenomination(res.data.user.selectDenomination));
+            loggedInUserData.then(res => setSelectDenomination(res.data.user.denomination));
             loggedInUserData.then(res => setChurchName(res.data.user.churchName));
             loggedInUserData.then(res => setChurchLocation(res.data.user.churchLocation));
             setIsLoading(false);
@@ -97,7 +98,8 @@ const ProfileUpdate = () => {
             namingConvention = churchNaming + ' ' + selectDenomination + ' Church';
         }
         // Setting church name to pass over the api
-        setChurchName(namingConvention);
+        setChurchName(churchNaming);
+        setChurchNameToDisplay(namingConvention);
     }
 
     const submitUpdateForm = (e) => {
@@ -143,6 +145,7 @@ const ProfileUpdate = () => {
             password : password,
             newPassword : newPassword,
             churchName : churchName,
+            denomination : selectDenomination,
             churchLocation : churchLocation
 
         })
@@ -187,7 +190,7 @@ const ProfileUpdate = () => {
                         <input className='password' placeholder='Enter New Password' type='password' required autoComplete="off" onChange={(e) => {setNewPassword(e.target.value); }} />
                         <input className='confirmPassword' placeholder='Confirm New Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmNewPassword(e.target.value); }} />
                         <h1>Church Info</h1>
-                        {showNamingConvention && <h2>{churchName}</h2>}
+                        {showNamingConvention && <h2>{churchNameToDisplay}</h2>}
                         <select value={selectDenomination} option={selectDenomination} required onChange={(e) => churchInfoChecker(e.target.value)} >
                             <option value="null">Select Denomination Type</option>
                             <option value="Not Applicable">--Not Applicable--</option>
@@ -217,7 +220,7 @@ const ProfileUpdate = () => {
                     </>
                 }
                 </div>
-                {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
+                {isLoading ? null : statusMessage && <h2>{statusMessage}</h2>}
                 </div>
             <Footer/>
         </>

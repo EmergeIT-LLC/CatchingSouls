@@ -22,7 +22,7 @@ const AdminToolsManageTriviaUpdate = () => {
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
-    const [supportingVerse, setSupportingVerse] = useState("null");
+    const [supportingVerse, setSupportingVerse] = useState(null);
     const [selectQAType, setSelectQAType] = useState("null");
     const [selectDifficulty, setSelectDifficulty] = useState("null");
     const [statusMessage, setStatusMessage] = useState('');
@@ -79,6 +79,7 @@ const AdminToolsManageTriviaUpdate = () => {
             questionID : QuestionID,
             question : question,
             answer : answer,
+            supportingVerse : supportingVerse,
             selectQAType : selectQAType,
             selectDifficulty : selectDifficulty
         })

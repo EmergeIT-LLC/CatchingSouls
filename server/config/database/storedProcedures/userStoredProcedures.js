@@ -48,9 +48,9 @@ async function unverifiedUserCheckUsername(username) {
     });
 }
 
-async function addUser(username, firstName, lastName, email, password, churchName, churchLocation) {
+async function addUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password, churchName, churchLocation], function (err) {
+        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password, churchName, denomination, churchLocation], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -96,9 +96,9 @@ async function locateRecoveryUserData(username) {
     });
 }
 
-async function moveUser(username, firstName, lastName, email, password, churchName, churchLocation) {
+async function moveUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, churchName, churchLocation], function (err) {
+        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, churchName, denomination, churchLocation], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -133,9 +133,9 @@ async function removeVerifiedUserUsername(username) {
     });
 }
 
-async function updateUserAccountWithPW(username, firstName, lastName, email, password) {
+async function updateUserAccountWithPW(username, firstName, lastName, email, password, churchName, denomination, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ? WHERE accountUsername = ?', [firstName, lastName, email, password, username], function (err) {
+        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, accountPassword = ?, churchName = ?, denomination = ?, churchLocation = ? WHERE accountUsername = ?', [firstName, lastName, email, password, churchName, denomination, churchLocation, username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -145,9 +145,9 @@ async function updateUserAccountWithPW(username, firstName, lastName, email, pas
     });
 }
 
-async function updateUserAccountWithoutPW(username, firstName, lastName, email) {
+async function updateUserAccountWithoutPW(username, firstName, lastName, email, churchName, denomination, churchLocation) {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ? WHERE accountUsername = ?', [firstName, lastName, email, username], function (err) {
+        db.run('UPDATE users SET accountFirstName = ?, accountLastName = ?, accountEmail = ?, churchName = ?, denomination = ?, churchLocation = ? WHERE accountUsername = ?', [firstName, lastName, email, churchName, denomination, churchLocation, username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {

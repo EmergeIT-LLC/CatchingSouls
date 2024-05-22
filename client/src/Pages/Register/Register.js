@@ -24,6 +24,7 @@ const Register = () => {
     const [showOtherDenominationField, setShowOtherDenominationfield] = useState(false);
     const [otherDenominationField, setOtherDenominationField] = useState(null);
     const [churchName, setChurchName] = useState(null);
+    const [churchNameToDisplay, setChurchNameToDisplay] = useState(null);
     const [showNamingConvention, setShowNamingConvention] = useState(false);
     const [churchLocation, setChurchLocation] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -59,7 +60,8 @@ const Register = () => {
             namingConvention = churchNaming + ' ' + selectDenomination + ' Church';
         }
         // Setting church name to pass over the api
-        setChurchName(namingConvention);
+        setChurchName(churchNaming);
+        setChurchNameToDisplay(namingConvention);
     }
 
     const submitForm = (e) => {
@@ -103,6 +105,7 @@ const Register = () => {
             email : email,
             password : password,
             churchName : churchName,
+            denomination : selectDenomination,
             churchLocation : churchLocation
         })
         .then((response) => {
@@ -136,7 +139,7 @@ const Register = () => {
                     <input className='password' placeholder='Enter A Password' type='password' required autoComplete="off" onChange={(e) => setPassword(e.target.value)} />
                     <input className='confirmPassword' placeholder='Confirm Password' type='password' required autoComplete="off" onChange={(e) => setConfirmPassword(e.target.value)} />
                     <h1>Church Info</h1>
-                    {showNamingConvention && <h2>{churchName}</h2>}
+                    {showNamingConvention && <h2>{churchNameToDisplay}</h2>}
                     <select value={selectDenomination} required onChange={(e) => churchInfoChecker(e.target.value)} >
                         <option value="null">Select Denomination Type</option>
                         <option value="Not Applicable">--Not Applicable--</option>

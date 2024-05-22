@@ -21,6 +21,7 @@ const Profile = () => {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [savedSouls, setSavedSouls] = useState('');
+    const [selectDenomination, setSelectDenomination] = useState(null);
     const [churchName, setChurchName] = useState(null);
     const [churchLocation, setChurchLocation] = useState(null);
     const [showButtons, setShowButtons] = useState(true);
@@ -43,6 +44,7 @@ const Profile = () => {
             loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             loggedInUserData.then(res => setEmail(res.data.user.accountEmail));
             loggedInUserData.then(res => setSavedSouls(res.data.user.savedSouls));
+            loggedInUserData.then(res => setSelectDenomination(res.data.user.denomination));
             loggedInUserData.then(res => setChurchName(res.data.user.churchName));
             loggedInUserData.then(res => setChurchLocation(res.data.user.churchLocation));
             if (isAdmin) {
@@ -69,7 +71,7 @@ const Profile = () => {
                             <p><b>Saved Souls:</b> {savedSouls}</p>
                             {churchName ?
                                 <> 
-                                    <p><b>Church:</b> {churchName}, {churchLocation}</p>
+                                    <p><b>Church:</b> {churchName} {selectDenomination} Church in {churchLocation}</p>
                                 </>
                                 :
                                 <>

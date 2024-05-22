@@ -15,6 +15,9 @@ router.post('/register', async (req, res) => {
   const lastName = req.body.lastName;
   const email = req.body.email;
   const password = req.body.password;
+  const churchName = req.body.churchName;
+  const denomination = req.body.denomination;
+  const churchLocation = req.body.churchLocation;
 
   try {
     const isDuplicateVerifiedUser = await userQueries.verifiedUserCheckEmail(email);
@@ -31,7 +34,7 @@ router.post('/register', async (req, res) => {
       bcrypt.hash(password, saltRounds, async function(err, hash) {
         try {
           //Add user to verification table
-          const isUserAdded = await userQueries.addUser(username.toLowerCase(), firstName, lastName, email, hash)
+          const isUserAdded = await userQueries.addUser(username.toLowerCase(), firstName, lastName, email, hash, churchName, denomination, churchLocation)
 
           if (isUserAdded) {
             emailHandler.sendVerification(email, firstName, lastName, username.toLowerCase());
@@ -79,7 +82,7 @@ router.post('/verifyUser', async (req, res) => {
     const unverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
 
     if (unverifiedUser.length > 0){
-      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword, unverifiedUser[0].churchName, unverifiedUser[0].churchLocation);
+      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword, unverifiedUser[0].churchName, unverifiedUser[0].denomination, unverifiedUser[0].churchLocation);
 
 
       if (isVerificationMoveSuccessful) {
@@ -220,6 +223,9 @@ router.post('/account_Update', async (req, res) => {
   const email = req.body.email;
   const currentPassword = req.body.password;
   const newPassword = req.body.newPassword;
+  const churchName = req.body.churchName;
+  const denomination = req.body.denomination;
+  const churchLocation = req.body.churchLocation;
 
   try {
     isUser = await userQueries.locateVerifiedUserData(username.toLowerCase());
@@ -234,7 +240,7 @@ router.post('/account_Update', async (req, res) => {
                 return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {
-                const userUpdateStatus = await userQueries.updateUserAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
+                const userUpdateStatus = await userQueries.updateUserAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash, churchName, denomination, churchLocation);
                 if (userUpdateStatus){
                   let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
                   return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
@@ -249,7 +255,7 @@ router.post('/account_Update', async (req, res) => {
         });
       }
       else {
-        const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username.toLowerCase(), firstName, lastName, email);
+        const userUpdateStatus = await userQueries.updateUserAccountWithoutPW(username.toLowerCase(), firstName, lastName, email, churchName, denomination, churchLocation);
         if (userUpdateStatus){
           let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
           return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
@@ -266,7 +272,7 @@ router.post('/account_Update', async (req, res) => {
                 return res.json({ message: 'An Error Occured!', errorMessage: err.message });
               }
               else {          
-                const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash);
+                const adminUpdateStatus = await adminQueries.updateAdminAccountWithPW(username.toLowerCase(), firstName, lastName, email, hash, churchName, denomination, churchLocation);
                 if (adminUpdateStatus){
                   let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
                   return res.json({ updateStatus: 'Successful', cookieSetting: cookieSettings});
