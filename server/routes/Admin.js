@@ -41,7 +41,7 @@ router.post('/adminTool/register', async (req, res) => {
     else if (locateAdminUser){
       return res.json({ message: 'User already registered!' });
     }
-    else if (locatedUnverifiedAdmin.length > 0){
+    else if (locatedUnverifiedAdmin.length < 1){
       emailHandler.sendAdminVerification(locatedUnverifiedAdmin[0].accountEmail, locatedUnverifiedAdmin[0].accountFirstName, locatedUnverifiedAdmin[0].accountLastName, username.toLowerCase());
       return res.json({ message: 'User needs to check email to verify account'});
     }
