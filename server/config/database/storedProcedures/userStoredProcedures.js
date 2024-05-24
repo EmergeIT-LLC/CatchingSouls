@@ -48,9 +48,9 @@ async function unverifiedUserCheckUsername(username) {
     });
 }
 
-async function addUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation) {
+async function addUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation, churchState) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password, churchName, denomination, churchLocation], function (err) {
+        db.run('INSERT INTO usersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation, churchState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), password, churchName, denomination, churchLocation, churchState], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -96,9 +96,9 @@ async function locateRecoveryUserData(username) {
     });
 }
 
-async function moveUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation) {
+async function moveUser(username, firstName, lastName, email, password, churchName, denomination, churchLocation, churchState) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, churchName, denomination, churchLocation], function (err) {
+        db.run('INSERT INTO users (accountUsername, accountFirstName, accountLastName, accountEmail, accountPassword, churchName, denomination, churchLocation, churchState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [username, firstName, lastName, email, password, churchName, denomination, churchLocation, churchState], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {

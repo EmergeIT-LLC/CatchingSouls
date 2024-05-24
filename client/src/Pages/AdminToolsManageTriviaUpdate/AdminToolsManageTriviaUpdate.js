@@ -128,10 +128,9 @@ const AdminToolsManageTriviaUpdate = () => {
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advance">Advance</option>
                     </select>
-                    {isLoading && <button className='adminToolsManageTriviaUpdateButton' disabled>Loading...</button>}
-                    {!isLoading && <button className='adminToolsManageTriviaUpdateButton' type='submit' onClick={submitForm}>Update Q&A</button>}
-                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaUpdateButton'>Cancel</button></Link>}
-                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaUpdateButton'>Return to Questions</button></Link>}
+                    {isLoading ? <button className='adminToolsManageTriviaUpdateButton' disabled>Loading...</button> : <button className='adminToolsManageTriviaUpdateButton' type='submit' onClick={submitForm}>Update Q&A</button>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaUpdateCancelButton'>Cancel</button></Link>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaUpdateCancelButton'>Return to Questions</button></Link>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

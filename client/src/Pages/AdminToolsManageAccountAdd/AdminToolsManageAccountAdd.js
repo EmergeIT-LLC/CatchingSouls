@@ -45,8 +45,7 @@ const AdminToolsManageAccountAdd = () => {
         }
     }, [userLoggedIn]);
 
-    const submitForm = (e) => {
-        e.PreventDefault();
+    const submitForm = () => {
         if (firstName === null || lastName === null || email === null || confirmEmail === null || selectRole === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
@@ -67,19 +66,40 @@ const AdminToolsManageAccountAdd = () => {
             selectRole : selectRole
         })
         .then((response) => {
-            if (response.data.message === "User needs to check email to verify account"){
-                setStatusMessage("User Is Already In Verification Stage!");
+            if (response.data.registerStatus === "Successful") {
+                setStatusMessage("User added successfully!");
                 setIsLoading(false);
                 setTimeout(() => {
                     navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
                 }, 2000);
             }
-            else if (response.data.message){
-                setStatusMessage(response.data.message);
+            else if (response.data.registerStatus === "Unsuccessful" && response.data.message === "User needs to check email to verify account"){
+                setStatusMessage("User Is Already In Verification Stage!");
                 setIsLoading(false);
+                setTimeout(() => {
+                    navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                }, 2000);
+
             }
-            else {
-                navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+            else if (response.data.registerStatus === "Unsuccessful"){
+                if (response.data.message === "User needs to check email to verify account") {
+                    setStatusMessage("User Is Already In Verification Stage!");
+                    setIsLoading(false);
+                    setTimeout(() => {
+                        navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                    }, 2000);
+                }
+                else if (response.data.message === 'Email already registered!' || response.data.message === 'User already registered!') {
+                    setStatusMessage(response.data.message);
+                    setIsLoading(false);
+                    setTimeout(() => {
+                        navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                    }, 2000);
+                }
+                else {
+                    setStatusMessage(response.data.message);
+                    setIsLoading(false);
+                }
             }
         })
         .catch((error) => {
@@ -104,6 +124,7 @@ const AdminToolsManageAccountAdd = () => {
                     </select>
                     {isLoading && <button className='registerButton' disabled>Loading...</button>}
                     {!isLoading && <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
+                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='registerButton'>Return to Accounts</button></a>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

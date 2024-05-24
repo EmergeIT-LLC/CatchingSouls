@@ -69,8 +69,8 @@
     color: black;
     font-weight: bold;
     font-size: 1.50em;
-    height: 2.50em;
-    width: 10em;
+    height: 3em;
+    width: 15em;
     margin: 1em auto 1.50em auto;
     border: 0.15em solid purple;
     border-radius: 1em;
@@ -83,23 +83,23 @@
 .adminToolsManageTriviaAdd_form > a {
     text-decoration: none;
 }
-.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddButton {
+.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddCancelButton {
     display: block;
     text-decoration: none;
-	background-color: gold;
-    color: black;
+	background-color: purple;
+    color: white;
     font-weight: bold;
     font-size: 1.50em;
-    height: 2.50em;
+    height: 3em;
     width: 15em;
     margin: 1em auto 1.50em auto;
-    border: 0.15em solid purple;
+    border: 0.15em solid darkgoldenrod;
     border-radius: 1em;
 }
-.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddButton:hover {
-    color: white;
-	background-color: purple;
-    border: 0.15em solid darkgoldenrod;
+.adminToolsManageTriviaAdd_form > a > .adminToolsManageTriviaAddCancelButton:hover {
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
 }
 @media (max-width: 800px) {
     .adminToolsManageTriviaAddPage_container {

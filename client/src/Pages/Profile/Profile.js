@@ -24,6 +24,7 @@ const Profile = () => {
     const [selectDenomination, setSelectDenomination] = useState(null);
     const [churchName, setChurchName] = useState(null);
     const [churchLocation, setChurchLocation] = useState(null);
+    const [churchState, setChurchState] = useState(null);
     const [showButtons, setShowButtons] = useState(true);
     const isAdmin = GetAdminRole();
     const validCookie = isCookieValid()
@@ -47,6 +48,7 @@ const Profile = () => {
             loggedInUserData.then(res => setSelectDenomination(res.data.user.denomination));
             loggedInUserData.then(res => setChurchName(res.data.user.churchName));
             loggedInUserData.then(res => setChurchLocation(res.data.user.churchLocation));
+            loggedInUserData.then(res => setChurchState(res.data.user.churchState));
             if (isAdmin) {
                 setShowButtons(false);
             }
@@ -71,7 +73,7 @@ const Profile = () => {
                             <p><b>Saved Souls:</b> {savedSouls}</p>
                             {churchName ?
                                 <> 
-                                    <p><b>Church:</b> {churchName} {selectDenomination} Church in {churchLocation}</p>
+                                    <p><b>Church:</b> {churchName} {selectDenomination} Church in {churchLocation}, {churchState}</p>
                                 </>
                                 :
                                 <>

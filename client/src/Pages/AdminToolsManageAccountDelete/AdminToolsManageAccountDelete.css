@@ -28,20 +28,20 @@
 .adminToolsManageAccountDelete_form > .adminToolsManageAccountDeleteButton {
     display: block;
     text-decoration: none;
-	background-color: gold;
-    color: black;
+	background-color: purple;
+    color: white;
     font-weight: bold;
     font-size: 1.50em;
     height: 3em;
     width: 12em;
     margin: 1em auto 1.50em auto;
-    border: 0.15em solid purple;
+    border: 0.15em solid darkgoldenrod;
     border-radius: 1em;
 }
 .adminToolsManageAccountDelete_form > .adminToolsManageAccountDeleteButton:hover {
-    color: white;
-	background-color: purple;
-    border: 0.15em solid darkgoldenrod;
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
 }
 .adminToolsManageAccountDelete_form > a {
     text-decoration: none;

@@ -96,7 +96,7 @@ const AdminToolsManageAccountDetail = () => {
                                     <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Delete`}><button className='adminToolsManageAccountDetailButton'>Delete Admin</button></a>
                                 </>
                             }
-                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailButton'>Return to Accounts</button></a>
+                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailCancelButton'>Return to Accounts</button></a>
                     </>
                 }
                 </div>

@@ -31,38 +31,37 @@
 .adminToolsManageTriviaDelete_form > .adminToolsManageTriviaDeleteButton {
     display: block;
     text-decoration: none;
-	background-color: gold;
-    color: black;
+	background-color: purple;
+    color: white;
     font-weight: bold;
     font-size: 1.50em;
     height: 3em;
     width: 12em;
     margin: 1em auto 1.50em auto;
-    border: 0.15em solid purple;
+    border: 0.15em solid darkgoldenrod;
     border-radius: 1em;
 }
 .adminToolsManageTriviaDelete_form > .adminToolsManageTriviaDeleteButton:hover {
-    color: white;
-	background-color: purple;
-    border: 0.15em solid darkgoldenrod;
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
 }
 .adminToolsManageTriviaDelete_form > a {
     text-decoration: none;
 }
-.adminToolsManageTriviaDelete_form > a > .adminToolsManageTriviaDeleteButton {
+.adminToolsManageTriviaDelete_form > a > .adminToolsManageTriviaDeleteCancelButton {
     display: block;
-    text-decoration: none;
 	background-color: gold;
     color: black;
     font-weight: bold;
     font-size: 1.50em;
-    height: 3em;
+    height: 2.50em;
     width: 12em;
     margin: 1em auto 1.50em auto;
     border: 0.15em solid purple;
     border-radius: 1em;
 }
-.adminToolsManageTriviaDelete_form > a > .adminToolsManageTriviaDeleteButton:hover {
+.adminToolsManageTriviaDelete_form > a > .adminToolsManageTriviaDeleteCancelButton:hover {
     color: white;
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;

@@ -50,7 +50,7 @@ async function unverifiedAdminCheckUsername(username) {
 
 async function addAdmin(username, firstName, lastName, email, role) {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username.toLowerCase(), firstName, lastName, email.toLowerCase(), role], function (err) {
+        db.run('INSERT INTO adminusersverification (accountUsername, accountFirstName, accountLastName, accountEmail, accountRole) VALUES (?, ?, ?, ?, ?)', [username, firstName, lastName, email, role], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -100,7 +100,7 @@ async function moveAdmin(username, firstName, lastName, email, password, role) {
 
 async function removeVerifiedAdminUsername(username) {
     return new Promise((resolve, reject) => {
-        db.run('Delete FROM adminusers WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
+        db.run('Delete FROM adminusers WHERE accountUsername = ?', [username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {
@@ -112,7 +112,7 @@ async function removeVerifiedAdminUsername(username) {
 
 async function removeUnverifiedAdminUsername(username) {
     return new Promise((resolve, reject) => {
-        db.run('Delete FROM adminusersverification WHERE accountUsername = ?', [username.toLowerCase()], function (err) {
+        db.run('Delete FROM adminusersverification WHERE accountUsername = ?', [username], function (err) {
             if (err) {
                 reject({ message: 'A Database Error Occurred!', errorMessage: err.message });
             } else {

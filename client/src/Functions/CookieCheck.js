@@ -32,11 +32,18 @@ export const isCookieValid = () => {
             const expirationDate = new Date(parsedValue.expirationDate);
             const currentTime = new Date();
 
-            return currentTime < expirationDate; // True if current time is before expiration
+            if (currentTime > expirationDate) {
+                // True if current time is after expiration
+                localStorage.clear();
+                return false;
+            }
+            // True if current time is before expiration
+            return true;
         } catch (error) {
             console.error('Failed to parse cookie value:', error);
             return false;
         }
     }
-    return false; // Cookie doesn't exist or is expired
+    // Cookie doesn't exist
+    return false;
 };

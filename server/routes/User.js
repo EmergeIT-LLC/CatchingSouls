@@ -18,6 +18,7 @@ router.post('/register', async (req, res) => {
   const churchName = req.body.churchName;
   const denomination = req.body.denomination;
   const churchLocation = req.body.churchLocation;
+  const churchState = req.body.churchState;
 
   try {
     const isDuplicateVerifiedUser = await userQueries.verifiedUserCheckEmail(email);
@@ -34,7 +35,7 @@ router.post('/register', async (req, res) => {
       bcrypt.hash(password, saltRounds, async function(err, hash) {
         try {
           //Add user to verification table
-          const isUserAdded = await userQueries.addUser(username.toLowerCase(), firstName, lastName, email, hash, churchName, denomination, churchLocation)
+          const isUserAdded = await userQueries.addUser(username.toLowerCase(), firstName, lastName, email, hash, churchName, denomination, churchLocation, churchState)
 
           if (isUserAdded) {
             emailHandler.sendVerification(email, firstName, lastName, username.toLowerCase());
@@ -82,7 +83,7 @@ router.post('/verifyUser', async (req, res) => {
     const unverifiedUser = await userQueries.locateUnverifiedUserData(username.toLowerCase());
 
     if (unverifiedUser.length > 0){
-      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword, unverifiedUser[0].churchName, unverifiedUser[0].denomination, unverifiedUser[0].churchLocation);
+      const isVerificationMoveSuccessful = await userQueries.moveUser(username.toLowerCase(), unverifiedUser[0].accountFirstName, unverifiedUser[0].accountLasstName, unverifiedUser[0].accountEmail, unverifiedUser[0].accountPassword, unverifiedUser[0].churchName, unverifiedUser[0].denomination, unverifiedUser[0].churchLocation, unverifiedUser[0].churchState);
 
 
       if (isVerificationMoveSuccessful) {

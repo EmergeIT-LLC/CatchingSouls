@@ -104,9 +104,8 @@ const AdminToolsManageTriviaAdd = () => {
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advance">Advance</option>
                     </select>
-                    {isLoading && <button className='adminToolsManageTriviaAddButton' disabled>Loading...</button>}
-                    {!isLoading && <button className='adminToolsManageTriviaAddButton' type='submit' onClick={submitForm}>Add Q&A</button>}
-                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaAddButton'>Return to Questions</button></Link>}
+                    {isLoading ? <button className='adminToolsManageTriviaAddButton' disabled>Loading...</button> : <button className='adminToolsManageTriviaAddButton' type='submit' onClick={submitForm}>Add Q&A</button>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaAddCancelButton'>Return to Questions</button></Link>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

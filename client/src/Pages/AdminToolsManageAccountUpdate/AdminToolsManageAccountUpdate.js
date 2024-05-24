@@ -149,8 +149,8 @@ const AdminToolsManageAccountUpdate = () => {
                     }
                     {isLoading && <button className='adminToolsManageAccountUpdateButton' disabled>Loading...</button>}
                     {!isLoading && <button className='adminToolsManageAccountUpdateButton' type='submit' onClick={submitUpdateForm}>Update</button>}
-                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`}><button className='adminToolsManageAccountUpdateButton'>Cancel</button></a>}
-                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountUpdateButton'>Return to Accounts</button></a>}
+                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`}><button className='adminToolsManageAccountUpdateCancelButton'>Cancel</button></a>}
+                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountUpdateCancelButton'>Return to Accounts</button></a>}
                 </div>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

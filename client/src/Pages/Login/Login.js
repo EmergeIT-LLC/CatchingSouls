@@ -91,8 +91,7 @@ const Login = () => {
                     <h1>Catching Souls</h1>
                     <input name='username' placeholder='Username' autoComplete="off" value={username} onChange={(e) => {setUsername(e.target.value)}} />
                     <input name='password' placeholder='Password' type='password' autoComplete="off" value={password} onChange={(e) => {setPassword(e.target.value) }} />
-                    {isLoading && <button className='loginButton' disabled>Loading...</button>}
-                    {!isLoading && <button className='loginButton' type='submit' onClick={login}>Login</button>}
+                    {isLoading ? <button className='loginButton' disabled>Loading...</button> : <button className='loginButton' type='submit' onClick={login}>Login</button>}
                     {isLoading ? <></> : <button className='loginButton' onClick={guestLogin}>Login As Guest</button>}
                     {isLoading ? <></> : <h2><a href='/Register'>Register?</a> or <a href='/ForgotPassword'>Reset Password?</a></h2>}
                 </form>

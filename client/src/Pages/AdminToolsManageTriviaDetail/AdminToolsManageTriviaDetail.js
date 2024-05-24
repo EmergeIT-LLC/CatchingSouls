@@ -88,12 +88,12 @@ const AdminToolsManageTriviaDetail = () => {
                             {showButtons ?
                                 <>
                                     <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Update`}><button className='adminToolsManageTriviaDetailButton'>Update Question</button></a>
-                                    <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Delete`}><button className='adminToolsManageTriviaDetailButton'>Delete Question</button></a>
+                                    <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Delete`}><button className='adminToolsManageTriviaDetailCancelButton'>Delete Question</button></a>
                                 </>
                             :
                             <></>
                             }
-                        <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDetailButton'>Return to Questions</button></a>
+                        <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDetailCancelButton'>Return to Questions</button></a>
                         </>
                     }
                     </div>

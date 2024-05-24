@@ -98,8 +98,7 @@ const AdminToolsVerification = () => {
                             <p>Please enter a password to verify your account.</p>
                             <input className='password' placeholder='Enter A Password' type='password' required autoComplete="off" onChange={(e) => {setPassword(e.target.value); }} />
                             <input className='confirmPassword' placeholder='Confirm Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmPassword(e.target.value); }} />
-                            {isLoading && <button className='registerButton' disabled>Loading...</button>}
-                            {!isLoading && <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
+                            {isLoading ? <button className='registerButton' disabled>Loading...</button> : <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
                         </>
                         :
                         <>

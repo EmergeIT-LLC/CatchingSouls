@@ -97,9 +97,7 @@ const RecoveryConfirmation = () => {
                             <p>Please enter a password to recover your account.</p>
                             <input className='password' placeholder='Enter A Password' type='password' required autoComplete="off" onChange={(e) => {setPassword(e.target.value); }} />
                             <input className='confirmPassword' placeholder='Confirm Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmPassword(e.target.value); }} />
-                            {isLoading && <button className='recoverButton' disabled>Loading...</button>}
-                            {!isLoading && <button className='recoverButton' type='submit' onClick={submitForm}>Recover</button>}
-                        </>
+                            {isLoading ? <button className='recoverButton' disabled>Loading...</button> : <button className='recoverButton' type='submit' onClick={submitForm}>Recover</button>}                        </>
                         :
                         <>
                             <img src={companyLogoGreyedOut} alt ="Catching Souls Logo Greyed Out" />

@@ -68,8 +68,7 @@ const SendUsYourQuestions = () => {
                     <textarea className='question' placeholder='Type In Your Trivia Question' required autoComplete="off" onChange={(e) => setQuestion(e.target.value)} />
                     <textarea className='answer' placeholder='Enter Trivia Answer' required autoComplete="off" onChange={(e) => {setAnswer(e.target.value); }} />
                     <input className='verse' placeholder='Enter Supporting Verse' required autoComplete="off" onChange={(e) => {setVerse(e.target.value); }} />
-                    {isLoading && <button className='SendUsYourQuestionsButton' disabled>Loading...</button>}
-                    {!isLoading && <button className='SendUsYourQuestionsButton' type='submit' onClick={submitForm}>Submit</button>}
+                    {isLoading ? <button className='SendUsYourQuestionsButton' disabled>Loading...</button> : <button className='SendUsYourQuestionsButton' type='submit' onClick={submitForm}>Submit</button>}
                 </div>
             {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
             </div>  

@@ -46,11 +46,11 @@
 .profileDelete_form > a {
     text-decoration: none;
 }
-.profileDelete_form > a > .profileDeleteButton {
+.profileDelete_form > a > .profileDeleteCancelButton {
     display: block;
     text-decoration: none;
-	background-color: gold;
-    color: black;
+	background-color: purple;
+    color: white;
     font-weight: bold;
     font-size: 1.50em;
     height: 3em;
@@ -59,10 +59,10 @@
     border: 0.15em solid purple;
     border-radius: 1em;
 }
-.profileDelete_form > a > .profileDeleteButton:hover {
-    color: white;
-	background-color: purple;
-    border: 0.15em solid darkgoldenrod;
+.profileDelete_form > a > .profileDeleteCancelButton:hover {
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
 }
 @media (max-width: 800px) {
     .profileDeletePage_container {

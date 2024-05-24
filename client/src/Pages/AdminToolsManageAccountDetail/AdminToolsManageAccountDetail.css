@@ -51,6 +51,24 @@
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;
 }
+.adminToolsManageAccountDetail_form > a > .adminToolsManageAccountDetailCancelButton {
+    display: inline-block;
+    text-decoration: none;
+	background-color: purple;
+    color: white;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 3em;
+    width: 12em;
+    margin: 1em 1em 1.50em 1em;
+    border: 0.15em solid darkgoldenrod;
+    border-radius: 1em;
+}
+.adminToolsManageAccountDetail_form > a > .adminToolsManageAccountDetailCancelButton:hover {
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
+}
 @media (max-width: 800px) {
     .adminToolsManageAccountDetailPage_container {
         width: 100%;

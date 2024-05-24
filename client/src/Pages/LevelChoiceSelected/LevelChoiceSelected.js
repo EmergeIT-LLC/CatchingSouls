@@ -211,7 +211,7 @@ const LevelChoiceSelected = () => {
                                             <h1 style={{color: 'green'}}>Correct Answer</h1>
                                             {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
-                                            <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                            <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     :
                                         <>
@@ -219,7 +219,7 @@ const LevelChoiceSelected = () => {
                                             <h2>Correct Answer: {correctAnswer}</h2>
                                             {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
-                                            <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                            <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     }
                                     </>
@@ -237,7 +237,7 @@ const LevelChoiceSelected = () => {
                                     <h2>{question}</h2>
                                     <button className='levelChoiceSelectedButton' value={answerA} onClick={() => checkSelectedAnswer(answerA)}>{answerA}</button>
                                     <button className='levelChoiceSelectedButton' value={answerB} onClick={() => checkSelectedAnswer(answerB)}>{answerB}</button>
-                                    <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                    <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                 </>
                             :
                                 <>
@@ -251,7 +251,7 @@ const LevelChoiceSelected = () => {
                                     <button className='levelChoiceSelectedButton' value={answerB} onClick={() => checkSelectedAnswer(answerB)}>{answerB}</button>
                                     <button className='levelChoiceSelectedButton' value={answerC} onClick={() => checkSelectedAnswer(answerC)}>{answerC}</button>
                                     <button className='levelChoiceSelectedButton' value={answerD} onClick={() => checkSelectedAnswer(answerD)}>{answerD}</button>                                
-                                    <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                    <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                 </>
                             }
                             </>

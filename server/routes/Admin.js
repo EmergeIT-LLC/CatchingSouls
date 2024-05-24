@@ -36,19 +36,21 @@ router.post('/adminTool/register', async (req, res) => {
     const locatedUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateAdminEmail){
-      return res.json({ message: 'Email already registered!' });
+      return res.json({ registerStatus: "Unsuccessful", message: 'Email already registered!' });
     }
     else if (locateAdminUser){
-      return res.json({ message: 'User already registered!' });
+      return res.json({ registerStatus: "Unsuccessful", message: 'User already registered!' });
     }
     else if (locatedUnverifiedAdmin.length > 0){
       emailHandler.sendAdminVerification(locatedUnverifiedAdmin[0].accountEmail, locatedUnverifiedAdmin[0].accountFirstName, locatedUnverifiedAdmin[0].accountLastName, username.toLowerCase());
-      return res.json({ message: 'User needs to check email to verify account'});
+      return res.json({ registerStatus: "Unsuccessful", message: 'User needs to check email to verify account'});
     }
     else {
       const isAdded = await adminQueries.addAdmin(username.toLowerCase(), firstName, lastName, email.toLowerCase(), role);
+      console.log(isAdded);
       if (isAdded){
-        return emailHandler.sendAdminVerification(email.toLowerCase(), firstName, lastName, username.toLowerCase());
+        emailHandler.sendAdminVerification(email.toLowerCase(), firstName, lastName, username.toLowerCase());
+        return res.json({registerStatus: "Successful"});
       }
     }
   }
@@ -90,7 +92,7 @@ router.post('/adminTool/Verification', async (req, res) => {
           const isVerificationMoveSuccessful = await adminQueries.moveAdmin(unverifiedAdminData[0].accountUsername, unverifiedAdminData[0].accountFirstName, unverifiedAdminData[0].accountLastName, unverifiedAdminData[0].accountEmail, hash, unverifiedAdminData[0].accountRole);
 
           if (isVerificationMoveSuccessful){
-            const isVerificationDeletionSuccessful = await adminQueries.removeUnverifiedAdminUsername(username);
+            const isVerificationDeletionSuccessful = await adminQueries.removeUnverifiedAdminUsername(username.toLowerCase());
             
             if (isVerificationDeletionSuccessful) {
               return res.json({VerificationStatus: "Successful"});
@@ -160,8 +162,8 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
   const username = req.body.SelectedAdmin.SelectedAdmin;
 
   try {
-    const locateAdminUser = await adminQueries.locateVerifiedAdminData(username);
-    const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username);
+    const locateAdminUser = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
+    const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
 
     if (locateAdminUser.length > 0) {
       let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
@@ -186,11 +188,11 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
   const role = req.body.selectRole;
 
   try {
-    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username);
-    const locateUnverifiedAdmin = await adminQueries.unverifiedAdminCheckUsername(username);
+    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username.toLowerCase());
+    const locateUnverifiedAdmin = await adminQueries.unverifiedAdminCheckUsername(username.toLowerCase());
 
     if (locateAdminUser) {
-      const updateStatus = await adminQueries.updateVerifiedAdminAccount(firstName, lastName, email, role, username);
+      const updateStatus = await adminQueries.updateVerifiedAdminAccount(firstName, lastName, email, role, username.toLowerCase());
       if (updateStatus) {
         let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
@@ -199,7 +201,7 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
       return res.json({updateStatus: "Unsuccessful"});
     }
     else if (locateUnverifiedAdmin) {
-      const updateStatus = await adminQueries.updateUnverifiedAdminAccount(firstName, lastName, email, role, username);
+      const updateStatus = await adminQueries.updateUnverifiedAdminAccount(firstName, lastName, email, role, username.toLowerCase());
       if (updateStatus) {
         let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
@@ -217,11 +219,11 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
   const username = req.body.username;
 
   try {
-    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username);
-    const locateUnverifiedAdmin = await adminQueries.unverifiedAdminCheckUsername(username);
+    const locateAdminUser = await adminQueries.verifiedAdminCheckUsername(username.toLowerCase());
+    const locateUnverifiedAdmin = await adminQueries.unverifiedAdminCheckUsername(username.toLowerCase());
     
     if (locateAdminUser) {
-      const deleteStatus = await adminQueries.removeVerifiedAdminUsername(username);
+      const deleteStatus = await adminQueries.removeVerifiedAdminUsername(username.toLowerCase());
       let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       if (deleteStatus) {
@@ -230,7 +232,7 @@ router.post('/adminAccountDetail_Delete', async (req, res) => {
       return res.json({deleteStatus: "Unsuccessful", cookieSetting: cookieSettings});
     }
     else if (locateUnverifiedAdmin) {
-      const deleteStatus = await adminQueries.removeUnverifiedAdminUsername(username);
+      const deleteStatus = await adminQueries.removeUnverifiedAdminUsername(username.toLowerCase());
       let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
 
       if (deleteStatus) {
