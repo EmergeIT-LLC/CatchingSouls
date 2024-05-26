@@ -8,7 +8,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckUsername, CheckPassword } from '../../Functions/EntryCheck';
 //Functions
 import {CheckUserLogin} from '../../Functions/VerificationCheck';
-import { CookieCheck } from '../../Functions/CookieCheck';
+import { CookieCheck, isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -17,6 +17,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const userLoggedIn = CheckUserLogin();
+    const validCookie = isCookieValid()
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
@@ -24,7 +25,7 @@ const Login = () => {
 
 
     useEffect(() => {
-        if (userLoggedIn === true) {
+        if (userLoggedIn === true && validCookie === true) {
           navigate('/');
         }
     }, [userLoggedIn, navigate]);

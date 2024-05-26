@@ -163,7 +163,7 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
 
   try {
     const locateAdminUser = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
-    const locateUnverifiedAdmin = await adminQueries.locateVerifiedAdminData(username.toLowerCase());
+    const locateUnverifiedAdmin = await adminQueries.locateUnverifiedAdminData(username.toLowerCase());
 
     if (locateAdminUser.length > 0) {
       let cookieSettings = await cookieMonster.setCookie(res, 'csAuthServices-' + username.toLowerCase(), username.toLowerCase());
