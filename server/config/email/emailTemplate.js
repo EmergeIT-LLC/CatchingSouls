@@ -3,7 +3,7 @@ const sendGridAPI = process.env.SENDGRID_API_KEY;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(sendGridAPI);
 const businessEmail = 'catchingsoulstrivia@outlook.com';
-const businessPOCEmail = 'jondoetech@outlook.com';
+const businessPOCEmail = 'jonathan.dameus@emerge-it.net';
 
 function sendVerification(email, firstName, lastName, username) {
     const sentEmail = false;
