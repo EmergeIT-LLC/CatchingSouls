@@ -86,7 +86,7 @@
     margin: 0;
     font-weight: bold;
 }
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .adminToolsManageTriviaPage_container {
         width: 100%;
         height: 100%;

@@ -50,7 +50,7 @@
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;
 }
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .profilePage_container {
         width: 100%;
     }

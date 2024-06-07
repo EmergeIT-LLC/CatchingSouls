@@ -36,7 +36,7 @@
     border: 0.15em solid darkgoldenrod;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .adminToolsManageDatabasePage_container {
         width: 100%;
         height: 100%;

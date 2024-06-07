@@ -42,7 +42,7 @@
     margin: 1em 2.50em;
     text-align: left;
 }
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .contactPage_container {
         width: 100%;
         height: 100%;
