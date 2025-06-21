@@ -4,7 +4,6 @@
 /client/.pnp.js
 /client/coverage
 /client/build
-/client/.DS_Store
 /client/.env.local
 /client/.env.development.local
 /client/.env.test.local
@@ -14,5 +13,6 @@
 /client/yarn-error.log*
 /server/.env
 /server/node_modules
-/server/.DS_Store
-.DS_Store
+.DS_Store*
+.env*
+/test/e2e/__pycache__
