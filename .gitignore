@@ -1,5 +1,10 @@
-/client/.env
-/client/node_modules
+# Entire directories
+**.DS_Store
+**/node_modules
+**.env
+**/__pycache__/
+
+# Client
 /client/.pnp
 /client/.pnp.js
 /client/coverage
@@ -11,8 +16,3 @@
 /client/npm-debug.log*
 /client/yarn-debug.log*
 /client/yarn-error.log*
-/server/.env
-/server/node_modules
-.DS_Store*
-.env*
-/test/e2e/__pycache__
