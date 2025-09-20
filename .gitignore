@@ -1,10 +1,14 @@
-/client/.env
-/client/node_modules
+# Entire directories
+**.DS_Store
+**/node_modules
+**.env
+**/__pycache__/
+
+# Client
 /client/.pnp
 /client/.pnp.js
 /client/coverage
 /client/build
-/client/.DS_Store
 /client/.env.local
 /client/.env.development.local
 /client/.env.test.local
@@ -12,7 +16,8 @@
 /client/npm-debug.log*
 /client/yarn-debug.log*
 /client/yarn-error.log*
-/client_mobile/node_modules
+
+# Mobile
 /client_mobile/.expo/
 /client_mobile/dist/
 /client_mobile/web-build/
@@ -26,10 +31,6 @@
 /client_mobile/npm-debug.*
 /client_mobile/yarn-debug.*
 /client_mobile/yarn-error.*
-/client_mobile/.DS_Store
 /client_mobile/*.pem
 /client_mobile/.env*.local
 /client_mobile/*.tsbuildinfo
-/server/.env
-/server/node_modules
-.DS_Store
