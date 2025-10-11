@@ -4,10 +4,8 @@ import './AdminToolsManageAccount.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetUserVerification from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -16,31 +14,34 @@ const AdminToolsManageAccount = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetUserVerification(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [accountData, setAccountData] = useState([]);
     const [accountData2, setAccountData2] = useState([]);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
         }
         else {
+            setIsLoading(true);
             getVerifiedListProps();
             getUnverifiedListProps();
+            setIsLoading(false);
         }
     }, [userLoggedIn]);
     
@@ -49,7 +50,7 @@ const AdminToolsManageAccount = () => {
         
         await Axios.post(url)
         .then((response) =>  {
-            setAccountData(response.data[0]);
+            setAccountData(response.data);
         })
         .catch((error) => {
             console.log(error);
@@ -61,7 +62,7 @@ const AdminToolsManageAccount = () => {
         
         await Axios.post(url)
         .then((response) =>  {
-            setAccountData2(response.data[0]);
+            setAccountData2(response.data);
         })
         .catch((error) => {
             console.log(error);

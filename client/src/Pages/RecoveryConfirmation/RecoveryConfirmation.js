@@ -6,9 +6,9 @@ import companyLogoGreyedOut from '../../Images/Logo_Transparent_GreyedOut.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
+import { GetUserVerificationProps } from '../../Functions/VerificationCheck';
 //Entry Checks
-import checkPassword from '../../Functions/EntryCheck/checkPassword'
+import { CheckPassword } from '../../Functions/EntryCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ const RecoveryConfirmation = () => {
     const navigate = useNavigate();
     const {AccountUsername} = useParams();
     const [foundAccount, setFoundAccount] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(true, AccountUsername));
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserVerificationProps(AccountUsername));
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -36,8 +36,8 @@ const RecoveryConfirmation = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            setFoundAccount(response.data.foundAdminAccount);
-            if (response.data.foundAdminAccount){
+            setFoundAccount(response.data.foundAccount);
+            if (response.data.foundAccount){
                 loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
                 loggedInUserData.then(res => setLastName(res.data.accountLastName));
             }
@@ -49,13 +49,13 @@ const RecoveryConfirmation = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (password == null || confirmPassword == null){
+        if (password === null || confirmPassword === null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (password !== confirmPassword){
             return setStatusMessage("Password and confirm password does not match!");
         }
-        else if (checkPassword(password) == false){
+        else if (CheckPassword(password) === false){
             return setStatusMessage("Password Is Not Acceptable");
         }
 
@@ -68,20 +68,20 @@ const RecoveryConfirmation = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.recoveryStatus === "Successful") {
                 navigate('/Login');
             }
             else if (response.data.recoveryStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Recovery failed");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             console.log(error);
+            setIsLoading(false);
         });
     };
 
@@ -97,9 +97,7 @@ const RecoveryConfirmation = () => {
                             <p>Please enter a password to recover your account.</p>
                             <input className='password' placeholder='Enter A Password' type='password' required autoComplete="off" onChange={(e) => {setPassword(e.target.value); }} />
                             <input className='confirmPassword' placeholder='Confirm Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmPassword(e.target.value); }} />
-                            {isLoading && <button className='recoverButton' disabled>Loading...</button>}
-                            {!isLoading && <button className='recoverButton' type='submit' onClick={submitForm}>Recover</button>}
-                        </>
+                            {isLoading ? <button className='recoverButton' disabled>Loading...</button> : <button className='recoverButton' type='submit' onClick={submitForm}>Recover</button>}                        </>
                         :
                         <>
                             <img src={companyLogoGreyedOut} alt ="Catching Souls Logo Greyed Out" />

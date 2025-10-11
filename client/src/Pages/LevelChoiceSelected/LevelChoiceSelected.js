@@ -4,8 +4,8 @@ import './LevelChoiceSelected.css'
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
+import { CheckUserLogin, CheckGuestLogin, CheckUser } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -14,15 +14,18 @@ const LevelChoiceSelected = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {SelectedLevel} = useParams();
-    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
-    const userLoggedIn = CheckLogin();
+    const guestLoggedIn = CheckGuestLogin();
+    const userLoggedIn = CheckUserLogin();
     let loggedInUser;
+    const validCookie = isCookieValid()
+
     if (!guestLoggedIn) {
-        loggedInUser = CheckUser(userLoggedIn);    
+        loggedInUser = CheckUser();    
     }
     else {
         loggedInUser = "Guest";
     }
+    
     const [isLoading, setIsLoading] = useState(false);
     //Question && Answer Choices
     const [isTrueFalse, setIsTrueFalse] = useState(false);
@@ -32,8 +35,10 @@ const LevelChoiceSelected = () => {
     const [answerB, setAnswerB] = useState(null);
     const [answerC, setAnswerC] = useState(null);
     const [answerD, setAnswerD] = useState(null);
+    const [correctAnswer, setCorrectAnswer] = useState(null);
+    const [supportingVerse, setSupportingVerse] = useState(null)
     //Answer Selection
-    const [selectedAnswer, setSelectedAnser] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(false);
     const [checkingAnswer, setCheckingAnswer] = useState(false);
     const [answerCorrect, setAnswerCorrect] = useState(true);
     //Additional
@@ -42,9 +47,9 @@ const LevelChoiceSelected = () => {
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn || guestLoggedIn){
+        if (userLoggedIn && validCookie || guestLoggedIn){
             getPlayerPoints();
-            getTiviaQandA();
+            getTriviaQandA();
             setTimerLimit();
             setIsLoading(false);
         }
@@ -90,15 +95,16 @@ const LevelChoiceSelected = () => {
         }
     }
 
-    const getTiviaQandA = async () => {
+    const getTriviaQandA = async () => {
         setIsLoading(true);
+        setCorrectAnswer(null);
         const url = process.env.REACT_APP_Backend_URL + '/trivia/retrievequestion';
                 
         Axios.post(url, {
             SelectedLevel : {SelectedLevel}
         })
         .then((response) => {
-            if (response.data.questionType == "TrueOrFalse"){
+            if (response.data.questionType === "TrueOrFalse"){
                 setIsTrueFalse(true)
             }
             else {
@@ -110,6 +116,7 @@ const LevelChoiceSelected = () => {
             setAnswerB(response.data.b);
             setAnswerC(response.data.c);
             setAnswerD(response.data.d);
+            setSupportingVerse(response.data.supportingVerse);
             setIsLoading(false);
         })
         .catch((error) => {
@@ -124,12 +131,12 @@ const LevelChoiceSelected = () => {
 
     const checkSelectedAnswer = async (selectedAnswerChoice) => {
         setTimer(null);
-        setSelectedAnser(true);
+        setSelectedAnswer(true);
         setCheckingAnswer(true);
 
-        if(selectedAnswerChoice == null){
+        if(selectedAnswerChoice === null){
             setCheckingAnswer(false);
-            return setAnswerCorrect(false);
+            setAnswerCorrect(false);
         }
 
         const url = process.env.REACT_APP_Backend_URL + '/trivia/checkanswer';
@@ -140,28 +147,28 @@ const LevelChoiceSelected = () => {
             loggedInUser : loggedInUser
         })
         .then((response) => {
-            if(response.data.results == "true"){
+            if(response.data.results === "true"){
                 setAnswerCorrect(true)
                 if (guestLoggedIn) {
                     let currentPoints = parseInt(sessionStorage.getItem('catchingSoulsGuestPoints'));
                     
-                    if (SelectedLevel == "Beginner"){
+                    if (SelectedLevel === "Beginner"){
                         currentPoints += 1;
                     }
-                    else if (SelectedLevel == "Intermediate"){
+                    else if (SelectedLevel === "Intermediate"){
                         currentPoints += 2;
                     }
-                    else if (SelectedLevel == "Advance"){
+                    else if (SelectedLevel === "Advance"){
                         currentPoints += 3;
                     }
                     else {
                         currentPoints += 0;
                     }
-                    
                     sessionStorage.setItem('catchingSoulsGuestPoints', currentPoints);
                 }
             }
             else {
+                setCorrectAnswer(response.data.correctAnswer)
                 setAnswerCorrect(false);
             }
             
@@ -175,9 +182,9 @@ const LevelChoiceSelected = () => {
 
     const nextQuestion = () => {
         getPlayerPoints();
-        getTiviaQandA();
+        getTriviaQandA();
         setTimerLimit();
-        setSelectedAnser(false);
+        setSelectedAnswer(false);
     }
 
     const leaveTrivia = () => {
@@ -202,14 +209,17 @@ const LevelChoiceSelected = () => {
                                     {answerCorrect ?
                                         <>
                                             <h1 style={{color: 'green'}}>Correct Answer</h1>
+                                            {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
-                                            <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                            <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     :
                                         <>
                                             <h1 style={{color: 'crimson'}}>Incorrect Answer</h1>
+                                            <h2>Correct Answer: {correctAnswer}</h2>
+                                            {supportingVerse && <h2>Supporting Verse: {supportingVerse}</h2>}
                                             <button className='levelChoiceSelectedButton' onClick={() => nextQuestion()}>Next Question</button>
-                                            <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                            <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                         </>
                                     }
                                     </>
@@ -227,7 +237,7 @@ const LevelChoiceSelected = () => {
                                     <h2>{question}</h2>
                                     <button className='levelChoiceSelectedButton' value={answerA} onClick={() => checkSelectedAnswer(answerA)}>{answerA}</button>
                                     <button className='levelChoiceSelectedButton' value={answerB} onClick={() => checkSelectedAnswer(answerB)}>{answerB}</button>
-                                    <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                    <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                 </>
                             :
                                 <>
@@ -241,7 +251,7 @@ const LevelChoiceSelected = () => {
                                     <button className='levelChoiceSelectedButton' value={answerB} onClick={() => checkSelectedAnswer(answerB)}>{answerB}</button>
                                     <button className='levelChoiceSelectedButton' value={answerC} onClick={() => checkSelectedAnswer(answerC)}>{answerC}</button>
                                     <button className='levelChoiceSelectedButton' value={answerD} onClick={() => checkSelectedAnswer(answerD)}>{answerD}</button>                                
-                                    <button className='levelChoiceSelectedButton' onClick={() => leaveTrivia()}>End Game</button>
+                                    <button className='levelChoiceSelectedCancelButton' onClick={() => leaveTrivia()}>End Game</button>
                                 </>
                             }
                             </>

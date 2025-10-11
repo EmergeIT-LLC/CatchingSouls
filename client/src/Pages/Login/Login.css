@@ -65,7 +65,7 @@
     color: darkgoldenrod;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .loginPage_container {
         height: 100%;
         width: 100%;

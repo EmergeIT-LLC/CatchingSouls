@@ -4,12 +4,10 @@ import './AdminToolsManageAccountAdd.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Entry Checks
-import checkEmail from '../../Functions/EntryCheck/checkEmail';
+import { CheckEmail } from '../../Functions/EntryCheck'
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -18,9 +16,9 @@ const AdminToolsManageAccountAdd = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -31,30 +29,30 @@ const AdminToolsManageAccountAdd = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
         }
     }, [userLoggedIn]);
 
-    const submitForm = (e) => {
-        e.PreventDefault();
-        if (firstName == null || lastName == null || email == null || confirmEmail == null || selectRole == "null"){
+    const submitForm = () => {
+        if (firstName === null || lastName === null || email === null || confirmEmail === null || selectRole === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (email !== confirmEmail){
             return setStatusMessage("Email and confirm email does not match!");
         }
-        else if (checkEmail(email) === false){
+        else if (CheckEmail(email) === false){
             return setStatusMessage("Email Is Not Acceptable");
         }
 
@@ -68,24 +66,45 @@ const AdminToolsManageAccountAdd = () => {
             selectRole : selectRole
         })
         .then((response) => {
-            if (response.data.message === "User needs to check email to verify account"){
+            if (response.data.registerStatus === "Successful") {
+                setStatusMessage("User added successfully!");
                 setIsLoading(false);
-                setStatusMessage("User Is Already In Verification Stage!");
                 setTimeout(() => {
                     navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
                 }, 2000);
             }
-            else if (response.data.message){
+            else if (response.data.registerStatus === "Unsuccessful" && response.data.message === "User needs to check email to verify account"){
+                setStatusMessage("User Is Already In Verification Stage!");
                 setIsLoading(false);
-                setStatusMessage(response.data.message);
+                setTimeout(() => {
+                    navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                }, 2000);
+
             }
-            else {
-                navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+            else if (response.data.registerStatus === "Unsuccessful"){
+                if (response.data.message === "User needs to check email to verify account") {
+                    setStatusMessage("User Is Already In Verification Stage!");
+                    setIsLoading(false);
+                    setTimeout(() => {
+                        navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                    }, 2000);
+                }
+                else if (response.data.message === 'Email already registered!' || response.data.message === 'User already registered!') {
+                    setStatusMessage(response.data.message);
+                    setIsLoading(false);
+                    setTimeout(() => {
+                        navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts`);
+                    }, 2000);
+                }
+                else {
+                    setStatusMessage(response.data.message);
+                    setIsLoading(false);
+                }
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 
@@ -105,6 +124,7 @@ const AdminToolsManageAccountAdd = () => {
                     </select>
                     {isLoading && <button className='registerButton' disabled>Loading...</button>}
                     {!isLoading && <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
+                    {!isLoading && <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='registerButton'>Return to Accounts</button></a>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

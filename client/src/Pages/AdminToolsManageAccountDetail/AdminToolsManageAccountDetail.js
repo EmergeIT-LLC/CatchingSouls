@@ -4,10 +4,8 @@ import './AdminToolsManageAccountDetail.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { CookieCheck, isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -17,9 +15,9 @@ const AdminToolsManageAccountDetail = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {SelectedAdmin} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [firstName, setFirstName] = useState(null);
@@ -29,25 +27,28 @@ const AdminToolsManageAccountDetail = () => {
     const [showButtons, setShowButtons] = useState(true);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
         }
         else {
+            setIsLoading(true);
             getSelectedAdminProps();
 
-            if (AccountUsername.toLowerCase() == SelectedAdmin.toLowerCase()) {
+            if (AccountUsername.toLowerCase() === SelectedAdmin.toLowerCase()) {
                 setShowButtons(false);
             }
+            setIsLoading(false);
         }
     }, [userLoggedIn]);
 
@@ -57,13 +58,18 @@ const AdminToolsManageAccountDetail = () => {
         
         await Axios.post(url, {SelectedAdmin : {SelectedAdmin}})
         .then((response) => {
-            setFirstName(response.data.accountFirstName);
-            setLastName(response.data.accountLastName);
-            setEmail(response.data.accountEmail);
-            setSelectRole(response.data.accountRole)
+            setFirstName(response.data.user.accountFirstName);
+            setLastName(response.data.user.accountLastName);
+            setEmail(response.data.user.accountEmail);
+            setSelectRole(response.data.user.accountRole);
+
+            if (response.data.cookieSetting) {
+                CookieCheck(response.data.cookieSetting.name, response.data.cookieSetting.value, response.data.cookieSetting.options);
+            }
         })
         .catch((error) => {
             console.log(error);
+            setIsLoading(false);
         })
     }
 
@@ -84,15 +90,13 @@ const AdminToolsManageAccountDetail = () => {
                                 <p><b>Email:</b> {email}</p>
                                 <p><b>Role:</b> {selectRole}</p>
                             </div>
-                            {showButtons ?
+                            {showButtons &&
                                 <>
                                     <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Update`}><button className='adminToolsManageAccountDetailButton'>Update Admin</button></a>
                                     <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Delete`}><button className='adminToolsManageAccountDetailButton'>Delete Admin</button></a>
                                 </>
-                            :
-                            <></>
                             }
-                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailButton'>Return to Accounts</button></a>
+                        <a href={`/${loggedInUser}/AdminTools/ManageAdminAccounts`}><button className='adminToolsManageAccountDetailCancelButton'>Return to Accounts</button></a>
                     </>
                 }
                 </div>

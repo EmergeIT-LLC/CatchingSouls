@@ -1,32 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const app = express();
-const SqlDbStore = require('express-mysql-session')(session);
-const cookieParser = require('cookie-parser');
+const triviaQueries = require('../config/database/storedProcedures/triviaStoredProcedures');
+const userQueries = require('../config/database/storedProcedures/userStoredProcedures');
+const adminQueries = require('../config/database/storedProcedures/adminStoredProcedures');
+const cookieMonster = require('../config/cookies/cookieHandler');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret',
-    store: new SqlDbStore({
-    host: process.env.DB_Host,
-    port: process.env.DB_Port,
-    user: process.env.DB_User,
-    password: process.env.DB_Pass,
-    database: process.env.DB_Data,
-    }),
-    resave: false,
-    saveUninitialized: false,
-    cookie:{
-        maxAge:1000*60*60*24,
-        secure: false
-    }
-}));
 function setTriviaType(triviaTypeSelection) {
     switch(triviaTypeSelection){
         case 0:
@@ -52,149 +30,68 @@ function randomIntFromInterval(min, max) { // min and max included
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min)
 }
-function countTriviaLevelLength(obj) {
-    var count = 0;
-    // iterate over properties, increment if a non-prototype property
-    for(var key in obj) if(obj.hasOwnProperty(key)) count++;
-    return count;
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 //----------------------------------------- END OF PASSPORT MIDDLEWARE SETUP ---------------------------------------------------
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
 //Register page communication
 router.post('/retrievequestion', async (req, res) => {
     const selectedLevel = req.body.SelectedLevel.SelectedLevel;
-    var answerTwo = null;
-    var answerThree = null;
-    var answerFour = null;
-    let foundFourNumbers = false;
-    var answerA = null;
-    var answerB = null;
-    var answerC = null;
-    var answerD = null;
     let triviaTypeSelection = randomIntFromInterval(0, 7);
     let triviaType = setTriviaType(triviaTypeSelection);
                 
     try {    
-        let triviaQA = await db.query('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
-
+        let triviaQA;
+    
+        // Keep looping until triviaQA has at least 5 questions
         do {
             triviaTypeSelection = randomIntFromInterval(0, 7);
             triviaType = setTriviaType(triviaTypeSelection);
-            triviaQA = await db.query('SELECT * FROM questionandanswer WHERE trivialevel = ? AND triviatype = ?', [selectedLevel, triviaType]);
-        } while (countTriviaLevelLength(triviaQA[0]) < 5);
-        
-        if (typeof triviaQA !== 'undefined') {
-            const numOfQuestionForLevel = countTriviaLevelLength(triviaQA[0]);
-            const selectedQuestion = randomIntFromInterval(0, numOfQuestionForLevel);
-            const questionID = triviaQA[0][selectedQuestion].triviaID;
-            const question = triviaQA[0][selectedQuestion].triviaquestions;
-        
-            if (triviaType == "TrueOrFalse"){
-                return res.json({questionType: triviaType, questionID: questionID, question: question, a: "True", b: "False"});
-            }
-
-            const selectedQuestionAnswer = triviaQA[0][selectedQuestion].triviaanswers;
-
-            do {
-                answerTwo = triviaQA[0][randomIntFromInterval(0, numOfQuestionForLevel)].triviaanswers;
-            } while (answerTwo === selectedQuestionAnswer);
-
-            do {
-                answerThree = triviaQA[0][randomIntFromInterval(0, numOfQuestionForLevel)].triviaanswers;
-            } while (answerThree === selectedQuestionAnswer || answerThree === answerTwo);
-
-            do {
-                answerFour = triviaQA[0][randomIntFromInterval(0, numOfQuestionForLevel)].triviaanswers;
-            } while (answerFour === selectedQuestionAnswer || answerFour === answerTwo || answerFour === answerThree);
-
-            let mixA = randomIntFromInterval(0, 4);
-            switch(mixA){
-                case 0:
-                    answerA = selectedQuestionAnswer;
-                    break;
-                case 1:
-                    answerA = answerTwo;
-                    break;
-                case 2:
-                    answerA = answerThree;
-                    break;
-                case 3:
-                    answerA = answerFour;
-                    break;
-            }
-
-            let mixB = randomIntFromInterval(0, 4);
-
-            do {
-                mixB = randomIntFromInterval(0, 4);
-                switch(mixB){
-                    case 0:
-                        answerB = selectedQuestionAnswer;
-                        break;
-                    case 1:
-                        answerB = answerTwo;
-                        break;
-                    case 2:
-                        answerB = answerThree;
-                        break;
-                    case 3:
-                        answerB = answerFour;
-                        break;
-                }
-            } while (mixB === mixA);
+            triviaQA = await triviaQueries.qaCheckQuestionLevelandType(selectedLevel, triviaType);
+        } while (triviaQA.length < 5);
             
-            let mixC = randomIntFromInterval(0, 4);
+        // Select a random question
+        const selectedQuestionIndex = randomIntFromInterval(0, triviaQA.length - 1);
+        const selectedQuestion = triviaQA[selectedQuestionIndex];
+        const questionID = selectedQuestion.triviaID;
+        const question = selectedQuestion.triviaquestions;
+        const selectedQuestionAnswer = selectedQuestion.triviaanswers;
+        const supportingVerse = selectedQuestion.supportingVerse;
+    
+        // Shuffle triviaQA array
+        const shuffledTriviaQA = shuffleArray(triviaQA);
 
-            do {
-                mixC = randomIntFromInterval(0, 4);
-                switch(mixC){
-                    case 0:
-                        answerC = selectedQuestionAnswer;
-                        break;
-                    case 1:
-                        answerC = answerTwo;
-                        break;
-                    case 2:
-                        answerC = answerThree;
-                        break;
-                    case 3:
-                        answerC = answerFour;
-                        break;
-                }
-            } while (mixC === mixA || mixC === mixB);
-
-            let mixD = randomIntFromInterval(0, 4);
-
-            do {
-                mixD = randomIntFromInterval(0, 4);
-                switch(mixD){
-                    case 0:
-                        answerD = selectedQuestionAnswer;
-                        break;
-                    case 1:
-                        answerD = answerTwo;
-                        break;
-                    case 2:
-                        answerD = answerThree;
-                        break;
-                    case 3:
-                        answerD = answerFour;
-                        break;
-                }
-            } while (mixD === mixA || mixD === mixB || mixD === mixC);
-
-
-            if(answerA !== null && answerB !== null && answerC !== null && answerD !== null){
-                return res.json({questionType: triviaType, questionID: questionID, question: question, a: answerA, b: answerB, c: answerC, d: answerD});
+        // Select answers from shuffledTriviaQA
+        const answerPool = [selectedQuestionAnswer];
+        for (let i = 0; i < shuffledTriviaQA.length && answerPool.length < 4; i++) {
+            const randomAnswer = shuffledTriviaQA[i].triviaanswers;
+            if (!answerPool.includes(randomAnswer) && randomAnswer !== selectedQuestionAnswer) {
+                answerPool.push(randomAnswer);
             }
         }
-        else {
-            numOfQuestionForLevel = 0;
-        }
-    }
-    catch (err){
-        console.log(err)
-        return res.json({ message: 'An Error Occured!' });
+    
+        // Prepare response
+        const response = {
+            questionType: triviaType,
+            questionID: questionID,
+            question: question,
+            supportingVerse: supportingVerse,
+            a: answerPool[0],
+            b: answerPool[1],
+            c: answerPool[2],
+            d: answerPool[3]
+        };
+
+        // Send the response
+        return res.json(response);
+    } catch (err) {
+        console.log(err);
+        return res.json({ message: 'An Error Occurred!', errorMessage: err.message });
     }
 });
 
@@ -206,37 +103,41 @@ router.post('/checkanswer', async (req, res) => {
 
     try {
         //Retrieve Prompted QA Detail
-        const triviaQAAsked = await db.query('SELECT * FROM questionandanswer WHERE triviaID = ?', [questionID]);
+        const triviaQAAsked = await triviaQueries.qaGetQuestionDataId(questionID);
 
         //Make sure it was found
-        if (triviaQAAsked[0][0] !== 'undefined') { 
+        if (triviaQAAsked.length > 0) { 
             //Check to make answer is correct
-            if (answerChose == triviaQAAsked[0][0].triviaanswers) {
+            if (answerChose == triviaQAAsked[0].triviaanswers) {
                 //Get points awarded based on level
-                if (triviaQAAsked[0][0].trivialevel === "Beginner") {
+                if (triviaQAAsked[0].trivialevel === "Beginner") {
                     pointsToAward = 1;
                 }
-                else if (triviaQAAsked[0][0].trivialevel === "Intermediate") {
+                else if (triviaQAAsked[0].trivialevel === "Intermediate") {
                     pointsToAward = 2;
                 }
-                else if (triviaQAAsked[0][0].trivialevel === "Advance") {
+                else if (triviaQAAsked[0].trivialevel === "Advance") {
                     pointsToAward = 3;
                 }
                 
                 if (loggedUser !== "Guest"){
                     //Locate User or admin to update
-                    const loggedInUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedUser]);
-                    const loggedInAdminUser = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedUser]);
+                    const loggedInUser = await userQueries.locateVerifiedUserData(loggedUser);
+                    const loggedInAdminUser = await adminQueries.locateVerifiedAdminData(loggedUser);
                     //Award user or admin the points
-                    if (typeof loggedInUser[0][0] !== 'undefined') {
-                        const updatedPoints = loggedInUser[0][0].savedSouls + pointsToAward;
-                        const updateUserPoints = await db.query('UPDATE users SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
-                        return res.json({results: "true"});
+                    if (loggedInUser.length > 0) {
+                        const updatedPoints = loggedInUser[0].savedSouls + pointsToAward;
+                        const isUserPointUpdated = await userQueries.updateUserPoints(updatedPoints, loggedUser);
+                        if (isUserPointUpdated) {
+                            return res.json({results: "true"});
+                        }
                     }
-                    else if (typeof loggedInAdminUser[0][0] !== 'undefined') {
-                        const updatedPoints = loggedInAdminUser[0][0].savedSouls + pointsToAward;
-                        const updateUserPoints = await db.query('UPDATE adminusers SET savedSouls = ? WHERE accountUsername = ?', [updatedPoints, loggedUser]);
-                        return res.json({results: "true"});
+                    else if (loggedInAdminUser.length > 0) {
+                        const updatedPoints = loggedInAdminUser[0].savedSouls + pointsToAward;
+                        const isAdminPointUpdated = await adminQueries.updateAdminPoints(updatedPoints, loggedUser);
+                        if (isAdminPointUpdated) {
+                            return res.json({results: "true"});
+                        }
                     }
                 }
                 else {
@@ -244,12 +145,12 @@ router.post('/checkanswer', async (req, res) => {
                 }
             }
             else {
-                return res.json({results: "false"});
+                return res.json({results: "false", correctAnswer: triviaQAAsked[0].triviaanswers});
             }
         }
     } catch (error) {
         console.log(error)
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
 });
 
@@ -257,19 +158,19 @@ router.post('/getPlayerPoints', async (req, res) => {
     const loggedInUser = req.body.loggedInUser;
 
     try {
-        const locateUser = await db.query('SELECT * FROM users WHERE accountUsername = ?', [loggedInUser]);
-        const locateAdmin = await db.query('SELECT * FROM adminusers WHERE accountUsername = ?', [loggedInUser]);
-        if (typeof locateUser[0][0] !== 'undefined'){
-            return res.json({playerPoints: locateUser[0][0].savedSouls});
+        const locateUser = await userQueries.locateVerifiedUserData(loggedInUser);
+        const locateAdmin = await adminQueries.locateVerifiedAdminData(loggedInUser);
+        if (locateUser.length > 0){
+            return res.json({playerPoints: locateUser[0].savedSouls});
         }
-        if (typeof locateAdmin[0][0] !== 'undefined'){
-            return res.json({playerPoints: locateAdmin[0][0].savedSouls});
+        if (locateAdmin.length > 0){
+            return res.json({playerPoints: locateAdmin[0].savedSouls});
         }
         else {
             return res.json({playerPoints: -1});
         }
     } catch (error) {
-        return res.json({ message: 'An Error Occured!' });
+        return res.json({ message: 'An Error Occured!', errorMessage: err.message });
     }
 });
 module.exports = router;

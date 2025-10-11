@@ -86,7 +86,7 @@
     height: 2em;
     width: 2.05em;
 }
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     .footerBody {
         width: 100%;
     }

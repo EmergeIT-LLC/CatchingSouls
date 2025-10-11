@@ -4,10 +4,8 @@ import './AdminToolsManageTriviaDetail.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -17,9 +15,9 @@ const AdminToolsManageTriviaDetail = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {QuestionID} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [questionID, setQuestionID] = useState("");
@@ -27,18 +25,20 @@ const AdminToolsManageTriviaDetail = () => {
     const [answer, setAnswer] = useState("");
     const [triviaType, setTriviaType] = useState("null");
     const [triviaLevel, setTriviaLevel] = useState("null");
+    const [supportingVerse, setSupportingVerse] = useState("null");
     const [showButtons, setShowButtons] = useState(true);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
@@ -54,11 +54,12 @@ const AdminToolsManageTriviaDetail = () => {
         const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/TriviaDetailRetrieval';
         await Axios.post(url, {QuestionID : {QuestionID}})
         .then((response) => {
-            setQuestionID(response.data.triviaID);
-            setQuestion(response.data.triviaquestions);
-            setAnswer(response.data.triviaanswers);
-            setTriviaType(response.data.triviatype);
-            setTriviaLevel(response.data.trivialevel);
+            setQuestionID(response.data[0].triviaID);
+            setQuestion(response.data[0].triviaquestions);
+            setAnswer(response.data[0].triviaanswers);
+            setTriviaType(response.data[0].triviatype);
+            setTriviaLevel(response.data[0].trivialevel);
+            setSupportingVerse(response.data[0].supportingVerse)
         })
         .catch((error) => {
             console.log(error);
@@ -80,18 +81,19 @@ const AdminToolsManageTriviaDetail = () => {
                             <div className='adminToolsManageTriviaDetailInfo_form'>
                                 <p><b>Question:</b> {question}</p>
                                 <p><b>Answer:</b> {answer}</p>
+                                <p><b>Supporting Verse:</b> {supportingVerse}</p>
                                 <p><b>Answer Relation:</b> {triviaType}</p>
                                 <p><b>Question Level:</b> {triviaLevel}</p>
                             </div>
                             {showButtons ?
                                 <>
                                     <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Update`}><button className='adminToolsManageTriviaDetailButton'>Update Question</button></a>
-                                    <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Delete`}><button className='adminToolsManageTriviaDetailButton'>Delete Question</button></a>
+                                    <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Delete`}><button className='adminToolsManageTriviaDetailCancelButton'>Delete Question</button></a>
                                 </>
                             :
                             <></>
                             }
-                        <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDetailButton'>Return to Questions</button></a>
+                        <a href={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDetailCancelButton'>Return to Questions</button></a>
                         </>
                     }
                     </div>

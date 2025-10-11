@@ -35,3 +35,4 @@
 /client_mobile/*.pem
 /client_mobile/.env*.local
 /client_mobile/*.tsbuildinfo
+/client/yarn-error.log*

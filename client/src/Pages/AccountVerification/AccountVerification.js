@@ -5,8 +5,6 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import companyLogoGreyedOut from '../../Images/Logo_Transparent_GreyedOut.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
-//Functions
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
 //Repositories
 import Axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
@@ -16,9 +14,6 @@ const AccountVerification = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [foundAccount, setFoundAccount] = useState(false);
     const [verified, setVerified] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(true, {AccountUsername}));
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
 
     useEffect(() => {
         setIsLoading(true);
@@ -31,7 +26,7 @@ const AccountVerification = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            if (response.data.foundAccount == true){
+            if (response.data.foundAccount === true){
                 setFoundAccount(true);
                 verifyUserAccount();
             }
@@ -46,7 +41,7 @@ const AccountVerification = () => {
 
         await Axios.post(url, {AccountUsername : {AccountUsername}})
         .then((response) => {
-            if (response.data.Verified == true) {
+            if (response.data.Verified === true) {
                 setVerified(true);
             }
         })
@@ -72,7 +67,6 @@ const AccountVerification = () => {
                                         <>
                                             <img src={companyLogo} alt ="Catching Souls Logo" />
                                             <h1 style={{color: 'green'}}>Verified!</h1>
-                                            <p>Hello,</p>
                                             <p>Your account has been verified.</p>
                                             <p><strong>Select login</strong> to sign in!</p>
                                             <Link to='/Login'><button className='verifiedButton'>Login</button></Link>

@@ -8,12 +8,12 @@ import Footer from '../../Components/Footer/Footer';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 //Entry Checks
-import checkUsername from '../../Functions/EntryCheck/checkUsername';
+import { CheckUsername } from '../../Functions/EntryCheck'
 
 const Recovery = () => {
     const navigate = useNavigate();
-    const [username, setUsername] = useState(null);
-    const [statusMessage, setStatusMessage] = useState(null);
+    const [username, setUsername] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [count, setCount] = useState(0);
     const [redirect, setRedirect] = useState(false);
@@ -22,7 +22,7 @@ const Recovery = () => {
         if (username === null){
             return setStatusMessage("Username must be provided!");
         }
-        else if(checkUsername(username) === false){
+        else if(CheckUsername(username) === false){
             return setStatusMessage("Enter Valid Username Format");
         }
         else {
@@ -36,12 +36,13 @@ const Recovery = () => {
         username: username,
         })
         .then((response) => {
-            setIsLoading(false);
             if (response.data.message){
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else {
                 setStatusMessage('Verification Email Sent!');
+                setIsLoading(false);
                 setCount(3);           
                 setRedirect(true);
             }

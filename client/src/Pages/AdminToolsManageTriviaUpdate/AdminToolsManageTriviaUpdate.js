@@ -4,10 +4,8 @@ import './AdminToolsManageTriviaUpdate.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
@@ -17,28 +15,30 @@ const AdminToolsManageTriviaUpdate = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {QuestionID} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const [supportingVerse, setSupportingVerse] = useState(null);
     const [selectQAType, setSelectQAType] = useState("null");
     const [selectDifficulty, setSelectDifficulty] = useState("null");
     const [statusMessage, setStatusMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
@@ -53,11 +53,12 @@ const AdminToolsManageTriviaUpdate = () => {
         
         await Axios.post(url, {QuestionID : {QuestionID}})
         .then((response) => {
-            setQuestionID(response.data.triviaID);
-            setQuestion(response.data.triviaquestions);
-            setAnswer(response.data.triviaanswers);
-            setSelectQAType(response.data.triviatype);
-            setSelectDifficulty(response.data.trivialevel);
+            setQuestionID(response.data[0].triviaID);
+            setQuestion(response.data[0].triviaquestions);
+            setAnswer(response.data[0].triviaanswers);
+            setSupportingVerse(response.data[0].supportingVerse);
+            setSelectQAType(response.data[0].triviatype);
+            setSelectDifficulty(response.data[0].trivialevel);
         })
         .catch((error) => {
             console.log(error);
@@ -66,7 +67,7 @@ const AdminToolsManageTriviaUpdate = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (question == null || answer == null || selectQAType == "null" || selectDifficulty == "null"){
+        if (question === null || answer === null || selectQAType === "null" || selectDifficulty === "null"){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         
@@ -78,25 +79,26 @@ const AdminToolsManageTriviaUpdate = () => {
             questionID : QuestionID,
             question : question,
             answer : answer,
+            supportingVerse : supportingVerse,
             selectQAType : selectQAType,
             selectDifficulty : selectDifficulty
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.updateStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`);
             }
             else if (response.data.updateStatus === "Successful") {
-                setIsLoading(false);
                 setStatusMessage("Update failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 
@@ -108,6 +110,7 @@ const AdminToolsManageTriviaUpdate = () => {
                     <h1>Update Question ID {questionID}</h1>
                     <textarea name='question' placeholder='Enter Question' required autoComplete="off" defaultValue={question} onChange={(e) => setQuestion(e.target.value)} />
                     <input name='answer' placeholder='Enter Answer' required autoComplete="off" defaultValue={answer} onChange={(e) => setAnswer(e.target.value)} />
+                    <input name='supportingVerse' placeholder='Enter Supporting Verse' required autoComplete="off" defaultValue={supportingVerse} onChange={(e) => setSupportingVerse(e.target.value)} />
                     <select value={selectQAType} options={selectQAType} required onChange={(e) => {setSelectQAType(e.target.value)}}>
                         <option value="null">Select Q&A Type</option>
                         <option value="TrueOrFalse">True or False</option>
@@ -125,10 +128,9 @@ const AdminToolsManageTriviaUpdate = () => {
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advance">Advance</option>
                     </select>
-                    {isLoading && <button className='adminToolsManageTriviaUpdateButton' disabled>Loading...</button>}
-                    {!isLoading && <button className='adminToolsManageTriviaUpdateButton' type='submit' onClick={submitForm}>Update Q&A</button>}
-                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaUpdateButton'>Cancel</button></Link>}
-                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaUpdateButton'>Return to Questions</button></Link>}
+                    {isLoading ? <button className='adminToolsManageTriviaUpdateButton' disabled>Loading...</button> : <button className='adminToolsManageTriviaUpdateButton' type='submit' onClick={submitForm}>Update Q&A</button>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaUpdateCancelButton'>Cancel</button></Link>}
+                    {!isLoading && <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaUpdateCancelButton'>Return to Questions</button></Link>}
                 </form>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}            
             </div>

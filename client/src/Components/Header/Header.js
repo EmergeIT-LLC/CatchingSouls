@@ -4,30 +4,28 @@ import './Header.css'
 import companyLogo from '../../Images/Logo_Transparent.png';
 import farBars from '../../Images/naviconrww752.png';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckGuestLogin, CheckUser, GetAdminRole } from '../../Functions/VerificationCheck';
 //Repositories
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const reRoute = useNavigate();
-  const userLoggedIn = CheckLogin();
-  const loggedInUser = CheckUser(userLoggedIn);
-  const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
+  const userLoggedIn = CheckUserLogin();
+  const loggedInUser = CheckUser();
+  const guestLoggedIn = CheckGuestLogin();
   const adminLevel = GetAdminRole();
   const [buttonLabel, setButtonLabel] = useState('Login');
   const [showMenu, setShowMenu] = useState(false);
   let menu = null;
-
+  
   useEffect(() => {
-    if (userLoggedIn || guestLoggedIn){
+    if (userLoggedIn || guestLoggedIn) {
       setButtonLabel('Logout');
-    }
-    else {
+    } else {
       setButtonLabel('Login');
     }
-  }, []);
+  }, [userLoggedIn, guestLoggedIn]);
+
 
   const routeChange = () =>{
     if (userLoggedIn || guestLoggedIn){
@@ -57,6 +55,7 @@ const Header = () => {
           {userLoggedIn ? <>{adminLevel ? <li><a href={`/${loggedInUser}/AdminTools`}>Admin Controls</a></li> : <></>}</> : <></>}
           <li><a href='/AboutCatchingSouls'>About Us</a></li>
           <li><a href='/ContactCatchingSouls'>Contact Us</a></li>
+          <li><a href='/SendUsYourQuestions'>Send Us Your Questions</a></li>
         </ul>
     </nav>
   }
@@ -75,6 +74,7 @@ const Header = () => {
                 {userLoggedIn ? <>{adminLevel ? <li><a href={`/${loggedInUser}/AdminTools`}>Admin Controls</a></li> : <></>}</> : <></>}
                 <li><a href='/AboutCatchingSouls'>About Us</a></li>
                 <li><a href='/ContactCatchingSouls'>Contact Us</a></li>
+                <li><a href='/SendUsYourQuestions'>Send Us Your Questions</a></li>
               </ul>
           </nav>
       </div>

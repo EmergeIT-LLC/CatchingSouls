@@ -4,10 +4,8 @@ import './AdminToolsManageTriviaDelete.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
@@ -17,9 +15,9 @@ const AdminToolsManageTriviaDelete = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {QuestionID} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [questionID, setQuestionID] = useState("");
     const [question, setQuestion] = useState('');
@@ -27,15 +25,16 @@ const AdminToolsManageTriviaDelete = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername)
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
@@ -68,20 +67,20 @@ const AdminToolsManageTriviaDelete = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.deleteStatus === "Successful") {
                 navigate(`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`);
             }
             else if (response.data.deleteStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Deletion failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             setStatusMessage(error.response.data.message);
+            setIsLoading(false);
         });
     };
 
@@ -100,8 +99,8 @@ const AdminToolsManageTriviaDelete = () => {
                             <p><b>Question:</b></p>
                             <p>{question}</p>
                             <button className='adminToolsManageTriviaDeleteButton' type='submit' onClick={submitForm}>Yes</button>
-                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${questionID}/Detail`}><button className='adminToolsManageTriviaDeleteButton'>No</button></Link>
-                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDeleteButton'>Return to Questions</button></Link>
+                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions/${QuestionID}/Detail`}><button className='adminToolsManageTriviaDeleteCancelButton'>No</button></Link>
+                            <Link to={`/${loggedInUser}/AdminTools/ManageTriviaQuestions`}><button className='adminToolsManageTriviaDeleteCancelButton'>Return to Questions</button></Link>
                         </>
                     }
                 </form>

@@ -4,11 +4,8 @@ import './ProfileDelete.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetAdminRole, GetUserProps, GetLogoutStatus } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -17,32 +14,28 @@ const ProfileDelete = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {AccountUsername} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
     const logOutStatus = GetLogoutStatus(AccountUsername);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(userLoggedIn, loggedInUser));
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps());
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
     const [firstName, setFirstName] = useState();
     const [statusMessage, setStatusMessage] = useState(null);
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
 
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn && !logOutStatus){
-            loggedInUserData.then(res => setUsername(res.data.accountUsername));
-            loggedInUserData.then(res => setFirstName(res.data.accountFirstName));
+        if (!logOutStatus & validCookie){
+            loggedInUserData.then(res => setUsername(res.data.user.accountUsername));
+            loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName));
 
             if (isAdmin){
                 navigate(`/Profile/${username}`);
             }
-
             setIsLoading(false);
-        }
-        else if (logOutStatus) {
-            setIsLoading(false);
-            navigate('/Logout');
         }
         else if (AccountUsername.toLowerCase() !== loggedInUser.toLowerCase()) {
             navigate('/');
@@ -55,7 +48,7 @@ const ProfileDelete = () => {
                 }
             });
         }
-    }, [userLoggedIn]);
+    }, [logOutStatus]);
 
     const deleteUserProps = (e) => {
         e.preventDefault();
@@ -100,7 +93,7 @@ const ProfileDelete = () => {
                         <h1>Delete Profile</h1>
                         <p><b>{firstName}</b>, are you sure you want to delete your account?</p>
                         <button className='profileDeleteButton' type='submit' onClick={deleteUserProps}>Yes</button>
-                        <a href={`/Profile/${loggedInUser}`}><button className='profileDeleteButton'>No</button></a>
+                        <a href={`/Profile/${loggedInUser}`}><button className='profileDeleteCancelButton'>No</button></a>
                     </div>
                 {isLoading ? <></> : <>{statusMessage ? <h2>{statusMessage}</h2> : <></>}</>}
                 </div>

@@ -6,9 +6,10 @@ import companyLogoGreyedOut from '../../Images/Logo_Transparent_GreyedOut.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import GetUserProps from '../../Functions/VerificationCheck/getUserProps';
+import { GetUserVerificationProps } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Entry Checks
-import checkPassword from '../../Functions/EntryCheck/checkPassword'
+import { CheckPassword } from '../../Functions/EntryCheck'
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,8 +17,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 const AdminToolsVerification = () => {
     const navigate = useNavigate();
     const {AccountUsername} = useParams();
+    const validCookie = isCookieValid()
     const [foundAdminAccount, setFoundAdminAccount] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(GetUserProps(true, AccountUsername));
+    const [loggedInUserData, setLoggedInUserData] = useState(GetUserVerificationProps(AccountUsername));
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -38,8 +40,8 @@ const AdminToolsVerification = () => {
         .then((response) => {
             setFoundAdminAccount(response.data.foundAdminAccount);
             if (response.data.foundAdminAccount){
-                loggedInUserData.then(res => setFirstName(res.data.accountFirstName))
-                loggedInUserData.then(res => setLastName(res.data.accountLastName));
+                loggedInUserData.then(res => setFirstName(res.data.user.accountFirstName))
+                loggedInUserData.then(res => setLastName(res.data.user.accountLastName));
             }
         })
         .catch((error) => {
@@ -48,18 +50,18 @@ const AdminToolsVerification = () => {
     }
 
     const submitForm = () => {
-        if (password == null || confirmPassword == null){
+        if (password === null || confirmPassword === null){
             return setStatusMessage("All fields with \"*\" be filled in!");
         }
         else if (password !== confirmPassword){
             return setStatusMessage("Password and confirm password does not match!");
         }
-        else if (checkPassword(password) == false){
+        else if (CheckPassword(password) === false){
             return setStatusMessage("Password Is Not Acceptable");
         }
 
         setIsLoading(true);
-        const url = 'http://localhost:3001/admin/adminTool/Verification';
+        const url = process.env.REACT_APP_Backend_URL + '/admin/adminTool/Verification';
                 
         Axios.post(url, {
             AccountUsername : {AccountUsername},
@@ -67,20 +69,20 @@ const AdminToolsVerification = () => {
         })
         .then((response) => {
             if (response.data.message){
-                setIsLoading(false);
                 setStatusMessage(response.data.message);
+                setIsLoading(false);
             }
             else if (response.data.VerificationStatus === "Successful") {
                 navigate('/Login');
             }
             else if (response.data.VerificationStatus === "Unsuccessful") {
-                setIsLoading(false);
                 setStatusMessage("Verification failed!");
+                setIsLoading(false);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
             console(error);
+            setIsLoading(false);
         });
     };
 
@@ -96,8 +98,7 @@ const AdminToolsVerification = () => {
                             <p>Please enter a password to verify your account.</p>
                             <input className='password' placeholder='Enter A Password' type='password' required autoComplete="off" onChange={(e) => {setPassword(e.target.value); }} />
                             <input className='confirmPassword' placeholder='Confirm Password' type='password' required autoComplete="off" onChange={(e) => {setConfirmPassword(e.target.value); }} />
-                            {isLoading && <button className='registerButton' disabled>Loading...</button>}
-                            {!isLoading && <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
+                            {isLoading ? <button className='registerButton' disabled>Loading...</button> : <button className='registerButton' type='submit' onClick={submitForm}>Register</button>}
                         </>
                         :
                         <>

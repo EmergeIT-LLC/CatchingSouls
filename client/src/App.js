@@ -15,6 +15,7 @@ import Dashboard from './Pages/Dashboard/Dashboard';
 import About from './Pages/About/About';
 import Contact from './Pages/Contact/Contact';
 import PageNotFound from './Pages/PageNotFound/PageNotFound';
+import SendUsYourQuestions from './Pages/SendUsYourQuestions/SendUsYourQuestions';
 //Admin
 import AdminTools from './Pages/AdminTools/AdminTools';
 import AdminToolsVerification from './Pages/AdminToolsVerification/AdminToolsVerification';
@@ -31,6 +32,7 @@ import AdminToolsManageTriviaUpdate from './Pages/AdminToolsManageTriviaUpdate/A
 //Game Page
 import LevelChoice from './Pages/LevelChoice/LevelChoice';
 import LevelChoiceSelected from './Pages/LevelChoiceSelected/LevelChoiceSelected';
+import AdminToolsManageDatabase from './Pages/AdminToolsManageDatabase/AdminToolsManageDatabase';
 
 function App() {
   return (
@@ -43,6 +45,7 @@ function App() {
           <Route exact path='/Logout' element={<Logout/>} />;
           <Route exact path='/AboutCatchingSouls' element={<About/>} />;
           <Route exact path='/ContactCatchingSouls' element={<Contact/>} />;
+          <Route exact path='/SendUsYourQuestions' element={<SendUsYourQuestions/>} />;
           <Route exact path='/AccountVerification/:AccountUsername' element={<AccountVerification/>} />;
           <Route exact path='/Profile/:AccountUsername' element={<Profile/>} />;
           <Route exact path='/Profile/:AccountUsername/Delete' element={<ProfileDelete/>} />;
@@ -63,6 +66,7 @@ function App() {
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Delete' element={<AdminToolsManageTriviaDelete/>} />;
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Detail' element={<AdminToolsManageTriviaDetail/>} />;
           <Route exact path='/:AccountUsername/AdminTools/ManageTriviaQuestions/:QuestionID/Update' element={<AdminToolsManageTriviaUpdate/>} />;
+          <Route exact path='/:AccountUsername/AdminTools/ManageDatabase/' element={<AdminToolsManageDatabase/>} />;
           <Route exact path='/*' element={<PageNotFound/>} />;
         </Routes>
       </BrowserRouter>

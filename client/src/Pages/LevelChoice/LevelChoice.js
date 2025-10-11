@@ -5,20 +5,22 @@ import companyLogo from '../../Images/Logo_Transparent.png';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
+import { CheckUserLogin, CheckGuestLogin } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const LevelChoice = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const userLoggedIn = CheckLogin();
-    const guestLoggedIn = sessionStorage.getItem('catchingSoulsGuestLoggedin');
+    const userLoggedIn = CheckUserLogin();
+    const guestLoggedIn = CheckGuestLogin();
+    const validCookie = isCookieValid()
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {
         setIsLoading(true);
-        if (userLoggedIn || guestLoggedIn){
+        if (userLoggedIn && validCookie || guestLoggedIn){
             setIsLoading(false);
         }
         else {

@@ -13,8 +13,8 @@ const Footer = () => {
                     <div className='email'>Email: <a href="mailto:catchingsoulstrivia@outlook.com">CatchingSoulsTrivia@Outlook.com</a></div>
                 </div>
                 <div className='socialMedia'>
-                    <a href='https://www.facebook.com/jondoetech'><img src={facebookIcon} alt ="Jon Doe Tech Facebook Page" className='facebookIcon' /></a>
-                    <a href='https://www.instagram.com/jondoetech/'><img src={instgramIcon} alt ="Jon Doe Tech Instagram Page" className='instagramIcon'/></a>
+                    <a href='https://www.facebook.com/emergeitllc'><img src={facebookIcon} alt ="Jon Doe Tech Facebook Page" className='facebookIcon' /></a>
+                    <a href='https://www.instagram.com/emergeitllc/'><img src={instgramIcon} alt ="Jon Doe Tech Instagram Page" className='instagramIcon'/></a>
                 </div>
             </div>
         </>

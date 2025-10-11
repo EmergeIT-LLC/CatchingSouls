@@ -70,7 +70,25 @@
 	background-color: purple;
     border: 0.15em solid darkgoldenrod;
 }
-@media (max-width: 800px) {
+.levelChoiceSelected_form > .levelChoiceSelectedCancelButton {
+    display: inline-block;
+    text-decoration: none;
+	background-color: purple;
+    color: white;
+    font-weight: bold;
+    font-size: 1.50em;
+    height: 4em;
+    width: 15em;
+    margin: 1em 1em 1.50em 1em;
+    border: 0.15em solid darkgoldenrod;
+    border-radius: 1em;
+}
+.levelChoiceSelected_form > .levelChoiceSelectedCancelButton:hover {
+    color: black;
+	background-color: gold;
+    border: 0.15em solid purple;
+}
+@media (max-width: 950px) {
     .levelChoiceSelected_container {
         display: flex;
         flex-direction: column;

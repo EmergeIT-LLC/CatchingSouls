@@ -4,10 +4,8 @@ import './AdminToolsManageAccountDelete.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 //Functions
-import CheckLogin from '../../Functions/VerificationCheck/checkLogin';
-import CheckUser from '../../Functions/VerificationCheck/checkUser';
-import GetLogoutStatus from '../../Functions/VerificationCheck/getLogoutStatus';
-import GetAdminRole from '../../Functions/VerificationCheck/getAdminRole';
+import { CheckUserLogin, CheckUser, GetLogoutStatus, GetAdminRole } from '../../Functions/VerificationCheck';
+import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
 import Axios from 'axios';
 import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
@@ -17,9 +15,9 @@ const AdminToolsManageAccountDelete = () => {
     const location = useLocation();
     const {AccountUsername} = useParams();
     const {SelectedAdmin} = useParams();
-    const userLoggedIn = CheckLogin();
-    const loggedInUser = CheckUser(userLoggedIn);
-    const logOutStatus = GetLogoutStatus(AccountUsername);
+    const userLoggedIn = CheckUserLogin();
+    const loggedInUser = CheckUser();
+    const validCookie = isCookieValid()
     const isAdmin = GetAdminRole();
     const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState(null);
@@ -27,20 +25,21 @@ const AdminToolsManageAccountDelete = () => {
     const [statusMessage, setStatusMessage] = useState(null);
 
     useEffect(() => {
-        if (!userLoggedIn) {
+        GetLogoutStatus(AccountUsername);
+        if (!userLoggedIn || !validCookie) {
             navigate('/Login', {
                 state: {
                     previousUrl: location.pathname,
                 }
             });
         }
-        else if (logOutStatus) {
-            navigate('/Logout');
+        else if (GetLogoutStatus(AccountUsername)) {
+            navigate('/Logout')
         }
         else if (!isAdmin) {
             navigate('/');
         }
-        else if (AccountUsername.toLowerCase() == SelectedAdmin.toLowerCase()) {
+        else if (AccountUsername.toLowerCase() === SelectedAdmin.toLowerCase()) {
             navigate(`/${loggedInUser}/AdminTools/ManageAdminAccounts/${SelectedAdmin}/Detail`);
         }
         else {
@@ -53,8 +52,8 @@ const AdminToolsManageAccountDelete = () => {
         
         await Axios.post(url, {SelectedAdmin : {SelectedAdmin}})
         .then((response) => {
-            setUsername(response.data.accountUsername)
-            setFirstName(response.data.accountFirstName);
+            setUsername(response.data.user.accountUsername)
+            setFirstName(response.data.user.accountFirstName);
         })
         .catch((error) => {
             console.log(error);
