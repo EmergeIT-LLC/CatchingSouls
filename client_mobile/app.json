@@ -25,6 +25,11 @@
     },
     "web": {
       "favicon": "./assets/Images/Logo_Transparent.png"
+    },
+    "expo": {
+      "splash": {
+        "backgroundColor": "#800080"
+      }
     }
   }
 }

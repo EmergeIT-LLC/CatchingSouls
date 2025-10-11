@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
     dashboardHeader: {
         margin: 4,
         fontSize: 34,
-        fontFamily: 'sans-serif',
+        fontFamily: 'Arial',
         fontWeight: "bold",
     },
     dashboardText: {
         margin: 4,
         fontSize: 16,
-        fontFamily: 'sans-serif',
+        fontFamily: 'Arial',
         textAlign: 'center',
         width: 300,
     },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
 
     },
     dashboardButtonText: {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Arial',
         fontSize: 16,
         fontWeight: 'bold',
     },

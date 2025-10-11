@@ -1,66 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CheckLogin = () => {
-    const userLoggedIn = AsyncStorage.getItem('catchingSoulsLoggedin');
-    
-    if (userLoggedIn) {
-        return userLoggedIn;
-    }
-    else {
-        return false;
-    }
-}
+const toBool = (v) => v === true || v === "true";
 
-const CheckUser = () => {
-    if(CheckLogin)
-    {
-        const loggedUser = AsyncStorage.getItem('catchingSoulsUsername');
-        return loggedUser;
-    }
-    else {
-        return null;
-    }
-}
+export const CheckLogin = async () => {
+  try {
+    const v = await AsyncStorage.getItem("catchingSoulsLoggedin");
+    return toBool(v);
+  } catch {
+    return false;
+  }
+};
 
-const GetAdminRole = () => {
-    const isAdmin = AsyncStorage.getItem('catchingSoulsAdmin');
+export const CheckUser = async () => {
+  try {
+    if (await CheckLogin()) {
+      return await AsyncStorage.getItem("catchingSoulsUsername");
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
 
-    if (isAdmin == "true") {
-        return isAdmin;
-    }
-    else {
-        return false;
-    }
-}
+export const GetAdminRole = async () => {
+  try {
+    const v = await AsyncStorage.getItem("catchingSoulsAdmin");
+    return toBool(v);
+  } catch {
+    return false;
+  }
+};
 
-const GetLogoutStatus = (urlAccountUsername) => {
-    if (CheckLogin()) {
-        if (urlAccountUsername === CheckUser()) {
-            return false;
-        }
-        else {
-            return true; 
-        }
-    }
-    else {
-        return true;
-    }
-}
+// Optional: return whether logout should be shown for a given username
+export const GetLogoutStatus = async (urlAccountUsername) => {
+  try {
+    const isLoggedIn = await CheckLogin();
+    const username = await AsyncStorage.getItem("catchingSoulsUsername");
+    return isLoggedIn && username === urlAccountUsername;
+  } catch {
+    return false;
+  }
+};
 
-const GetUserProps = async () => {
-    if (CheckLogin()){
-        const url = process.env.REACT_APP_Backend_URL + '/user/accountDetail_retrieval';
-        return await Axios.post(url, {username : CheckUser()})
-        .then((response) =>  {
-            return response;
-        })
-        .catch((error) => {
-            console.log(error);
-            return null;
-        })
+export const GetUserProps = async () => {
+  try {
+    if (await CheckLogin()) {
+      const raw = await AsyncStorage.getItem("catchingSoulsUserProps");
+      return raw ? JSON.parse(raw) : null;
     }
-}
+    return null;
+  } catch {
+    return null;
+  }
+};
 
-export default {CheckLogin, CheckUser, GetAdminRole, GetLogoutStatus, GetUserProps};
+export default {
+  CheckLogin,
+  CheckUser,
+  GetAdminRole,
+  GetLogoutStatus,
+  GetUserProps
+};
