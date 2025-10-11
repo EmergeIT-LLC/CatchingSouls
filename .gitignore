@@ -36,3 +36,4 @@
 /client_mobile/.env*.local
 /client_mobile/*.tsbuildinfo
 /client/yarn-error.log*
+/client_mobile/config/constants.js
