@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
-import { colors, spacing, radius } from '../theme';
+import { colors, spacing, radius } from './themes';
 
 export default function PrimaryButton({
   title,

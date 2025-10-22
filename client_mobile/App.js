@@ -2,16 +2,13 @@
 import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { AsyncStorage, Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  DrawerActions,
-  NavigationContainer,
-  useNavigation
-} from "@react-navigation/native";
+import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Icon } from "react-native-elements";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import VerificationCheck from "./functions/verificationCheck";
 
 //Screens
@@ -23,54 +20,90 @@ import Logout from "./screens/Logout";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const StackedScreens = () => {
-  const navigation = useNavigation();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [guestLoggedIn, setGuestLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      const isUser = await VerificationCheck.CheckLogin();
-      const isGuest = !!(await AsyncStorage.getItem(
-        "catchingSoulsGuestLoggedin"
-      ));
-      setUserLoggedIn(isUser);
-      setGuestLoggedIn(isGuest);
-    };
-    init();
-  }, []);
+// Accept props from App so auth state is decided once and passed down
+const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
+  // custom drawer content: show Login or Logout based on auth state
+  const CustomDrawerContent = (props) => {
+    return (
+      <DrawerContentScrollView {...props}>
+        <DrawerItem
+          label="Dashboard"
+          onPress={() => props.navigation.navigate('Dashboard')}
+        />
+        {!isLoggedIn && !isGuest ? (
+          <DrawerItem
+            label="Login"
+            onPress={() => props.navigation.navigate('Login')}
+          />
+        ) : (
+          <DrawerItem
+            label="Logout"
+            onPress={() => props.navigation.navigate('Logout')}
+          />
+        )}
+      </DrawerContentScrollView>
+    );
+  };
 
   return (
     <Drawer.Navigator
-      //initialRouteName={userLoggedIn || guestLoggedIn ? "Dashboard" : "Login"}
-      initialRouteName="Dashboard" //Temporarily disable login requirement
-      screenOptions={headerStyle(navigation)}
+      initialRouteName={initialRouteName}
+      screenOptions={({ navigation }) => headerStyle(navigation)}
       drawerPosition="right"
+      drawerContent={(props) => (
+        <CustomDrawerContent {...props} />
+      )}
     >
       <Drawer.Screen
         name="Dashboard"
         component={Dashboard}
         options={{ drawerLabel: "Dashboard" }}
       />
-
-      {!userLoggedIn && !guestLoggedIn ? (
-        <Drawer.Screen
-          name="Login"
-          component={Login}
-          options={{ drawerLabel: "Login" }}
-        />
-      ) : (
-        <Drawer.Screen
-          name="Logout"
-          component={Logout}
-          options={{ drawerLabel: "Logout" }}
-        />
-      )}
+      <Drawer.Screen
+        name="Login"
+        component={Login}
+        options={{ drawerLabel: "Login" }}
+      />
+      <Drawer.Screen
+        name="Logout"
+        component={Logout}
+        options={{ drawerLabel: "Logout" }}
+      />
     </Drawer.Navigator>
   );
 };
 
 export default function App() {
+  const [checked, setChecked] = useState(false);
+  const [initialRoute, setInitialRoute] = useState('Login');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const user = await VerificationCheck.CheckLogin();
+      const guest = !!(await AsyncStorage.getItem('catchingSoulsGuestLoggedin'));
+      if (!mounted) return;
+      setIsLoggedIn(user);
+      setIsGuest(guest);
+      setInitialRoute(user || guest ? 'Dashboard' : 'Login');
+      setChecked(true);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  if (!checked) {
+    // simple loading screen while we decide initial route
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['purple', 'gold']} style={styles.linearBGContainer} />
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -78,7 +111,11 @@ export default function App() {
         style={styles.linearBGContainer}
       >
         <NavigationContainer>
-          <StackedScreens />
+          <StackedScreens
+            initialRouteName={initialRoute}
+            isLoggedIn={isLoggedIn}
+            isGuest={isGuest}
+          />
         </NavigationContainer>
       </LinearGradient>
       <StatusBar style="auto" />

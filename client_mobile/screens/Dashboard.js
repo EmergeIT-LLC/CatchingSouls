@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CompanyLogo from "../assets/Images/Logo_Transparent.png";
 import TimeOfDay from "../functions/timeOfDay";
 import { API } from "../config/constants";
@@ -7,7 +9,6 @@ import VerificationCheck from "../functions/verificationCheck";
 
 const Dashboard = () => {
   const navigation = useNavigation();
-
   const [isLoading, setIsLoading] = useState(true);
   const [TOD] = useState(TimeOfDay());
   const [firstName, setFirstName] = useState(null);
@@ -17,9 +18,7 @@ const Dashboard = () => {
     let mounted = true;
     (async () => {
       const isUser = await VerificationCheck.CheckLogin();
-      const isGuest = !!(await AsyncStorage.getItem(
-        "catchingSoulsGuestLoggedin"
-      ));
+      const isGuest = !!(await AsyncStorage.getItem("catchingSoulsGuestLoggedin"));
 
       if (!isUser && !isGuest) {
         if (mounted) navigation.navigate("Login");

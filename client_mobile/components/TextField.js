@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { colors, spacing, radius } from '../theme';
+import { colors, spacing, radius } from './themes';
 
 export default function TextField({
   label,

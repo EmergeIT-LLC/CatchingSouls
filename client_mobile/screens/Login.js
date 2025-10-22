@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import PrimaryButton from '../components/PrimaryButton';
+import TextField from '../components/TextField';
+import { useThrottleAsync } from '../functions/throttler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -31,26 +34,26 @@ const Login = () => {
     setIsLoading(true);
     setStatusMessage('');
 
-    try {
-      const url = `${API.BASE_URL}/user/login`;
-      const res = await axios.post(url, { username, password });
-
+    const url = `${API.BASE_URL}/user/login`;
+    
+    await axios.post(url, { username, password })
+    .then((response) => {
       setIsLoading(false);
 
-      if (res.data?.loggedIn) {
-        await AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
-        await AsyncStorage.setItem('catchingSoulsUsername', res.data.username || username);
-        if (res.data.isAdmin) await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
+      if (response.data?.loggedIn) {
+        AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
+        AsyncStorage.setItem('catchingSoulsUsername', response.data.username || username);
 
-        navigation.navigate('Dashboard');
+        if (response.data.isAdmin) AsyncStorage.setItem('catchingSoulsAdmin', 'true');
+        if (location.state === null) {
+          navigation.navigate('Dashboard');
+        } else if (location.state.previousUrl !== location.pathname) {
+          navigation.navigate(location.state);
+        }
       } else {
-        setStatusMessage(res.data?.message || 'Login failed.');
+        setStatusMessage(response.data?.message || 'Login failed.');
       }
-    } catch (err) {
-      setIsLoading(false);
-      setStatusMessage('Network error. Try again.');
-      console.error('Login error:', err?.message || err);
-    }
+    });
   };
 
   const guestLogin = async () => {
@@ -59,6 +62,8 @@ const Login = () => {
     await AsyncStorage.setItem('catchingSoulsGuestPoints', '0');
     navigation.navigate('Dashboard');
   };
+
+    const throttledLogin = useThrottleAsync(login, 2000);
 
   return (
     <View style={styles.container}>
@@ -82,7 +87,7 @@ const Login = () => {
           />
         </View>
 
-        <PrimaryButton title="Login" onPress={login} loading={isLoading} />
+        <PrimaryButton title="Login" onPress={throttledLogin} loading={isLoading} />
         {!isLoading && (
           <>
             <PrimaryButton title="Login As Guest" onPress={guestLogin} variant="outline" />
@@ -103,8 +108,6 @@ const Login = () => {
     </View>
   );
 }
-
-export default Login;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
@@ -144,3 +147,5 @@ const styles = StyleSheet.create({
   linkDivider: { color: 'black', marginHorizontal: 4 },
   status: { marginTop: 12, color: 'crimson' },
 });
+
+export default Login;
