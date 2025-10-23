@@ -17,7 +17,12 @@ const allowedOrigins = [clientOrigin, amplifyOrigin];
 
 // CORS configuration
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // allow requests with no origin (native mobile clients, curl) and allowedOrigins
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Cache-Control', 'X-Requested-With', 'Custom-Header'],
 };
@@ -34,12 +39,13 @@ if (prodStatus === "true") {
 
 // Middleware for setting CORS headers for routes that exist and are from allowed origin
 const setHeadersForAllowedRoutes = (req, res, next) => {
-  // Check if the request origin is allowed
-  if (allowedOrigins.includes(req.headers.origin)) {
-    // Set CORS headers for the allowed origin
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  const origin = req.headers.origin;
+  // allow if origin matches or origin missing (native clients)
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // if using cookies
   }
   next();
 };
@@ -73,18 +79,17 @@ app.use((req, res, next) => {
 
 // Middleware for handling errors and setting CORS headers
 app.use((err, req, res, next) => {
-  // Set CORS headers to allow requests from the allowed origins
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.join(', '));
+  const originHeader = req.headers.origin || allowedOrigins.join(', ');
+  res.setHeader('Access-Control-Allow-Origin', originHeader);
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Check if it's a 404 error
   if (err.status && err.status === 404) {
     res.redirect(host + '/PageNotFound');
   } else if (err.status) {
-    // For other errors with status codes, send corresponding error response
-    res.status(err.status).send(err.message || 'Internal Server Error');
+    return res.status(err.status).send(err.message || 'Internal Server Error');
   }
+  next();
 });
 
 app.listen(port, () => {

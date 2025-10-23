@@ -7,7 +7,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { API } from '../config/constants';
-import { CheckUsername, CheckPassword } from '../functions/entryCheck';
+import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
 
 const Login = () => {
@@ -27,7 +27,7 @@ const Login = () => {
 
   const login = async () => {
     if (!username || !password) return setStatusMessage('Username and password must be provided!');
-    if (!CheckUsername(username) || !CheckPassword(password)) {
+    if (!entryCheck.CheckUsername(username) || !entryCheck.CheckPassword(password)) {
       return setStatusMessage('Account Does Not Exist or Password Is Incorrect!');
     }
 
