@@ -37,18 +37,19 @@ const Login = () => {
     const url = `${API.BASE_URL}/user/login`;
     
     await axios.post(url, { username, password })
-    .then((response) => {
+    .then(async (response) => {
       setIsLoading(false);
 
       if (response.data?.loggedIn) {
-        AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
-        AsyncStorage.setItem('catchingSoulsUsername', response.data.username || username);
-
-        if (response.data.isAdmin) AsyncStorage.setItem('catchingSoulsAdmin', 'true');
-        if (location.state === null) {
-          navigation.navigate('Dashboard');
-        } else if (location.state.previousUrl !== location.pathname) {
-          navigation.navigate(location.state);
+        await AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
+        await AsyncStorage.setItem('catchingSoulsUsername', response.data.username || username);
+        if (response.data.isAdmin) await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
+        
+        const previous = route?.params?.previousRoute;
+        if (previous) {
+          navigation.navigate(previous);
+        } else {
+          navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] });
         }
       } else {
         setStatusMessage(response.data?.message || 'Login failed.');
