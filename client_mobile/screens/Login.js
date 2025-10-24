@@ -3,9 +3,9 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import TextField from '../components/TextField';
 import { useThrottleAsync } from '../functions/throttler';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { API } from '../config/constants';
 import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
@@ -32,33 +32,31 @@ const Login = () => {
       return setStatusMessage('Account Does Not Exist or Password Is Incorrect!');
     }
 
-    setIsLoading(true);
-    setStatusMessage('');
-
-    const url = `${API.BASE_URL}/user/login`;
-    
-    await axios.post(url, { username, password })
-    .then(async (response) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post(`${API.BASE_URL}/user/login`, { username, password });
       setIsLoading(false);
 
-      if (response.data?.loggedIn) {
-        await AsyncStorage.setItem('catchingSoulsUserLoggedin', 'true');
-        await AsyncStorage.setItem('catchingSoulsUsername', response.data?.username);
+      if (res.data?.loggedIn) {
+        await AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
+        await AsyncStorage.setItem('catchingSoulsUsername', res.data.username || username);
+        if (res.data.isAdmin) await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
 
-        if (response.data?.isAdmin) {
-          await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
-        }
-        
         const previous = route?.params?.previousRoute;
         if (previous) {
           navigation.navigate(previous);
         } else {
           navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] });
         }
-      } else {
-        setStatusMessage(response.data?.message || 'Login failed.');
+        return;
       }
-    });
+
+      setStatusMessage(res.data?.message || 'Login failed.');
+    } catch (err) {
+      setIsLoading(false);
+      console.error('Login error', err?.response ?? err.message ?? err);
+      setStatusMessage('Network or server error');
+    }
   };
 
   const guestLogin = async () => {
@@ -68,7 +66,7 @@ const Login = () => {
     navigation.navigate('Dashboard');
   };
 
-    const throttledLogin = useThrottleAsync(login, 2000);
+  const throttledLogin = useThrottleAsync(login, 2000);
 
   return (
     <View style={styles.container}>

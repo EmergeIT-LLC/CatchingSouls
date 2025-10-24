@@ -1,3 +1,4 @@
+import React, { useState, useEffect, use } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,8 +31,8 @@ const Dashboard = () => {
           const props = await VerificationCheck.GetUserProps();
           if (mounted && props) {
             const payload = props.data ?? props;
-            setFirstName(payload.accountFirstName || "Friend");
-            setLastName(payload.accountLastName || "");
+            setFirstName(payload.user.accountFirstName || "Friend");
+            setLastName(payload.user.accountLastName || null);
           }
         }
       } catch (err) {
@@ -55,7 +56,7 @@ const Dashboard = () => {
           <>
             <Image source={CompanyLogo} style={styles.dashboardImage} alt="Catching Souls Logo" />
             <Text style={styles.dashboardHeader}>
-              {TOD} {firstName},
+              {TOD} {lastName ? `${firstName} ${lastName}` : `${firstName}`},
             </Text>
             <Text style={styles.dashboardText}>
               Do you know your bible enough to spread the lord's message and save souls?
