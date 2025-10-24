@@ -42,7 +42,11 @@ const Logout = () => {
         });
     };
 
-    const throttledLogout = useThrottleAsync(logout, 3000);
+    const throttledLogout = useThrottleAsync(logout, 2000);
+
+    useEffect(() => {
+        throttledLogout();
+    }, [throttledLogout]);
 
     return (
         <View style={styles.container}>
@@ -58,7 +62,7 @@ const Logout = () => {
                             style={styles.logo}
                             alt="Catching Souls Logo"
                         />
-                        <Text style={styles.title} onLoad={throttledLogout}>Logout</Text>
+                        <Text style={styles.title}>Logout</Text>
                         {statusMessage ? <Text style={styles.status}>{statusMessage}</Text> : null}
                         <Text>Select <Text style={{fontWeight: 'bold'}}>login</Text> to sign back in!</Text>
                         <Pressable style={styles.button} onPress={loginNav}>

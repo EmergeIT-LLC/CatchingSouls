@@ -5,13 +5,14 @@ import TextField from '../components/TextField';
 import { useThrottleAsync } from '../functions/throttler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { API } from '../config/constants';
 import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
 
 const Login = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +20,7 @@ const Login = () => {
 
   useEffect(() => {
     const init = async () => {
-      const loggedIn = await VerificationCheck.CheckLogin();
+      const loggedIn = await VerificationCheck.CheckUserLogin();
       if (loggedIn) navigation.navigate('Dashboard');
     };
     init();
@@ -41,9 +42,12 @@ const Login = () => {
       setIsLoading(false);
 
       if (response.data?.loggedIn) {
-        await AsyncStorage.setItem('catchingSoulsLoggedin', 'true');
-        await AsyncStorage.setItem('catchingSoulsUsername', response.data.username || username);
-        if (response.data.isAdmin) await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
+        await AsyncStorage.setItem('catchingSoulsUserLoggedin', 'true');
+        await AsyncStorage.setItem('catchingSoulsUsername', response.data?.username);
+
+        if (response.data?.isAdmin) {
+          await AsyncStorage.setItem('catchingSoulsAdmin', 'true');
+        }
         
         const previous = route?.params?.previousRoute;
         if (previous) {

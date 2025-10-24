@@ -179,8 +179,8 @@ router.post('/login', async (req, res) => {
   }
 });
 router.post('/logout', async (req, res) => {
-  const username = req.body.username;
-  let cookieSettings = await cookieMonster.deleteCookie(res, 'csAuthServices-' + username.toLowerCase())
+  const username = req.body?.username;
+  let cookieSettings = await cookieMonster.deleteCookie(res, 'csAuthServices-' + username.toString().toLowerCase());
   return res.json({ loggedIn: false, message: 'Logged out', cookieSetting: cookieSettings });
 });
 //----------------------------------------- PROFILE SETUP ---------------------------------------------------

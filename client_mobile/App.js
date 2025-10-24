@@ -83,8 +83,8 @@ export default function App() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const user = await VerificationCheck.CheckLogin();
-      const guest = !!(await AsyncStorage.getItem('catchingSoulsGuestLoggedin'));
+      const user = await VerificationCheck.CheckUserLogin();
+      const guest = await VerificationCheck.CheckGuestLogin();
       if (!mounted) return;
       setIsLoggedIn(user);
       setIsGuest(guest);

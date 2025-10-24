@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,29 +9,29 @@ import VerificationCheck from "../functions/verificationCheck";
 
 const Dashboard = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(true);
   const [TOD] = useState(TimeOfDay());
+  const userLoggedIn = async () => await VerificationCheck.CheckUserLogin();
+  const guestLoggedIn = async () => await VerificationCheck.CheckGuestLogin();
+  const [loggedInUserData] = useState(VerificationCheck.GetUserProps());
+  const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const isUser = await VerificationCheck.CheckLogin();
-      const isGuest = !!(await AsyncStorage.getItem("catchingSoulsGuestLoggedin"));
-
-      if (!isUser && !isGuest) {
+      if (!(Boolean(userLoggedIn)) && !(Boolean(guestLoggedIn))) {
         if (mounted) navigation.navigate("Login");
         return;
       }
 
-      if (isGuest) {
+      if (await guestLoggedIn()) {
         if (mounted) setFirstName("Guest");
       } else {
-        const props = await VerificationCheck.GetUserProps();
-        if (mounted && props) {
-          setFirstName(props.accountFirstName || "Friend");
-          setLastName(props.accountLastName || "");
+        console.log('Logged in user props:', loggedInUserData);
+        if (mounted && loggedInUserData) {
+          setFirstName(loggedInUserData.data.accountFirstName || "Friend");
+          setLastName(loggedInUserData.data.accountLastName || "");
         }
       }
 

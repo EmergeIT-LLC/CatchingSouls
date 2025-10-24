@@ -1,11 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "../config/constants";
 
-const toBool = (v) => v === true || v === "true";
-
-export const CheckLogin = async () => {
+export const CheckUserLogin = async () => {
   try {
-    const v = await AsyncStorage.getItem("catchingSoulsLoggedin");
-    return toBool(v);
+    return toBool(await AsyncStorage.getItem("catchingSoulsUserLoggedin"));
+  } catch {
+    return false;
+  }
+};
+
+export const CheckGuestLogin = async () => {
+  try {
+    return await toBool(AsyncStorage.getItem("catchingSoulsGuestLoggedin"));
   } catch {
     return false;
   }
@@ -24,10 +30,35 @@ export const CheckUser = async () => {
 
 export const GetAdminRole = async () => {
   try {
-    const v = await AsyncStorage.getItem("catchingSoulsAdmin");
-    return toBool(v);
+    return toBool(await AsyncStorage.getItem("catchingSoulsAdmin"));
   } catch {
     return false;
+  }
+};
+
+export const GetUserProps = async () => {
+  try {
+    if (await CheckUserLogin()) {
+      const url = API.BASE_URL + '/user/accountDetail_retrieval';
+      const response = await Axios.post(url, { username: CheckUser() });
+
+        return response;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching user props:", error);
+    return null;
+ }
+};
+
+export const GetLoggedInUser = async () => {
+  try {
+    if (await CheckLogin()) {
+      return await AsyncStorage.getItem("catchingSoulsUsername");
+    }
+    return null;
+  } catch {
+    return null;
   }
 };
 
@@ -42,21 +73,11 @@ export const GetLogoutStatus = async (urlAccountUsername) => {
   }
 };
 
-export const GetUserProps = async () => {
-  try {
-    if (await CheckLogin()) {
-      const raw = await AsyncStorage.getItem("catchingSoulsUserProps");
-      return raw ? JSON.parse(raw) : null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-};
-
 export default {
-  CheckLogin,
+  CheckGuestLogin,
+  CheckUserLogin,
   CheckUser,
+  GetLoggedInUser,
   GetAdminRole,
   GetLogoutStatus,
   GetUserProps
