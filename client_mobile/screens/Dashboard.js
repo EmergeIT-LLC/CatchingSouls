@@ -1,18 +1,13 @@
-import React, { useState, useEffect, use } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CompanyLogo from "../assets/Images/Logo_Transparent.png";
 import TimeOfDay from "../functions/timeOfDay";
-import { API } from "../config/constants";
 import VerificationCheck from "../functions/verificationCheck";
 
 const Dashboard = () => {
   const navigation = useNavigation();
   const [TOD] = useState(TimeOfDay());
-  const userLoggedIn = async () => await VerificationCheck.CheckUserLogin();
-  const guestLoggedIn = async () => await VerificationCheck.CheckGuestLogin();
-  const [loggedInUserData] = useState(VerificationCheck.GetUserProps());
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
@@ -20,22 +15,30 @@ const Dashboard = () => {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      if (!(Boolean(userLoggedIn)) && !(Boolean(guestLoggedIn))) {
-        if (mounted) navigation.navigate("Login");
-        return;
-      }
+      try {
+        const isUser = await VerificationCheck.CheckUserLogin();
+        const isGuest = await VerificationCheck.CheckGuestLogin();
 
-      if (await guestLoggedIn()) {
-        if (mounted) setFirstName("Guest");
-      } else {
-        console.log('Logged in user props:', loggedInUserData);
-        if (mounted && loggedInUserData) {
-          setFirstName(loggedInUserData.data.accountFirstName || "Friend");
-          setLastName(loggedInUserData.data.accountLastName || "");
+        if (!isUser && !isGuest) {
+          if (mounted) navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+          return;
         }
-      }
 
-      if (mounted) setIsLoading(false);
+        if (isGuest) {
+          if (mounted) setFirstName("Guest");
+        } else {
+          const props = await VerificationCheck.GetUserProps();
+          if (mounted && props) {
+            const payload = props.data ?? props;
+            setFirstName(payload.accountFirstName || "Friend");
+            setLastName(payload.accountLastName || "");
+          }
+        }
+      } catch (err) {
+        if (mounted) navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
     })();
 
     return () => {
@@ -47,26 +50,18 @@ const Dashboard = () => {
     <View style={styles.dashboardContainer}>
       <View style={styles.dashboardForm}>
         {isLoading ? (
-          <>
-            <Text>Loading...</Text>
-          </>
+          <Text>Loading...</Text>
         ) : (
           <>
-            <Image
-              source={CompanyLogo}
-              style={styles.dashboardImage}
-              alt="Catching Souls Logo"
-            />
+            <Image source={CompanyLogo} style={styles.dashboardImage} alt="Catching Souls Logo" />
             <Text style={styles.dashboardHeader}>
               {TOD} {firstName},
             </Text>
             <Text style={styles.dashboardText}>
-              Do you know your bible enough to spread the lord's message and
-              save souls?
+              Do you know your bible enough to spread the lord's message and save souls?
             </Text>
             <Text style={styles.dashboardText}>
-              How about seeing the number of souls you can save with some
-              questions?
+              How about seeing the number of souls you can save with some questions?
             </Text>
             <Pressable style={styles.dashboardButton}>
               <Text style={styles.dashboardButtonText}>
