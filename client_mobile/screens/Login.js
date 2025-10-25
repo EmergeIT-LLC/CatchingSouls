@@ -113,7 +113,12 @@ const Login = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fff', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
   form: {
     width: '85%',
     borderWidth: 4,
@@ -122,8 +127,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
   },
-  logo: { width: 200, height: 200, marginTop: 8 },
-  title: { color: 'crimson', fontSize: 28, marginVertical: 12, fontWeight: '700' },
+  title: { 
+    color: 'crimson', 
+    fontSize: 28, 
+    marginVertical: 12, 
+    fontWeight: '700'
+  },
   input: {
     width: 260,
     height: 44,

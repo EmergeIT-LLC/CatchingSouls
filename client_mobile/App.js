@@ -13,6 +13,7 @@ import VerificationCheck from "./functions/verificationCheck";
 
 //Screens
 import Dashboard from "./screens/Dashboard";
+import LevelChoice from "./screens/LevelChoice";
 import Login from "./screens/Login";
 import Logout from "./screens/Logout";
 
@@ -27,20 +28,24 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
   const CustomDrawerContent = (props) => {
     return (
       <DrawerContentScrollView {...props}>
-        <DrawerItem
-          label="Dashboard"
-          onPress={() => props.navigation.navigate('Dashboard')}
-        />
         {!isLoggedIn && !isGuest ? (
-          <DrawerItem
-            label="Login"
-            onPress={() => props.navigation.navigate('Login')}
-          />
+          <>
+            <DrawerItem
+              label="Login"
+              onPress={() => props.navigation.navigate('Login')}
+            />
+          </>
         ) : (
-          <DrawerItem
-            label="Logout"
-            onPress={() => props.navigation.navigate('Logout')}
-          />
+          <>
+            <DrawerItem
+              label="Dashboard"
+              onPress={() => props.navigation.navigate('Dashboard')}
+            />
+            <DrawerItem
+              label="Logout"
+              onPress={() => props.navigation.navigate('Logout')}
+            />
+          </>
         )}
       </DrawerContentScrollView>
     );
@@ -59,6 +64,11 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         name="Dashboard"
         component={Dashboard}
         options={{ drawerLabel: "Dashboard" }}
+      />
+      <Drawer.Screen
+        name="LevelChoice"
+        component={LevelChoice}
+        options={{ drawerLabel: "Level Choice" }}
       />
       <Drawer.Screen
         name="Login"

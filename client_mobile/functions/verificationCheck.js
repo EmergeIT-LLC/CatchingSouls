@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API } from "../config/constants";
+import throttleAsync from '../functions/throttler';
 
 function toBool(value) {
   if (value === undefined || value === null) return false;
@@ -44,14 +45,20 @@ export const GetAdminRole = async () => {
   }
 };
 
+// create once at module scope
+const throttledGetUserProps = throttleAsync(async (username) => {
+  const url = `${API.BASE_URL}/user/accountDetail_retrieval`;
+  const response = await axios.post(url, { username });
+  return response;
+}, 2000);
+
 export const GetUserProps = async () => {
   try {
     if (await CheckUserLogin()) {
       const username = await CheckUser();
       if (!username) return null;
-      const url = `${API.BASE_URL}/user/accountDetail_retrieval`;
-      const response = await axios.post(url, { username });
-      return response; // caller can access response.data
+      const response = await throttledGetUserProps(username);
+      return response;
     }
     return null;
   } catch (error) {
