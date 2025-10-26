@@ -9,6 +9,7 @@ import axios from 'axios';
 import { API } from '../config/constants';
 import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -69,7 +70,7 @@ const Login = () => {
   const throttledLogin = useThrottleAsync(login, 2000);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.form}>
         <Image source={require('../assets/Images/Logo_Transparent.png')} style={styles.logo} />
         <Text style={styles.title}>Catching Souls</Text>
@@ -108,7 +109,7 @@ const Login = () => {
 
         {!!statusMessage && !isLoading && <Text style={styles.status}>{statusMessage}</Text>}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

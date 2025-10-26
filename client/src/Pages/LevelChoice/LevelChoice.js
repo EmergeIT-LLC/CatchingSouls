@@ -16,6 +16,7 @@ const LevelChoice = () => {
     const userLoggedIn = CheckUserLogin();
     const guestLoggedIn = CheckGuestLogin();
     const validCookie = isCookieValid()
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {
         if (userLoggedIn && validCookie || guestLoggedIn){

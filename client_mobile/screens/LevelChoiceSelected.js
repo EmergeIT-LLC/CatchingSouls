@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View, ScrollView, SafeAreaView, useWindowDimensions } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import TextField from "../components/TextField";
 import { useThrottleAsync } from "../functions/throttler";
@@ -13,6 +13,11 @@ import VerificationCheck from "../functions/verificationCheck";
 const LevelChoiceSelected = () => {
     const navigation = useNavigation();
     const route = useRoute();
+    // read current window width to emulate CSS media queries from:
+    // client/src/Pages/LevelChoiceSelected/LevelChoiceSelected.css
+    const { width } = useWindowDimensions();
+    // breakpoint chosen to mirror CSS media change (adjust to match your CSS)
+    const isLarge = width >= 900;
     const SelectedLevel = route?.params?.SelectedLevel ?? "Beginner";
     const [loggedInUser, setLoggedInUser] = useState(null); // username or null
     const [guestLoggedIn, setGuestLoggedIn] = useState(null);
@@ -214,120 +219,191 @@ const LevelChoiceSelected = () => {
     }, [navigation]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} keyboardShouldPersistTaps="handled">
             <View style={styles.form}>
-                {isLoading ? (
-                <Text>Loading...</Text>
-                ) : selectedAnswer ? (
-                checkingAnswer ? (
-                    <Text>Checking answer...</Text>
-                ) : answerCorrect ? (
-                    <View>
-                    <Text>Correct Answer</Text>
-                    {supportingVerse ? (
-                        <Text>Supporting Verse: {supportingVerse}</Text>
-                    ) : null}
-                    <Pressable style={styles.button} onPress={nextQuestion}>
-                        <Text style={styles.buttonText}>Next Question</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={leaveTrivia}>
-                        <Text style={styles.buttonText}>Leave Trivia</Text>
-                    </Pressable>
-                    </View>
-                ) : (
-                    <View>
-                    <Text>
-                        Incorrect. The correct answer was: {String(correctAnswer)}
-                    </Text>
-                    <Text>Supporting Verse: {supportingVerse}</Text>
-                    <Pressable style={styles.button} onPress={nextQuestion}>
-                        <Text style={styles.buttonText}>Next Question</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={leaveTrivia}>
-                        <Text style={styles.buttonText}>Leave Trivia</Text>
-                    </Pressable>
-                    </View>
-                )
-                ) : (
+            {isLoading ? (
+            <Text>Loading...</Text>
+            ) : selectedAnswer ? (
+            checkingAnswer ? (
+                <Text>Checking answer...</Text>
+            ) : answerCorrect ? (
                 <View>
-                    <Text style={styles.text}>Points: {playerPoints}</Text>
-                    <Text style={styles.text}>
-                    Time Remaining: {timer ?? "-"} seconds
-                    </Text>
-                    <Text style={styles.text}>{String(question)}</Text>
-
-                    <Pressable
-                    style={styles.button}
-                    onPress={() => checkSelectedAnswer(answerA)}
-                    >
-                    <Text style={styles.buttonText}>{String(answerA)}</Text>
-                    </Pressable>
-
-                    <Pressable
-                    style={styles.button}
-                    onPress={() => checkSelectedAnswer(answerB)}
-                    >
-                    <Text style={styles.buttonText}>{String(answerB)}</Text>
-                    </Pressable>
-
-                    {!isTrueFalse && (
-                    <>
-                        <Pressable
-                        style={styles.button}
-                        onPress={() => checkSelectedAnswer(answerC)}
-                        >
-                        <Text style={styles.buttonText}>{String(answerC)}</Text>
-                        </Pressable>
-                        <Pressable
-                        style={styles.button}
-                        onPress={() => checkSelectedAnswer(answerD)}
-                        >
-                        <Text style={styles.buttonText}>{String(answerD)}</Text>
-                        </Pressable>
-                    </>
-                    )}
-
-                    <Pressable
-                    style={[styles.button, { marginTop: 12 }]}
-                    onPress={leaveTrivia}
-                    >
-                    <Text style={styles.buttonText}>Leave Trivia</Text>
-                    </Pressable>
+                <Text>Correct Answer</Text>
+                {supportingVerse ? (
+                    <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>
+                ) : null}
+                <Pressable style={styles.button} onPress={nextQuestion}>
+                    <Text style={styles.buttonText}>Next Question</Text>
+                </Pressable>
+                <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
+                    <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                </Pressable>
                 </View>
+            ) : (
+                <View>
+                <Text>Incorrect. The correct answer was: {String(correctAnswer)}</Text>
+                {supportingVerse ? (
+                    <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>
+                ) : null}
+                <Pressable style={styles.button} onPress={nextQuestion}>
+                    <Text style={styles.buttonText}>Next Question</Text>
+                </Pressable>
+                <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
+                    <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                </Pressable>
+                </View>
+            )
+            ) : (
+            <View>
+                {/* header row: points + timer */}
+                <View style={styles.triviaHeaderRow}>
+                    <Text style={styles.playerPoints}>Points: {playerPoints}</Text>
+                    <Text style={styles.timer}>Time Remaining: {timer ?? "-"} seconds</Text>
+                </View>
+                {/* question on its own line so it cannot overlap the header */}
+                <Text style={styles.question}>{String(question)}</Text>
+                 <Pressable
+                 style={styles.button}
+                 onPress={() => checkSelectedAnswer(answerA)}
+                 >
+                 <Text style={styles.buttonText}>{String(answerA)}</Text>
+                 </Pressable>
+
+                <Pressable
+                style={styles.button}
+                onPress={() => checkSelectedAnswer(answerB)}
+                >
+                <Text style={styles.buttonText}>{String(answerB)}</Text>
+                </Pressable>
+
+                {!isTrueFalse && (
+                <>
+                    <Pressable
+                    style={styles.button}
+                    onPress={() => checkSelectedAnswer(answerC)}
+                    >
+                    <Text style={styles.buttonText}>{String(answerC)}</Text>
+                    </Pressable>
+                    <Pressable
+                    style={styles.button}
+                    onPress={() => checkSelectedAnswer(answerD)}
+                    >
+                    <Text style={styles.buttonText}>{String(answerD)}</Text>
+                    </Pressable>
+                </>
                 )}
+
+                <Pressable
+                style={[styles.cancelButton, { marginTop: 12 }]}
+                onPress={leaveTrivia}
+                >
+                <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                </Pressable>
             </View>
-        </View>
+            )}
+            </View>
+        </SafeAreaView>
     );
 };
 
+// create styles that mirror your web CSS and media rule.
+// The original CSS file: client/src/Pages/LevelChoiceSelected/LevelChoiceSelected.css
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    form: {
-        width: "85%",
-        borderWidth: 4,
-        borderRadius: 16,
-        borderColor: "purple",
-        alignItems: "center",
-        paddingVertical: 16,
-    },
-    text: { fontSize: 16, marginVertical: 8 },
-    button: {
-        width: 260,
-        height: 44,
-        borderRadius: 12,
-        borderWidth: 2,
-        borderColor: "purple",
-        backgroundColor: "gold",
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 12,
-    },
-    buttonText: { color: "black", fontWeight: "bold" },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 20,
+    paddingBottom: 24,
+  },
+  form: {
+    width: "85%",
+    borderWidth: 4,
+    borderRadius: 16,
+    borderColor: "purple",
+    alignItems: "stretch",          // allow children to stretch inside card
+    paddingVertical: 16,
+    paddingHorizontal: 18,         // <-- important: keeps content away from border
+    backgroundColor: "#fff",
+    margin: "25%",
+  },
+  triviaHeaderRow: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  playerPoints: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000",
+    flexShrink: 1,                 // allow shrinking to avoid overflow
+  },
+  timer: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "red",
+    flexShrink: 1,                 // allow shrinking to avoid overflow
+    textAlign: "right",
+  },
+  question: {
+    width: "100%",
+    fontSize: 20,
+    lineHeight: 28,
+    marginVertical: 12,
+    color: "#111",
+    textAlign: "center",
+  },
+  button: {
+    width: "100%",
+    maxWidth: 380,
+    height: 64,
+    borderRadius: 14,
+    borderWidth: 3,
+    borderColor: "purple",
+    backgroundColor: "gold",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    alignSelf: "center",
+    paddingHorizontal: 14,
+  },
+  answerButton: {
+    alignSelf: "center",
+    marginHorizontal: 8,
+  },
+  buttonText: {
+    color: "black",
+    fontWeight: "700",
+    fontSize: 18,
+  },
+  cancelButton: {
+    width: "85%",
+    maxWidth: 360,
+    height: 66,
+    borderRadius: 14,
+    borderWidth: 4,
+    borderColor: "darkgoldenrod",
+    backgroundColor: "purple",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 14,
+    alignSelf: "center",
+  },
+  cancelButtonText: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "white",
+  },
+  supportingVerse: {
+    marginTop: 8,
+    fontStyle: "italic",
+    fontSize: 16,
+    textAlign: "center",
+    color: "#333",
+  },
 });
 
 export default LevelChoiceSelected;
