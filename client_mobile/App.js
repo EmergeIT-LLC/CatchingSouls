@@ -14,6 +14,7 @@ import VerificationCheck from "./functions/verificationCheck";
 //Screens
 import Dashboard from "./screens/Dashboard";
 import LevelChoice from "./screens/LevelChoice";
+import LevelChoiceSelected from "./screens/LevelChoiceSelected";
 import Login from "./screens/Login";
 import Logout from "./screens/Logout";
 
@@ -69,6 +70,11 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         name="LevelChoice"
         component={LevelChoice}
         options={{ drawerLabel: "Level Choice" }}
+      />
+      <Drawer.Screen
+        name="LevelChoiceSelected"
+        component={LevelChoiceSelected}
+        options={{ drawerLabel: "Level Choice Selected" }}
       />
       <Drawer.Screen
         name="Login"

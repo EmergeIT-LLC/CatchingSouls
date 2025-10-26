@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
-import TextField from '../components/TextField';
-import { useThrottleAsync } from '../functions/throttler';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { API } from '../config/constants';
-import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
 
 const LevelChoice = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [isLoading, setIsLoading] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [statusMessage, setStatusMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -36,9 +26,18 @@ const LevelChoice = () => {
             <Text style={styles.text}>Intermediate: +2 Point</Text>
             <Text style={styles.text}>Advanced: +3 Point</Text>
             <View style={styles.levelButtons}>
-                <PrimaryButton title="Beginner" onPress={() => navigation.navigate("Game", { level: "beginner" })} />
-                <PrimaryButton title="Intermediate" onPress={() => navigation.navigate("Game", { level: "intermediate" })} />
-                <PrimaryButton title="Advanced" onPress={() => navigation.navigate("Game", { level: "advanced" })} />
+                <PrimaryButton
+                  title="Beginner"
+                  onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Beginner' })}
+                />
+                <PrimaryButton
+                  title="Intermediate"
+                  onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Intermediate' })}
+                />
+                <PrimaryButton
+                  title="Advanced"
+                  onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Advanced' })}
+                />
             </View>
         </View>
     </View>

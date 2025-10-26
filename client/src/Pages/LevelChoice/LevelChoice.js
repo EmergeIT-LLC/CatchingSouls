@@ -8,7 +8,7 @@ import Footer from '../../Components/Footer/Footer';
 import { CheckUserLogin, CheckGuestLogin } from '../../Functions/VerificationCheck';
 import { isCookieValid } from '../../Functions/CookieCheck';
 //Repositories
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const LevelChoice = () => {
     const navigate = useNavigate();
@@ -16,10 +16,8 @@ const LevelChoice = () => {
     const userLoggedIn = CheckUserLogin();
     const guestLoggedIn = CheckGuestLogin();
     const validCookie = isCookieValid()
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {
-        setIsLoading(true);
         if (userLoggedIn && validCookie || guestLoggedIn){
             setIsLoading(false);
         }
