@@ -10,7 +10,7 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
-let prodHost = process.env.HOST + ":" + process.env.PORT;
+let prodHost = `${host}:${port ? port : null}`;
 
 // Define allowed origins
 const allowedOrigins = [clientOrigin, amplifyOrigin];

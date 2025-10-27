@@ -37,6 +37,17 @@ export const CheckUser = async () => {
   }
 };
 
+export const CheckGuest = async () => {
+  try {
+    if (await CheckGuestLogin()) {
+      return await AsyncStorage.getItem("catchingSoulsGuestUsername");
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export const GetAdminRole = async () => {
   try {
     return toBool(await AsyncStorage.getItem("catchingSoulsAdmin"));
@@ -89,6 +100,7 @@ export default {
   CheckGuestLogin,
   CheckUserLogin,
   CheckUser,
+  CheckGuest,
   GetLoggedInUser,
   GetAdminRole,
   GetLogoutStatus,
