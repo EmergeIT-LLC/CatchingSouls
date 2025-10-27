@@ -12,6 +12,8 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@rea
 import VerificationCheck from "./functions/verificationCheck";
 
 //Screens
+import About from "./screens/About";
+import Contact from "./screens/Contact";
 import Dashboard from "./screens/Dashboard";
 import LevelChoice from "./screens/LevelChoice";
 import LevelChoiceSelected from "./screens/LevelChoiceSelected";
@@ -35,6 +37,14 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
               label="Login"
               onPress={() => props.navigation.navigate('Login')}
             />
+            <DrawerItem
+              label="About Us"
+              onPress={() => props.navigation.navigate('About')}
+            />
+            <DrawerItem
+              label="Contact Us"
+              onPress={() => props.navigation.navigate('Contact')}
+            />
           </>
         ) : (
           <>
@@ -45,6 +55,14 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
             <DrawerItem
               label="Logout"
               onPress={() => props.navigation.navigate('Logout')}
+            />
+            <DrawerItem
+              label="About Us"
+              onPress={() => props.navigation.navigate('About')}
+            />
+            <DrawerItem
+              label="Contact Us"
+              onPress={() => props.navigation.navigate('Contact')}
             />
           </>
         )}
@@ -61,6 +79,16 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         <CustomDrawerContent {...props} />
       )}
     >
+      <Drawer.Screen
+        name="About"
+        component={About}
+        options={{ drawerLabel: "About Us" }}
+      />
+      <Drawer.Screen
+        name="Contact"
+        component={Contact}
+        options={{ drawerLabel: "Contact Us" }}
+      />
       <Drawer.Screen
         name="Dashboard"
         component={Dashboard}
