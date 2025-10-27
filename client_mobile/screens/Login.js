@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import TextField from '../components/TextField';
 import { useThrottleAsync } from '../functions/throttler';
@@ -70,69 +70,93 @@ const Login = () => {
   const throttledLogin = useThrottleAsync(login, 2000);
 
   return (
-    <SafeAreaView style={styles.container} keyboardShouldPersistTaps="handled">
-      <View style={styles.form}>
-        <Image source={require('../assets/Images/Logo_Transparent.png')} style={styles.logo} />
-        <Text style={styles.title}>Catching Souls</Text>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 70}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={[
+              styles.form,
+              {
+                flexGrow: 1,
+                justifyContent: 'center',
+                paddingBottom: Platform.OS === 'ios' ? 160 : 110,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Image source={require('../assets/Images/Logo_Transparent.png')} style={styles.logo} />
+            <Text style={styles.title}>Catching Souls</Text>
 
-        <View style={{ width: 260 }}>
-          <TextField
-            label="Username"
-            placeholder="Enter username"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextField
-            label="Password"
-            placeholder="Enter password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-
-        <PrimaryButton title="Login" onPress={throttledLogin} loading={isLoading} />
-        {!isLoading && (
-          <>
-            <PrimaryButton title="Login As Guest" onPress={guestLogin} variant="outline" />
-            <View style={styles.linksRow}>
-              <Pressable onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.link}>Register?</Text>
-              </Pressable>
-              <Text style={styles.linkDivider}> or </Text>
-              <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
-                <Text style={styles.link}>Reset Password?</Text>
-              </Pressable>
+            <View style={{ width: 260 }}>
+              <TextField
+                label="Username"
+                placeholder="Enter username"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <TextField
+                label="Password"
+                placeholder="Enter password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
             </View>
-          </>
-        )}
 
-        {!!statusMessage && !isLoading && <Text style={styles.status}>{statusMessage}</Text>}
-      </View>
+            <PrimaryButton title="Login" onPress={throttledLogin} loading={isLoading} />
+            {!isLoading && (
+              <>
+                <PrimaryButton title="Login As Guest" onPress={guestLogin} variant="outline" />
+                <View style={styles.linksRow}>
+                  <Pressable onPress={() => navigation.navigate('Register')}>
+                    <Text style={styles.link}>Register?</Text>
+                  </Pressable>
+                  <Text style={styles.linkDivider}> or </Text>
+                  <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
+                    <Text style={styles.link}>Reset Password?</Text>
+                  </Pressable>
+                </View>
+              </>
+            )}
+
+            {!!statusMessage && !isLoading && <Text style={styles.status}>{statusMessage}</Text>}
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff', 
-    alignItems: 'center', 
-    justifyContent: 'center' 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
   },
   form: {
     width: '85%',
+    alignSelf: 'center',
     borderWidth: 4,
     borderRadius: 16,
     borderColor: 'purple',
     alignItems: 'center',
     paddingVertical: 16,
   },
-  title: { 
-    color: 'crimson', 
-    fontSize: 28, 
-    marginVertical: 12, 
-    fontWeight: '700'
+  logo: {
+    width: 250,
+    height: 250,
+    marginBottom: 12,
+  },
+  title: {
+    color: 'crimson',
+    fontSize: 28,
+    marginVertical: 12,
+    fontWeight: '700',
   },
   input: {
     width: 260,
@@ -154,11 +178,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 12,
   },
-  buttonText: { color: 'black', fontWeight: 'bold' },
-  linksRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
-  link: { color: 'purple', textDecorationLine: 'none' },
-  linkDivider: { color: 'black', marginHorizontal: 4 },
-  status: { marginTop: 12, color: 'crimson' },
+  buttonText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  linksRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  link: {
+    color: 'purple',
+    textDecorationLine: 'none',
+  },
+  linkDivider: {
+    color: 'black',
+    marginHorizontal: 4,
+  },
+  status: {
+    marginTop: 12,
+    color: 'crimson',
+  },
 });
 
 export default Login;

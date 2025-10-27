@@ -237,7 +237,7 @@ const LevelChoiceSelected = () => {
     }, [getPlayerPoints, getTriviaQandA, setTimerLimit]);
 
     const leaveTrivia = useCallback(() => {
-        navigation.goBack();
+        navigation.navigate("LevelChoice");
     }, [navigation]);
 
     return (

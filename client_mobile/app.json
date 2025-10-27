@@ -1,35 +1,17 @@
 {
   "expo": {
-    "name": "client_mobile",
-    "slug": "client_mobile",
+    "name": "Catching Souls",
+    "slug": "catching-souls",
+    "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Images/Logo_Transparent.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/Images/Logo_Transparent.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "purple"
+      "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/Images/Logo_Transparent.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "favicon": "./assets/Images/Logo_Transparent.png"
-    },
-    "expo": {
-      "splash": {
-        "backgroundColor": "#800080"
-      }
-    }
+    "updates": { "fallbackToCacheTimeout": 0 },
+    "assetBundlePatterns": ["**/*"]
   }
 }

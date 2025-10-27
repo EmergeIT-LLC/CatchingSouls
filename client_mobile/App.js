@@ -1,14 +1,14 @@
 //Dependencies
-import "react-native-gesture-handler";
+import "react-native-gesture-handler"; // MUST be first
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from "expo-linear-gradient";
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Icon } from "react-native-elements";
+import { MaterialIcons } from '@expo/vector-icons';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import VerificationCheck from "./functions/verificationCheck";
 
 //Screens
@@ -23,7 +23,6 @@ import Logout from "./screens/Logout";
 //Code
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
-
 
 // Accept props from App so auth state is decided once and passed down
 const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
@@ -75,9 +74,7 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
       initialRouteName={initialRouteName}
       screenOptions={({ navigation }) => headerStyle(navigation)}
       drawerPosition="right"
-      drawerContent={(props) => (
-        <CustomDrawerContent {...props} />
-      )}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
         name="About"
@@ -154,13 +151,15 @@ export default function App() {
         colors={["purple", "gold"]}
         style={styles.linearBGContainer}
       >
-        <NavigationContainer>
-          <StackedScreens
-            initialRouteName={initialRoute}
-            isLoggedIn={isLoggedIn}
-            isGuest={isGuest}
-          />
-        </NavigationContainer>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <NavigationContainer>
+            <StackedScreens
+              initialRouteName={initialRoute}
+              isLoggedIn={isLoggedIn}
+              isGuest={isGuest}
+            />
+          </NavigationContainer>
+        </GestureHandlerRootView>
       </LinearGradient>
       <StatusBar style="auto" />
     </View>
@@ -180,9 +179,9 @@ const headerStyle = (navigation) => {
     headerLeft: () => null, // This removes the left hamburger menu
     headerRight: () => (
       // This adds the hamburger menu to the right
-      <Icon
+      <MaterialIcons
         name="menu"
-        size={25}
+        size={28}
         color="white"
         style={{ marginRight: 15 }}
         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
