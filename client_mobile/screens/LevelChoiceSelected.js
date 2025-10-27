@@ -1,38 +1,28 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Image, Pressable, StyleSheet, Text, View, ScrollView, SafeAreaView, useWindowDimensions } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
-import TextField from "../components/TextField";
 import { useThrottleAsync } from "../functions/throttler";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API } from "../config/constants";
-import entryCheck from "../functions/entryCheck";
 import VerificationCheck from "../functions/verificationCheck";
 
 const LevelChoiceSelected = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    // read current window width to emulate CSS media queries from:
-    // client/src/Pages/LevelChoiceSelected/LevelChoiceSelected.css
-    const { width } = useWindowDimensions();
-    // breakpoint chosen to mirror CSS media change (adjust to match your CSS)
-    const isLarge = width >= 900;
-    const SelectedLevel = route?.params?.SelectedLevel ?? "Beginner";
+    const SelectedLevel = route?.params?.SelectedLevel;
     const [loggedInUser, setLoggedInUser] = useState(null); // username or null
     const [guestLoggedIn, setGuestLoggedIn] = useState(null);
-
     const [isLoading, setIsLoading] = useState(false);
     const [isTrueFalse, setIsTrueFalse] = useState(false);
     const [questionID, setQuestionID] = useState(null);
-    const [question, setQuestion] = useState("");
-    const [answerA, setAnswerA] = useState("");
-    const [answerB, setAnswerB] = useState("");
-    const [answerC, setAnswerC] = useState("");
-    const [answerD, setAnswerD] = useState("");
+    const [question, setQuestion] = useState(null);
+    const [answerA, setAnswerA] = useState(null);
+    const [answerB, setAnswerB] = useState(null);
+    const [answerC, setAnswerC] = useState(null);
+    const [answerD, setAnswerD] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(null);
     const [supportingVerse, setSupportingVerse] = useState(null);
-
     const [selectedAnswer, setSelectedAnswer] = useState(false);
     const [checkingAnswer, setCheckingAnswer] = useState(false);
     const [answerCorrect, setAnswerCorrect] = useState(true);
@@ -43,28 +33,58 @@ const LevelChoiceSelected = () => {
     // --- auth check on mount ---
     useEffect(() => {
         (async () => {
-        try {
-            const isUser = await VerificationCheck.CheckUserLogin();
-            const isGuest = await VerificationCheck.CheckGuestLogin();
+            try {
+                const isUser = await VerificationCheck.CheckUserLogin();
+                const isGuest = await VerificationCheck.CheckGuestLogin();
 
-            if (!isUser && !isGuest) {
+                if (!isUser && !isGuest) {
+                    navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+                    return;
+                }
+
+                if (isUser) {
+                    const username = await VerificationCheck.CheckUser();
+                    setLoggedInUser(username);
+                } else {
+                    const guestName = await VerificationCheck.CheckGuest();
+                    setLoggedInUser(guestName);
+                }
+            } catch (err) {
+                console.error("Auth check failed:", err);
                 navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-                return;
             }
-
-            if (isUser) {
-                const username = await VerificationCheck.CheckUser();
-                setLoggedInUser(username);
-            } else {
-                const guestName = await VerificationCheck.CheckGuest();
-                setLoggedInUser(guestName);
-            }
-        } catch (err) {
-            console.error("Auth check failed:", err);
-            navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-        }
         })();
     }, [navigation]);
+
+    // Reload/reset when the screen comes into focus so returning users don't see stale "incorrect" UI
+    useFocusEffect(
+        useCallback(() => {
+            let active = true;
+
+            // clear any answer state immediately so UI doesn't briefly show incorrect
+            setSelectedAnswer(false);
+            setCheckingAnswer(false);
+            setAnswerCorrect(true);
+            setCorrectAnswer(null);
+            setSupportingVerse(null);
+
+            // only fetch when auth has resolved (loggedInUser can be non-null) or guest flag true
+            if (active && (loggedInUser !== null || guestLoggedIn === true)) {
+                // nextQuestion is async; fire-and-forget is OK here but await to ensure sequence
+                (async () => {
+                    try {
+                        await nextQuestion();
+                    } catch (e) {
+                        console.error("nextQuestion on focus failed:", e);
+                    }
+                })();
+            }
+
+            return () => {
+                active = false;
+            };
+        }, [loggedInUser, guestLoggedIn, nextQuestion])
+    );
 
     // --- define functions with useCallback so hooks below can reference them safely ---
     const getPlayerPoints = useCallback(async () => {
@@ -91,13 +111,13 @@ const LevelChoiceSelected = () => {
             const response = await axios.post(url, {SelectedLevel: { SelectedLevel }});
 
             setIsTrueFalse(response.data.questionType === "TrueOrFalse");
-            setQuestionID(response.data.questionID ?? null);
-            setQuestion(response.data.question ?? "");
-            setAnswerA(response.data.a ?? "");
-            setAnswerB(response.data.b ?? "");
-            setAnswerC(response.data.c ?? "");
-            setAnswerD(response.data.d ?? "");
-            setSupportingVerse(response.data.supportingVerse ?? null);
+            setQuestionID(response.data.questionID);
+            setQuestion(response.data.question);
+            setAnswerA(response.data.a);
+            setAnswerB(response.data.b);
+            setAnswerC(response.data.c);
+            setAnswerD(response.data.d);
+            setSupportingVerse(response.data.supportingVerse);
             setIsLoading(false);
         } catch (err) {
             console.error("getTriviaQandA error:", err);
@@ -148,6 +168,7 @@ const LevelChoiceSelected = () => {
             // time's up
             setTimer(null);
             checkSelectedAnswer(null);
+            setSupportingVerse(null);
             return null;
             }
             return t - 1;
@@ -182,21 +203,22 @@ const LevelChoiceSelected = () => {
                 const results = resp.data?.results;
                 if (results === true || results === "true") {
                 setAnswerCorrect(true);
-                if (guestLoggedIn) {
-                    const raw = await AsyncStorage.getItem("catchingSoulsGuestPoints");
-                    let currentPoints = Number(raw) || 0;
-                    if (SelectedLevel === "Beginner") currentPoints += 1;
-                    else if (SelectedLevel === "Intermediate") currentPoints += 2;
-                    else currentPoints += 3;
-                    await AsyncStorage.setItem(
-                    "catchingSoulsGuestPoints",
-                    String(currentPoints)
-                    );
-                    setPlayerPoints(currentPoints);
-                }
+                    if (guestLoggedIn) {
+                        const raw = await AsyncStorage.getItem("catchingSoulsGuestPoints");
+                        let currentPoints = Number(raw) || 0;
+                        if (SelectedLevel === "Beginner") currentPoints += 1;
+                        else if (SelectedLevel === "Intermediate") currentPoints += 2;
+                        else if (SelectedLevel === "Advanced") currentPoints += 3;
+                        else currentPoints += 0;
+                        await AsyncStorage.setItem(
+                            "catchingSoulsGuestPoints",
+                            String(currentPoints)
+                        );
+                        setPlayerPoints(currentPoints);
+                    }
                 } else {
-                setCorrectAnswer(resp.data?.correctAnswer ?? null);
-                setAnswerCorrect(false);
+                    setCorrectAnswer(resp.data?.correctAnswer ?? null);
+                    setAnswerCorrect(false);
                 }
             } catch (err) {
                 console.error("checkSelectedAnswer error:", err);
@@ -222,85 +244,80 @@ const LevelChoiceSelected = () => {
         <SafeAreaView style={styles.container} keyboardShouldPersistTaps="handled">
             <View style={styles.form}>
             {isLoading ? (
-            <Text>Loading...</Text>
-            ) : selectedAnswer ? (
-            checkingAnswer ? (
-                <Text>Checking answer...</Text>
-            ) : answerCorrect ? (
-                <View>
-                <Text>Correct Answer</Text>
-                {supportingVerse ? (
-                    <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>
-                ) : null}
-                <Pressable style={styles.button} onPress={nextQuestion}>
-                    <Text style={styles.buttonText}>Next Question</Text>
-                </Pressable>
-                <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
-                    <Text style={styles.cancelButtonText}>Leave Trivia</Text>
-                </Pressable>
-                </View>
-            ) : (
-                <View>
-                <Text>Incorrect. The correct answer was: {String(correctAnswer)}</Text>
-                {supportingVerse ? (
-                    <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>
-                ) : null}
-                <Pressable style={styles.button} onPress={nextQuestion}>
-                    <Text style={styles.buttonText}>Next Question</Text>
-                </Pressable>
-                <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
-                    <Text style={styles.cancelButtonText}>Leave Trivia</Text>
-                </Pressable>
-                </View>
-            )
-            ) : (
-            <View>
-                {/* header row: points + timer */}
-                <View style={styles.triviaHeaderRow}>
-                    <Text style={styles.playerPoints}>Points: {playerPoints}</Text>
-                    <Text style={styles.timer}>Time Remaining: {timer ?? "-"} seconds</Text>
-                </View>
-                {/* question on its own line so it cannot overlap the header */}
-                <Text style={styles.question}>{String(question)}</Text>
-                 <Pressable
-                 style={styles.button}
-                 onPress={() => checkSelectedAnswer(answerA)}
-                 >
-                 <Text style={styles.buttonText}>{String(answerA)}</Text>
-                 </Pressable>
+                    <Text>Loading...</Text>
+                ) : selectedAnswer ? (
+                    checkingAnswer ? (
+                        <Text>Checking answer...</Text>
+                    ) : answerCorrect ? (
+                        <View>
+                            <Text style={styles.correctText}>Correct Answer</Text>
+                            {supportingVerse && <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>}
+                            <Pressable style={styles.button} onPress={nextQuestion}>
+                                <Text style={styles.buttonText}>Next Question</Text>
+                            </Pressable>
+                            <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
+                                <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                            </Pressable>
+                        </View>
+                    ) : (
+                        <View>
+                            <Text style={styles.incorrectText}>Incorrect Answer</Text>
+                            {correctAnswer && <Text style={styles.text}>The correct answer was: {String(correctAnswer)}</Text>}
+                            {supportingVerse && <Text style={styles.supportingVerse}>Supporting Verse: {supportingVerse}</Text>}
+                            <Pressable style={styles.button} onPress={nextQuestion}>
+                                <Text style={styles.buttonText}>Next Question</Text>
+                            </Pressable>
+                            <Pressable style={styles.cancelButton} onPress={leaveTrivia}>
+                                <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                            </Pressable>
+                        </View>
+                    )
+                    ) : (
+                    <View>
+                        {/* header row: points + timer */}
+                        <View style={styles.triviaHeaderRow}>
+                            <Text style={styles.playerPoints}>Points: {playerPoints}</Text>
+                            <Text style={styles.timer}>Time: {timer ?? "-"}</Text>
+                        </View>
+                        {/* question on its own line so it cannot overlap the header */}
+                        <Text style={styles.question}>{String(question)}</Text>
+                        <Pressable
+                        style={styles.button}
+                        onPress={() => checkSelectedAnswer(answerA)}
+                        >
+                        <Text style={styles.buttonText}>{String(answerA)}</Text>
+                        </Pressable>
 
-                <Pressable
-                style={styles.button}
-                onPress={() => checkSelectedAnswer(answerB)}
-                >
-                <Text style={styles.buttonText}>{String(answerB)}</Text>
-                </Pressable>
-
-                {!isTrueFalse && (
-                <>
-                    <Pressable
-                    style={styles.button}
-                    onPress={() => checkSelectedAnswer(answerC)}
-                    >
-                    <Text style={styles.buttonText}>{String(answerC)}</Text>
-                    </Pressable>
-                    <Pressable
-                    style={styles.button}
-                    onPress={() => checkSelectedAnswer(answerD)}
-                    >
-                    <Text style={styles.buttonText}>{String(answerD)}</Text>
-                    </Pressable>
-                </>
+                        <Pressable
+                        style={styles.button}
+                        onPress={() => checkSelectedAnswer(answerB)}
+                        >
+                        <Text style={styles.buttonText}>{String(answerB)}</Text>
+                        </Pressable>
+                        {!isTrueFalse && (
+                        <>
+                            <Pressable
+                            style={styles.button}
+                            onPress={() => checkSelectedAnswer(answerC)}
+                            >
+                            <Text style={styles.buttonText}>{String(answerC)}</Text>
+                            </Pressable>
+                            <Pressable
+                            style={styles.button}
+                            onPress={() => checkSelectedAnswer(answerD)}
+                            >
+                            <Text style={styles.buttonText}>{String(answerD)}</Text>
+                            </Pressable>
+                        </>
+                        )}
+                        <Pressable
+                        style={[styles.cancelButton, { marginTop: 12 }]}
+                        onPress={leaveTrivia}
+                        >
+                        <Text style={styles.cancelButtonText}>Leave Trivia</Text>
+                        </Pressable>
+                    </View>
                 )}
-
-                <Pressable
-                style={[styles.cancelButton, { marginTop: 12 }]}
-                onPress={leaveTrivia}
-                >
-                <Text style={styles.cancelButtonText}>Leave Trivia</Text>
-                </Pressable>
-            </View>
-            )}
             </View>
         </SafeAreaView>
     );
@@ -348,13 +365,37 @@ const styles = StyleSheet.create({
     flexShrink: 1,                 // allow shrinking to avoid overflow
     textAlign: "right",
   },
+  text: {
+    width: "100%",
+    fontSize: 20,
+    fontWeight: "bold",
+    lineHeight: 28,
+    marginVertical: 12,
+    color: "black",
+    textAlign: "center",
+  },
   question: {
     width: "100%",
     fontSize: 20,
+    fontWeight: "bold",
     lineHeight: 28,
     marginVertical: 12,
-    color: "#111",
+    color: "black",
     textAlign: "center",
+  },
+  correctText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "green",
+    textAlign: "center",
+    marginVertical: 12,
+  },
+  incorrectText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "red",
+    textAlign: "center",
+    marginVertical: 12,
   },
   button: {
     width: "100%",
@@ -380,7 +421,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   cancelButton: {
-    width: "85%",
+    width: "100%",
     maxWidth: 360,
     height: 66,
     borderRadius: 14,
@@ -399,6 +440,7 @@ const styles = StyleSheet.create({
   },
   supportingVerse: {
     marginTop: 8,
+    fontWeight: "bold",
     fontStyle: "italic",
     fontSize: 16,
     textAlign: "center",
