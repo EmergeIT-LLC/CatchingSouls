@@ -101,6 +101,8 @@ router.post('/checkanswer', async (req, res) => {
     const loggedUser = req.body.loggedInUser;
     var pointsToAward = 0;
 
+    console.log(req.body);
+
     try {
         //Retrieve Prompted QA Detail
         const triviaQAAsked = await triviaQueries.qaGetQuestionDataId(questionID);

@@ -87,7 +87,7 @@ const LevelChoiceSelected = () => {
     );
 
     // --- define functions with useCallback so hooks below can reference them safely ---
-    const getPlayerPoints = useCallback(async () => {
+    const getPlayerPoints = async () => {
         try {
             if (!guestLoggedIn) {
                 const url = `${API.BASE_URL}/trivia/getPlayerPoints`;
@@ -100,15 +100,17 @@ const LevelChoiceSelected = () => {
         } catch (err) {
             console.error("getPlayerPoints error:", err);
         }
-    }, [guestLoggedIn, loggedInUser]);
+    };
 
-    const getTriviaQandA = useCallback(async () => {
+    const getTriviaQandA = async () => {
         try {
             setIsLoading(true);
             setCorrectAnswer(null);
 
             const url = `${API.BASE_URL}/trivia/retrievequestion`;
             const response = await axios.post(url, {SelectedLevel: { SelectedLevel }});
+
+            console.log("Trivia Q&A response:", response.data);
 
             setIsTrueFalse(response.data.questionType === "TrueOrFalse");
             setQuestionID(response.data.questionID);
@@ -124,11 +126,11 @@ const LevelChoiceSelected = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [SelectedLevel]);
+    };
 
-    const setTimerLimit = useCallback(() => {
+    const setTimerLimit = () => {
         setTimer(30);
-    }, []);
+    };
 
     // --- create throttled wrappers using the hook (top-level only) ---
     const throttledGetPlayerPoints = useThrottleAsync(getPlayerPoints, 2000);
@@ -175,70 +177,66 @@ const LevelChoiceSelected = () => {
         });
         }, 1000);
         return () => clearInterval(id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timer]);
 
     // --- check answer ---
-    const checkSelectedAnswer = useCallback(
-        async (selectedAnswerChoice) => {
-            if (checkingAnswer) return;
-            setTimer(null);
-            setSelectedAnswer(true);
-            setCheckingAnswer(true);
+    const checkSelectedAnswer = async (selectedAnswerChoice) => {
+        if (checkingAnswer) return;
+        setTimer(null);
+        setSelectedAnswer(true);
+        setCheckingAnswer(true);
 
-            if (selectedAnswerChoice === null) {
-                setAnswerCorrect(false);
-                setCheckingAnswer(false);
-                return;
-            }
+        if (selectedAnswerChoice === null) {
+            setAnswerCorrect(false);
+            setCheckingAnswer(false);
+            return;
+        }
 
-            try {
-                const url = `${API.BASE_URL}/trivia/checkanswer`;
-                const resp = await axios.post(url, {
-                questionID,
-                selectedAnswerChoice,
-                loggedInUser,
-                });
+        try {
+            const url = `${API.BASE_URL}/trivia/checkanswer`;
+            const resp = await axios.post(url, {
+            questionID,
+            selectedAnswerChoice,
+            loggedInUser,
+            });
 
-                const results = resp.data?.results;
-                if (results === true || results === "true") {
-                setAnswerCorrect(true);
-                    if (guestLoggedIn) {
-                        const raw = await AsyncStorage.getItem("catchingSoulsGuestPoints");
-                        let currentPoints = Number(raw) || 0;
-                        if (SelectedLevel === "Beginner") currentPoints += 1;
-                        else if (SelectedLevel === "Intermediate") currentPoints += 2;
-                        else if (SelectedLevel === "Advanced") currentPoints += 3;
-                        else currentPoints += 0;
-                        await AsyncStorage.setItem(
-                            "catchingSoulsGuestPoints",
-                            String(currentPoints)
-                        );
-                        setPlayerPoints(currentPoints);
-                    }
-                } else {
-                    setCorrectAnswer(resp.data?.correctAnswer ?? null);
-                    setAnswerCorrect(false);
+            const results = resp.data?.results;
+            if (results === true || results === "true") {
+            setAnswerCorrect(true);
+                if (guestLoggedIn) {
+                    const raw = await AsyncStorage.getItem("catchingSoulsGuestPoints");
+                    let currentPoints = Number(raw) || 0;
+                    if (SelectedLevel === "Beginner") currentPoints += 1;
+                    else if (SelectedLevel === "Intermediate") currentPoints += 2;
+                    else if (SelectedLevel === "Advanced") currentPoints += 3;
+                    else currentPoints += 0;
+                    await AsyncStorage.setItem(
+                        "catchingSoulsGuestPoints",
+                        String(currentPoints)
+                    );
+                    setPlayerPoints(currentPoints);
                 }
-            } catch (err) {
-                console.error("checkSelectedAnswer error:", err);
-            } finally {
-                setCheckingAnswer(false);
+            } else {
+                setCorrectAnswer(resp.data?.correctAnswer ?? null);
+                setAnswerCorrect(false);
             }
-        },
-        [checkingAnswer, questionID, loggedInUser, guestLoggedIn, SelectedLevel]
-    );
+        } catch (err) {
+            console.error("checkSelectedAnswer error:", err);
+        } finally {
+            setCheckingAnswer(false);
+        }
+    };
 
-    const nextQuestion = useCallback(async () => {
+    const nextQuestion = async () => {
         await getPlayerPoints();
         await getTriviaQandA();
         setTimerLimit();
         setSelectedAnswer(false);
-    }, [getPlayerPoints, getTriviaQandA, setTimerLimit]);
+    };
 
-    const leaveTrivia = useCallback(() => {
+    const leaveTrivia = () => {
         navigation.navigate("LevelChoice");
-    }, [navigation]);
+    };
 
     return (
         <SafeAreaView style={styles.container} keyboardShouldPersistTaps="handled">

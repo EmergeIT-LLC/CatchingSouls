@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
     margin: 4,
     fontSize: 34,
     fontFamily: "Arial",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textAlign: "center"
   },
   dashboardText: {
     margin: 4,
