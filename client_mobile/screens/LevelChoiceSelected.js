@@ -110,16 +110,14 @@ const LevelChoiceSelected = () => {
             const url = `${API.BASE_URL}/trivia/retrievequestion`;
             const response = await axios.post(url, {SelectedLevel: { SelectedLevel }});
 
-            console.log("Trivia Q&A response:", response.data);
-
-            setIsTrueFalse(response.data.questionType === "TrueOrFalse");
-            setQuestionID(response.data.questionID);
-            setQuestion(response.data.question);
-            setAnswerA(response.data.a);
-            setAnswerB(response.data.b);
-            setAnswerC(response.data.c);
-            setAnswerD(response.data.d);
-            setSupportingVerse(response.data.supportingVerse);
+            setIsTrueFalse(response?.data?.questionType === "TrueOrFalse");
+            setQuestionID(response?.data?.questionID);
+            setQuestion(response?.data?.question);
+            setAnswerA(response?.data?.a);
+            setAnswerB(response?.data?.b);
+            setAnswerC(response?.data?.c);
+            setAnswerD(response?.data?.d);
+            setSupportingVerse(response?.data?.supportingVerse);
             setIsLoading(false);
         } catch (err) {
             console.error("getTriviaQandA error:", err);
@@ -194,13 +192,13 @@ const LevelChoiceSelected = () => {
 
         try {
             const url = `${API.BASE_URL}/trivia/checkanswer`;
-            const resp = await axios.post(url, {
+            const response = await axios.post(url, {
             questionID,
             selectedAnswerChoice,
             loggedInUser,
             });
 
-            const results = resp.data?.results;
+            const results = response?.data?.results;
             if (results === true || results === "true") {
             setAnswerCorrect(true);
                 if (guestLoggedIn) {
@@ -217,7 +215,7 @@ const LevelChoiceSelected = () => {
                     setPlayerPoints(currentPoints);
                 }
             } else {
-                setCorrectAnswer(resp.data?.correctAnswer ?? null);
+                setCorrectAnswer(response?.data?.correctAnswer ?? null);
                 setAnswerCorrect(false);
             }
         } catch (err) {

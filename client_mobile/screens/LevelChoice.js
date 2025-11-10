@@ -35,8 +35,8 @@ const LevelChoice = () => {
                   onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Intermediate' })}
                 />
                 <PrimaryButton
-                  title="Advanced"
-                  onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Advanced' })}
+                  title="Advance"
+                  onPress={() => navigation.navigate('LevelChoiceSelected', { SelectedLevel: 'Advance' })}
                 />
             </View>
         </View>
