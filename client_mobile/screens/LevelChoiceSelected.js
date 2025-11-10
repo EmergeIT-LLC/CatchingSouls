@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API } from "../config/constants";
 import VerificationCheck from "../functions/verificationCheck";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LevelChoiceSelected = () => {
     const navigation = useNavigation();
@@ -47,7 +48,7 @@ const LevelChoiceSelected = () => {
                     setLoggedInUser(username);
                 } else {
                     const guestName = await VerificationCheck.CheckGuest();
-                    setLoggedInUser(guestName);
+                    setGuestLoggedIn(guestName);
                 }
             } catch (err) {
                 console.error("Auth check failed:", err);
@@ -69,7 +70,7 @@ const LevelChoiceSelected = () => {
             setSupportingVerse(null);
 
             // only fetch when auth has resolved (loggedInUser can be non-null) or guest flag true
-            if (active && (loggedInUser !== null || guestLoggedIn === true)) {
+            if (active && (loggedInUser !== null || guestLoggedIn !== null)) {
                 // nextQuestion is async; fire-and-forget is OK here but await to ensure sequence
                 (async () => {
                     try {
@@ -137,7 +138,7 @@ const LevelChoiceSelected = () => {
 
     // --- call the throttled functions when auth info ready ---
     useEffect(() => {
-        if (loggedInUser === null && !guestLoggedIn) return; // still resolving
+        if (loggedInUser === null && guestLoggedIn === null) return;
         let active = true;
         (async () => {
             if (!active) return;
@@ -201,12 +202,12 @@ const LevelChoiceSelected = () => {
             const results = response?.data?.results;
             if (results === true || results === "true") {
             setAnswerCorrect(true);
-                if (guestLoggedIn) {
+                if (guestLoggedIn !== null) {
                     const raw = await AsyncStorage.getItem("catchingSoulsGuestPoints");
                     let currentPoints = Number(raw) || 0;
                     if (SelectedLevel === "Beginner") currentPoints += 1;
                     else if (SelectedLevel === "Intermediate") currentPoints += 2;
-                    else if (SelectedLevel === "Advanced") currentPoints += 3;
+                    else if (SelectedLevel === "Advance") currentPoints += 3;
                     else currentPoints += 0;
                     await AsyncStorage.setItem(
                         "catchingSoulsGuestPoints",
