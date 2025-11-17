@@ -5,6 +5,9 @@
 **/__pycache__/
 **/.venv/
 
+# Database
+/server/config/database/dataStorage.db
+
 # Client
 /client/.pnp
 /client/.pnp.js
