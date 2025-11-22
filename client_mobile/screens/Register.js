@@ -3,7 +3,7 @@
 // This provides core functionality - expand as needed
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -12,7 +12,7 @@ import SelectField from '../components/SelectField';
 import PrimaryButton from '../components/PrimaryButton';
 import entryCheck from '../functions/entryCheck';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles } from '../styles/screenStyles';
 
 const Register = () => {
     const navigation = useNavigation();
@@ -117,15 +117,15 @@ const Register = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={commonStyles.container}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={styles.scrollContent}>
-                        <View style={styles.form}>
-                            <Text style={styles.title}>Register</Text>
+                    <ScrollView contentContainerStyle={commonStyles.scrollContent}>
+                        <View style={commonStyles.formNonCentered}>
+                            <Text style={commonStyles.title}>Register</Text>
                             <TextField
                                 label="Username *"
                                 placeholder="Enter A Username"
@@ -173,7 +173,7 @@ const Register = () => {
                                 secureTextEntry
                             />
                             
-                            <Text style={styles.sectionTitle}>Church Info</Text>
+                            <Text style={commonStyles.sectionTitle}>Church Info</Text>
                             <SelectField
                                 label="Denomination"
                                 value={selectDenomination}
@@ -210,7 +210,7 @@ const Register = () => {
                                 loading={isLoading}
                             />
                             {!isLoading && statusMessage && (
-                                <Text style={styles.status}>{statusMessage}</Text>
+                                <Text style={commonStyles.status}>{statusMessage}</Text>
                             )}
                         </View>
                     </ScrollView>
@@ -219,42 +219,5 @@ const Register = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginTop: spacing.lg,
-        marginBottom: spacing.md,
-        textAlign: 'center',
-    },
-    status: {
-        marginTop: spacing.md,
-        color: colors.danger,
-        textAlign: 'center',
-    },
-});
 
 export default Register;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Alert } from 'react-native';
+import { Text, View, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -7,7 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import VerificationCheck from '../functions/verificationCheck';
 import PrimaryButton from '../components/PrimaryButton';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const ProfileDelete = () => {
     const navigation = useNavigation();
@@ -87,15 +88,15 @@ const ProfileDelete = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <View style={commonStyles.form}>
                 {isLoading ? (
                     <ActivityIndicator size="large" color={colors.primary} />
                 ) : (
                     <>
-                        <Text style={styles.title}>Delete Profile</Text>
-                        <Text style={styles.message}>
-                            <Text style={styles.bold}>{firstName}</Text>, are you sure you want to delete your account?
+                        <Text style={commonStyles.title}>Delete Profile</Text>
+                        <Text style={commonStyles.message}>
+                            <Text style={commonStyles.bold}>{firstName}</Text>, are you sure you want to delete your account?
                         </Text>
                         <PrimaryButton 
                             title="Yes, Delete My Account" 
@@ -107,49 +108,12 @@ const ProfileDelete = () => {
                             onPress={() => navigation.navigate('Profile')}
                             variant="outline"
                         />
-                        {statusMessage && <Text style={styles.status}>{statusMessage}</Text>}
+                        {statusMessage && <Text style={commonStyles.status}>{statusMessage}</Text>}
                     </>
                 )}
             </View>
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-        justifyContent: 'center',
-        padding: spacing.lg,
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    message: {
-        fontSize: 16,
-        color: colors.text,
-        textAlign: 'center',
-        marginBottom: spacing.lg,
-    },
-    bold: {
-        fontWeight: 'bold',
-    },
-    status: {
-        marginTop: spacing.md,
-        color: colors.danger,
-        textAlign: 'center',
-    },
-});
 
 export default ProfileDelete;

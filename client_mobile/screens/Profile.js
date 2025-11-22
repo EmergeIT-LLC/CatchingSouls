@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import VerificationCheck from '../functions/verificationCheck';
 import PrimaryButton from '../components/PrimaryButton';
-import { colors, spacing, radius } from '../components/themes';
+import { colors } from '../components/themes';
+import { commonStyles, profileStyles } from '../styles/screenStyles';
 
 const Profile = () => {
     const navigation = useNavigation();
@@ -62,35 +63,35 @@ const Profile = () => {
     }, [navigation]);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <ScrollView contentContainerStyle={commonStyles.scrollContent}>
+                <View style={commonStyles.form}>
                     {isLoading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
                         <>
-                            <Text style={styles.title}>{firstName} {lastName}</Text>
-                            <View style={styles.infoContainer}>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Username:</Text>
-                                    <Text style={styles.value}>{username}</Text>
+                            <Text style={commonStyles.title}>{firstName} {lastName}</Text>
+                            <View style={profileStyles.infoContainer}>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Username:</Text>
+                                    <Text style={profileStyles.value}>{username}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Email:</Text>
-                                    <Text style={styles.value}>{email}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Email:</Text>
+                                    <Text style={profileStyles.value}>{email}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Saved Souls:</Text>
-                                    <Text style={styles.value}>{savedSouls}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Saved Souls:</Text>
+                                    <Text style={profileStyles.value}>{savedSouls}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Church:</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Church:</Text>
                                     {churchName ? (
-                                        <Text style={styles.value}>
+                                        <Text style={profileStyles.value}>
                                             {churchName} {selectDenomination} Church in {churchLocation}, {churchState}
                                         </Text>
                                     ) : (
-                                        <Text style={styles.value}>-</Text>
+                                        <Text style={profileStyles.value}>-</Text>
                                     )}
                                 </View>
                             </View>
@@ -112,51 +113,5 @@ const Profile = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-        justifyContent: 'center',
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    infoContainer: {
-        width: '100%',
-        marginBottom: spacing.lg,
-    },
-    infoRow: {
-        marginBottom: spacing.md,
-        paddingVertical: spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-    },
-    label: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: colors.text,
-        marginBottom: spacing.xs,
-    },
-    value: {
-        fontSize: 16,
-        color: colors.text,
-    },
-});
 
 export default Profile;

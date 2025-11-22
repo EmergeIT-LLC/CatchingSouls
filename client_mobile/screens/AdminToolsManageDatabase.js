@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator, Pressable } from 'react-native';
+import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import VerificationCheck from '../functions/verificationCheck';
 import PrimaryButton from '../components/PrimaryButton';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const AdminToolsManageDatabase = () => {
     const navigation = useNavigation();
@@ -79,18 +80,18 @@ const AdminToolsManageDatabase = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <ScrollView contentContainerStyle={commonStyles.centeredScrollContent}>
+                <View style={commonStyles.form}>
                     {isLoading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
                         <>
-                            <Text style={styles.title}>Database Management</Text>
-                            <Text style={styles.subtitle}>
+                            <Text style={commonStyles.title24}>Database Management</Text>
+                            <Text style={commonStyles.subtitle}>
                                 Import execution was {importExecutionResults}, as of {importExecutionDate}
                             </Text>
-                            <Text style={styles.subtitle}>
+                            <Text style={commonStyles.subtitle}>
                                 Backup execution was {backupExecutionResults}, as of {backupExecutionDate}
                             </Text>
                             <PrimaryButton
@@ -108,37 +109,5 @@ const AdminToolsManageDatabase = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-        justifyContent: 'center',
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 14,
-        color: colors.text,
-        textAlign: 'center',
-        marginBottom: spacing.md,
-    },
-});
 
 export default AdminToolsManageDatabase;

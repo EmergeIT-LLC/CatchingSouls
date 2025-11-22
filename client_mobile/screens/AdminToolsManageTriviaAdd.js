@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import SelectField from '../components/SelectField';
 import PrimaryButton from '../components/PrimaryButton';
 import VerificationCheck from '../functions/verificationCheck';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles } from '../styles/screenStyles';
 
 const AdminToolsManageTriviaAdd = () => {
     const navigation = useNavigation();
@@ -87,15 +87,15 @@ const AdminToolsManageTriviaAdd = () => {
     ];
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={commonStyles.container}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={styles.scrollContent}>
-                        <View style={styles.form}>
-                            <Text style={styles.title}>Upload Question & Answer</Text>
+                    <ScrollView contentContainerStyle={commonStyles.scrollContent}>
+                        <View style={commonStyles.formNonCentered}>
+                            <Text style={commonStyles.title24}>Upload Question & Answer</Text>
                             <TextField
                                 label="Question"
                                 placeholder="Enter Question"
@@ -142,7 +142,7 @@ const AdminToolsManageTriviaAdd = () => {
                                 />
                             )}
                             {!isLoading && statusMessage && (
-                                <Text style={styles.status}>{statusMessage}</Text>
+                                <Text style={commonStyles.status}>{statusMessage}</Text>
                             )}
                         </View>
                     </ScrollView>
@@ -151,34 +151,5 @@ const AdminToolsManageTriviaAdd = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    status: {
-        marginTop: spacing.md,
-        color: colors.danger,
-        textAlign: 'center',
-    },
-});
 
 export default AdminToolsManageTriviaAdd;

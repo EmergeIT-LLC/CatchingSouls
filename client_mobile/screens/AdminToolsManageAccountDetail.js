@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import VerificationCheck from '../functions/verificationCheck';
 import PrimaryButton from '../components/PrimaryButton';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles, profileStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const AdminToolsManageAccountDetail = () => {
     const navigation = useNavigation();
@@ -64,26 +65,26 @@ const AdminToolsManageAccountDetail = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <ScrollView contentContainerStyle={commonStyles.centeredScrollContent}>
+                <View style={commonStyles.form}>
                     {isLoading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
                         <>
-                            <Text style={styles.title}>{firstName} {lastName}</Text>
-                            <View style={styles.infoContainer}>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Username:</Text>
-                                    <Text style={styles.value}>{selectedAdmin}</Text>
+                            <Text style={commonStyles.title}>{firstName} {lastName}</Text>
+                            <View style={profileStyles.infoContainer}>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Username:</Text>
+                                    <Text style={profileStyles.value}>{selectedAdmin}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Email:</Text>
-                                    <Text style={styles.value}>{email}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Email:</Text>
+                                    <Text style={profileStyles.value}>{email}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Role:</Text>
-                                    <Text style={styles.value}>{selectRole}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Role:</Text>
+                                    <Text style={profileStyles.value}>{selectRole}</Text>
                                 </View>
                             </View>
                             {showButtons && (
@@ -111,51 +112,5 @@ const AdminToolsManageAccountDetail = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-        justifyContent: 'center',
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    infoContainer: {
-        width: '100%',
-        marginBottom: spacing.lg,
-    },
-    infoRow: {
-        marginBottom: spacing.md,
-        paddingVertical: spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-    },
-    label: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: colors.text,
-        marginBottom: spacing.xs,
-    },
-    value: {
-        fontSize: 16,
-        color: colors.text,
-    },
-});
 
 export default AdminToolsManageAccountDetail;

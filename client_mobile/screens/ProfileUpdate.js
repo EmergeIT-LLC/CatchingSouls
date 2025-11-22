@@ -3,7 +3,7 @@
 // This provides core functionality - expand as needed
 
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -13,7 +13,8 @@ import PrimaryButton from '../components/PrimaryButton';
 import VerificationCheck from '../functions/verificationCheck';
 import entryCheck from '../functions/entryCheck';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const ProfileUpdate = () => {
     const navigation = useNavigation();
@@ -155,8 +156,8 @@ const ProfileUpdate = () => {
 
     if (isLoading) {
         return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.loadingContainer}>
+            <SafeAreaView style={commonStyles.container}>
+                <View style={commonStyles.loadingContainer}>
                     <ActivityIndicator size="large" color={colors.primary} />
                 </View>
             </SafeAreaView>
@@ -164,15 +165,15 @@ const ProfileUpdate = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={commonStyles.container}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={styles.scrollContent}>
-                        <View style={styles.form}>
-                            <Text style={styles.title}>Update Profile</Text>
+                    <ScrollView contentContainerStyle={commonStyles.scrollContent}>
+                        <View style={commonStyles.formNonCentered}>
+                            <Text style={commonStyles.title}>Update Profile</Text>
                             <TextField
                                 label="Username"
                                 value={username}
@@ -227,7 +228,7 @@ const ProfileUpdate = () => {
                                 secureTextEntry
                             />
                             
-                            <Text style={styles.sectionTitle}>Church Info</Text>
+                            <Text style={commonStyles.sectionTitle}>Church Info</Text>
                             <SelectField
                                 label="Denomination"
                                 value={selectDenomination}
@@ -271,7 +272,7 @@ const ProfileUpdate = () => {
                                 />
                             )}
                             {!isLoading && statusMessage && (
-                                <Text style={styles.status}>{statusMessage}</Text>
+                                <Text style={commonStyles.status}>{statusMessage}</Text>
                             )}
                         </View>
                     </ScrollView>
@@ -280,47 +281,5 @@ const ProfileUpdate = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginTop: spacing.lg,
-        marginBottom: spacing.md,
-        textAlign: 'center',
-    },
-    status: {
-        marginTop: spacing.md,
-        color: colors.danger,
-        textAlign: 'center',
-    },
-});
 
 export default ProfileUpdate;

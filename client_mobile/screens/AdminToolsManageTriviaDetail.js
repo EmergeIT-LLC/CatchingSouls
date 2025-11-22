@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import VerificationCheck from '../functions/verificationCheck';
 import PrimaryButton from '../components/PrimaryButton';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles, profileStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const AdminToolsManageTriviaDetail = () => {
     const navigation = useNavigation();
@@ -58,34 +59,34 @@ const AdminToolsManageTriviaDetail = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <ScrollView contentContainerStyle={commonStyles.centeredScrollContent}>
+                <View style={commonStyles.form}>
                     {isLoading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
                         <>
-                            <Text style={styles.title}>Question ID {questionID}</Text>
-                            <View style={styles.infoContainer}>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Question:</Text>
-                                    <Text style={styles.value}>{question}</Text>
+                            <Text style={commonStyles.title24}>Question ID {questionID}</Text>
+                            <View style={profileStyles.infoContainer}>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Question:</Text>
+                                    <Text style={profileStyles.value}>{question}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Answer:</Text>
-                                    <Text style={styles.value}>{answer}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Answer:</Text>
+                                    <Text style={profileStyles.value}>{answer}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Supporting Verse:</Text>
-                                    <Text style={styles.value}>{supportingVerse}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Supporting Verse:</Text>
+                                    <Text style={profileStyles.value}>{supportingVerse}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Answer Relation:</Text>
-                                    <Text style={styles.value}>{triviaType}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Answer Relation:</Text>
+                                    <Text style={profileStyles.value}>{triviaType}</Text>
                                 </View>
-                                <View style={styles.infoRow}>
-                                    <Text style={styles.label}>Question Level:</Text>
-                                    <Text style={styles.value}>{triviaLevel}</Text>
+                                <View style={profileStyles.infoRow}>
+                                    <Text style={profileStyles.label}>Question Level:</Text>
+                                    <Text style={profileStyles.value}>{triviaLevel}</Text>
                                 </View>
                             </View>
                             {showButtons && (
@@ -113,51 +114,5 @@ const AdminToolsManageTriviaDetail = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: spacing.lg,
-        justifyContent: 'center',
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: colors.text,
-        marginBottom: spacing.lg,
-        textAlign: 'center',
-    },
-    infoContainer: {
-        width: '100%',
-        marginBottom: spacing.lg,
-    },
-    infoRow: {
-        marginBottom: spacing.md,
-        paddingVertical: spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-    },
-    label: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: colors.text,
-        marginBottom: spacing.xs,
-    },
-    value: {
-        fontSize: 16,
-        color: colors.text,
-    },
-});
 
 export default AdminToolsManageTriviaDetail;

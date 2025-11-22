@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import { Text, View, Image, ActivityIndicator } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import PrimaryButton from '../components/PrimaryButton';
 import { API } from '../config/constants';
-import { colors, spacing, radius } from '../components/themes';
+import { commonStyles, imageStyles } from '../styles/screenStyles';
+import { colors } from '../components/themes';
 
 const AccountVerification = () => {
     const route = useRoute();
@@ -51,8 +52,8 @@ const AccountVerification = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+        <SafeAreaView style={commonStyles.container}>
+            <View style={commonStyles.form}>
                 {isLoading ? (
                     <ActivityIndicator size="large" color={colors.primary} />
                 ) : (
@@ -63,11 +64,11 @@ const AccountVerification = () => {
                                     <>
                                         <Image 
                                             source={require('../assets/Images/Logo_Transparent.png')} 
-                                            style={styles.logo}
+                                            style={imageStyles.logo}
                                         />
-                                        <Text style={[styles.title, { color: 'green' }]}>Verified!</Text>
-                                        <Text style={styles.text}>Your account has been verified.</Text>
-                                        <Text style={styles.text}><Text style={styles.bold}>Select login</Text> to sign in!</Text>
+                                        <Text style={[commonStyles.title, { color: 'green' }]}>Verified!</Text>
+                                        <Text style={commonStyles.text}>Your account has been verified.</Text>
+                                        <Text style={commonStyles.text}><Text style={commonStyles.bold}>Select login</Text> to sign in!</Text>
                                         <PrimaryButton 
                                             title="Login" 
                                             onPress={() => navigation.navigate('Login')}
@@ -75,9 +76,9 @@ const AccountVerification = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <Text style={[styles.title, { color: colors.danger }]}>Not Verified!</Text>
-                                        <Text style={styles.text}>Verification failed</Text>
-                                        <Text style={styles.text}>Please try again later.</Text>
+                                        <Text style={[commonStyles.title, { color: colors.danger }]}>Not Verified!</Text>
+                                        <Text style={commonStyles.text}>Verification failed</Text>
+                                        <Text style={commonStyles.text}>Please try again later.</Text>
                                     </>
                                 )}
                             </>
@@ -85,15 +86,15 @@ const AccountVerification = () => {
                             <>
                                 <Image 
                                     source={require('../assets/Images/Logo_Transparent.png')} 
-                                    style={[styles.logo, { opacity: 0.5 }]}
+                                    style={imageStyles.logoGreyedOut}
                                 />
-                                <Text style={[styles.title, { color: colors.danger }]}>Not Verified!</Text>
-                                <Text style={styles.text}>Your account is already verified</Text>
-                                <Text style={styles.text}>or you never registered.</Text>
-                                <Text style={styles.text}>
-                                    Select <Text style={styles.bold}>login</Text> to sign back in!{'\n'}
+                                <Text style={[commonStyles.title, { color: colors.danger }]}>Not Verified!</Text>
+                                <Text style={commonStyles.text}>Your account is already verified</Text>
+                                <Text style={commonStyles.text}>or you never registered.</Text>
+                                <Text style={commonStyles.text}>
+                                    Select <Text style={commonStyles.bold}>login</Text> to sign back in!{'\n'}
                                     or{'\n'}
-                                    Select <Text style={styles.bold}>Register</Text> to sign up!
+                                    Select <Text style={commonStyles.bold}>Register</Text> to sign up!
                                 </Text>
                                 <PrimaryButton 
                                     title="Login" 
@@ -112,41 +113,5 @@ const AccountVerification = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.bg,
-        justifyContent: 'center',
-        padding: spacing.lg,
-    },
-    form: {
-        borderWidth: 4,
-        borderColor: colors.primary,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        alignItems: 'center',
-    },
-    logo: {
-        width: 200,
-        height: 200,
-        marginBottom: spacing.lg,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: spacing.md,
-        textAlign: 'center',
-    },
-    text: {
-        fontSize: 16,
-        color: colors.text,
-        textAlign: 'center',
-        marginBottom: spacing.sm,
-    },
-    bold: {
-        fontWeight: 'bold',
-    },
-});
 
 export default AccountVerification;
