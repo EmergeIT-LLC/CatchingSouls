@@ -19,6 +19,21 @@ import LevelChoice from "./screens/LevelChoice";
 import LevelChoiceSelected from "./screens/LevelChoiceSelected";
 import Login from "./screens/Login";
 import Logout from "./screens/Logout";
+import Profile from "./screens/Profile";
+import ProfileDelete from "./screens/ProfileDelete";
+import ProfileUpdate from "./screens/ProfileUpdate";
+import Register from "./screens/Register";
+import AdminTools from "./screens/AdminTools";
+import AdminToolsManageAccount from "./screens/AdminToolsManageAccount";
+import AdminToolsManageAccountDetail from "./screens/AdminToolsManageAccountDetail";
+import AdminToolsManageAccountUpdate from "./screens/AdminToolsManageAccountUpdate";
+import AdminToolsManageDatabase from "./screens/AdminToolsManageDatabase";
+import AdminToolsManageTrivia from "./screens/AdminToolsManageTrivia";
+import AdminToolsManageTriviaAdd from "./screens/AdminToolsManageTriviaAdd";
+import AdminToolsManageTriviaDelete from "./screens/AdminToolsManageTriviaDelete";
+import AdminToolsManageTriviaDetail from "./screens/AdminToolsManageTriviaDetail";
+import AdminToolsManageTriviaUpdate from "./screens/AdminToolsManageTriviaUpdate";
+import AdminToolsVerification from "./screens/AdminToolsVerification";
 
 //Code
 const Stack = createNativeStackNavigator();
@@ -32,6 +47,10 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
       <DrawerContentScrollView {...props}>
         {!isLoggedIn && !isGuest ? (
           <>
+            <DrawerItem
+              label="Register"
+              onPress={() => props.navigation.navigate('Register')}
+            />
             <DrawerItem
               label="Login"
               onPress={() => props.navigation.navigate('Login')}
@@ -48,8 +67,16 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         ) : (
           <>
             <DrawerItem
+              label="Admin Tools"
+              onPress={() => props.navigation.navigate('AdminTools')}
+            />
+            <DrawerItem
               label="Dashboard"
               onPress={() => props.navigation.navigate('Dashboard')}
+            />
+            <DrawerItem
+              label="Profile"
+              onPress={() => props.navigation.navigate('Profile')}
             />
             <DrawerItem
               label="Logout"
@@ -110,6 +137,81 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         name="Logout"
         component={Logout}
         options={{ drawerLabel: "Logout" }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={Profile}
+        options={{ drawerLabel: "Profile" }}
+      />
+      <Drawer.Screen
+        name="ProfileDelete"
+        component={ProfileDelete}
+        options={{ drawerLabel: "Profile Delete" }}
+      />
+      <Drawer.Screen
+        name="ProfileUpdate"
+        component={ProfileUpdate}
+        options={{ drawerLabel: "Profile Update" }}
+      />
+      <Drawer.Screen
+        name="Register"
+        component={Register}
+        options={{ drawerLabel: "Register" }}
+      />
+      <Drawer.Screen
+        name="AdminTools"
+        component={AdminTools}
+        options={{ drawerLabel: "Admin Tools" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageAccount"
+        component={AdminToolsManageAccount}
+        options={{ drawerLabel: "Manage Admin Accounts" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageAccountDetail"
+        component={AdminToolsManageAccountDetail}
+        options={{ drawerLabel: "Admin Account Detail" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageAccountUpdate"
+        component={AdminToolsManageAccountUpdate}
+        options={{ drawerLabel: "Admin Account Update" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageTrivia"
+        component={AdminToolsManageTrivia}
+        options={{ drawerLabel: "Manage Trivia Questions" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageTriviaAdd"
+        component={AdminToolsManageTriviaAdd}
+        options={{ drawerLabel: "Add Trivia Question" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageTriviaDetail"
+        component={AdminToolsManageTriviaDetail}
+        options={{ drawerLabel: "Trivia Question Detail" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageTriviaUpdate"
+        component={AdminToolsManageTriviaUpdate}
+        options={{ drawerLabel: "Update Trivia Question" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageTriviaDelete"
+        component={AdminToolsManageTriviaDelete}
+        options={{ drawerLabel: "Delete Trivia Question" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsManageDatabase"
+        component={AdminToolsManageDatabase}
+        options={{ drawerLabel: "Manage Database" }}
+      />
+      <Drawer.Screen
+        name="AdminToolsVerification"
+        component={AdminToolsVerification}
+        options={{ drawerLabel: "Admin Verification" }}
       />
     </Drawer.Navigator>
   );

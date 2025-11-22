@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Image, Pressable, StyleSheet, Text, View, ScrollView, SafeAreaView, useWindowDimensions } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View, ScrollView, useWindowDimensions } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThrottleAsync } from "../functions/throttler";
 import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API } from "../config/constants";
 import VerificationCheck from "../functions/verificationCheck";
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LevelChoiceSelected = () => {
     const navigation = useNavigation();
