@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
+import { Image, Pressable, Text, View, ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import PrimaryButton from '../components/PrimaryButton';
 import TextField from '../components/TextField';
 import { useThrottleAsync } from '../functions/throttler';
@@ -9,7 +10,7 @@ import axios from 'axios';
 import { API } from '../config/constants';
 import entryCheck from '../functions/entryCheck';
 import VerificationCheck from '../functions/verificationCheck';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { loginStyles } from '../styles/screenStyles';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -70,7 +71,7 @@ const Login = () => {
   const throttledLogin = useThrottleAsync(login, 2000);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={loginStyles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -79,7 +80,7 @@ const Login = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
             contentContainerStyle={[
-              styles.form,
+              loginStyles.form,
               {
                 flexGrow: 1,
                 justifyContent: 'center',
@@ -88,8 +89,8 @@ const Login = () => {
             ]}
             keyboardShouldPersistTaps="handled"
           >
-            <Image source={require('../assets/Images/Logo_Transparent.png')} style={styles.logo} />
-            <Text style={styles.title}>Catching Souls</Text>
+            <Image source={require('../assets/Images/Logo_Transparent.png')} style={loginStyles.logo} />
+            <Text style={loginStyles.title}>Catching Souls</Text>
 
             <View style={{ width: 260 }}>
               <TextField
@@ -111,94 +112,24 @@ const Login = () => {
             {!isLoading && (
               <>
                 <PrimaryButton title="Login As Guest" onPress={guestLogin} variant="outline" />
-                <View style={styles.linksRow}>
+                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 12}}>
                   <Pressable onPress={() => navigation.navigate('Register')}>
-                    <Text style={styles.link}>Register?</Text>
+                    <Text style={{color: 'purple'}}>Register?</Text>
                   </Pressable>
-                  <Text style={styles.linkDivider}> or </Text>
+                  <Text style={{color: 'black', marginHorizontal: 4}}> or </Text>
                   <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
-                    <Text style={styles.link}>Reset Password?</Text>
+                    <Text style={{color: 'purple'}}>Reset Password?</Text>
                   </Pressable>
                 </View>
               </>
             )}
 
-            {!!statusMessage && !isLoading && <Text style={styles.status}>{statusMessage}</Text>}
+            {!!statusMessage && !isLoading && <Text style={loginStyles.errorText}>{statusMessage}</Text>}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-  },
-  form: {
-    width: '85%',
-    alignSelf: 'center',
-    borderWidth: 4,
-    borderRadius: 16,
-    borderColor: 'purple',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  logo: {
-    width: 250,
-    height: 250,
-    marginBottom: 12,
-  },
-  title: {
-    color: 'crimson',
-    fontSize: 28,
-    marginVertical: 12,
-    fontWeight: '700',
-  },
-  input: {
-    width: 260,
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 12,
-  },
-  button: {
-    width: 260,
-    height: 44,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'purple',
-    backgroundColor: 'gold',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  buttonText: {
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  linksRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  link: {
-    color: 'purple',
-    textDecorationLine: 'none',
-  },
-  linkDivider: {
-    color: 'black',
-    marginHorizontal: 4,
-  },
-  status: {
-    marginTop: 12,
-    color: 'crimson',
-  },
-});
 
 export default Login;

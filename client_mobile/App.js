@@ -23,6 +23,8 @@ import Profile from "./screens/Profile";
 import ProfileDelete from "./screens/ProfileDelete";
 import ProfileUpdate from "./screens/ProfileUpdate";
 import Register from "./screens/Register";
+import SendUsYourQuestions from "./screens/SendUsYourQuestions";
+import AccountVerification from "./screens/AccountVerification";
 import AdminTools from "./screens/AdminTools";
 import AdminToolsManageAccount from "./screens/AdminToolsManageAccount";
 import AdminToolsManageAccountDetail from "./screens/AdminToolsManageAccountDetail";
@@ -55,14 +57,6 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
               label="Login"
               onPress={() => props.navigation.navigate('Login')}
             />
-            <DrawerItem
-              label="About Us"
-              onPress={() => props.navigation.navigate('About')}
-            />
-            <DrawerItem
-              label="Contact Us"
-              onPress={() => props.navigation.navigate('Contact')}
-            />
           </>
         ) : (
           <>
@@ -82,16 +76,20 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
               label="Logout"
               onPress={() => props.navigation.navigate('Logout')}
             />
-            <DrawerItem
-              label="About Us"
-              onPress={() => props.navigation.navigate('About')}
-            />
-            <DrawerItem
-              label="Contact Us"
-              onPress={() => props.navigation.navigate('Contact')}
-            />
           </>
         )}
+        <DrawerItem
+          label="About Us"
+          onPress={() => props.navigation.navigate('About')}
+        />
+        <DrawerItem
+          label="Contact Us"
+          onPress={() => props.navigation.navigate('Contact')}
+        />
+        <DrawerItem
+          label="Send Us Your Questions"
+          onPress={() => props.navigation.navigate('SendUsYourQuestions')}
+        />
       </DrawerContentScrollView>
     );
   };
@@ -157,6 +155,16 @@ const StackedScreens = ({ initialRouteName, isLoggedIn, isGuest }) => {
         name="Register"
         component={Register}
         options={{ drawerLabel: "Register" }}
+      />
+      <Drawer.Screen
+        name="SendUsYourQuestions"
+        component={SendUsYourQuestions}
+        options={{ drawerLabel: "Send Us Your Trivia Questions" }}
+      />
+      <Drawer.Screen
+        name="AccountVerification"
+        component={AccountVerification}
+        options={{ drawerLabel: "Account Verification" }}
       />
       <Drawer.Screen
         name="AdminTools"

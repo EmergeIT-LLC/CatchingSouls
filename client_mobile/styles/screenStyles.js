@@ -206,10 +206,351 @@ export const adminStyles = StyleSheet.create({
     },
 });
 
+// Login/Auth Styles
+export const loginStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'stretch',
+        justifyContent: 'flex-start',
+    },
+    form: {
+        width: '85%',
+        alignSelf: 'center',
+        borderWidth: 4,
+        borderRadius: 16,
+        borderColor: 'purple',
+        alignItems: 'center',
+        paddingVertical: 16,
+    },
+    logo: {
+        width: 250,
+        height: 250,
+        marginBottom: 12,
+    },
+    title: {
+        color: 'crimson',
+        fontSize: 28,
+        marginVertical: 12,
+        fontWeight: '700',
+    },
+    button: {
+        width: 260,
+        height: 44,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: 'purple',
+        backgroundColor: 'purple',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 8,
+    },
+    buttonOutline: {
+        backgroundColor: 'transparent',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    buttonTextOutline: {
+        color: 'purple',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        marginTop: 8,
+    },
+});
+
+// Content/About Styles
+export const contentStyles = StyleSheet.create({
+    container: { 
+        flex: 1, 
+        backgroundColor: "#fff" 
+    },
+    form: {
+        width: "92%",
+        alignSelf: "center",
+        borderWidth: 4,
+        borderColor: "purple",
+        borderRadius: 16,
+        paddingVertical: 18,
+        paddingHorizontal: 18,
+        backgroundColor: "#fff",
+        marginTop: 12,
+        marginBottom: 18,
+    },
+    title: { 
+        fontSize: 22, 
+        fontWeight: "800", 
+        textAlign: "center", 
+        marginBottom: 12 
+    },
+    h2: { 
+        fontSize: 18, 
+        fontWeight: "700", 
+        marginTop: 10, 
+        marginBottom: 6 
+    },
+    paragraph: { 
+        fontSize: 15, 
+        color: "#111", 
+        marginBottom: 10, 
+        lineHeight: 22 
+    },
+    list: { 
+        marginVertical: 6 
+    },
+    listItem: { 
+        fontSize: 15, 
+        color: "#111", 
+        marginBottom: 8, 
+        lineHeight: 20 
+    },
+    bold: { 
+        fontWeight: "700" 
+    },
+    button: {
+        backgroundColor: 'purple',
+        padding: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+});
+
+// Dashboard Styles
+export const dashboardStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: 'crimson',
+        textAlign: 'center',
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    greeting: {
+        fontSize: 18,
+        color: '#333',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    buttonsContainer: {
+        padding: 20,
+        gap: 15,
+    },
+    button: {
+        backgroundColor: 'purple',
+        padding: 16,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: 'purple',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
+    },
+});
+
+// Level Choice Styles
+export const levelStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    scrollContent: {
+        padding: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: 'crimson',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    button: {
+        backgroundColor: 'purple',
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 15,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
+    },
+    questionCard: {
+        backgroundColor: '#f9f9f9',
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: 'purple',
+        padding: 16,
+        marginBottom: 20,
+    },
+    questionText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 12,
+        textAlign: 'center',
+    },
+    answerButton: {
+        backgroundColor: 'white',
+        borderWidth: 2,
+        borderColor: 'purple',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 8,
+    },
+    answerButtonSelected: {
+        backgroundColor: 'purple',
+    },
+    answerText: {
+        fontSize: 14,
+        color: 'purple',
+        textAlign: 'center',
+        fontWeight: '600',
+    },
+    answerTextSelected: {
+        color: '#fff',
+    },
+    scoreText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'purple',
+        textAlign: 'center',
+        marginVertical: 10,
+    },
+});
+
+// Contact Styles
+export const contactStyles = StyleSheet.create({
+    container: { 
+        flex: 1, 
+        backgroundColor: '#fff',
+    },
+    form: {
+        width: '92%',
+        alignSelf: 'center',
+        borderWidth: 4,
+        borderRadius: 16,
+        borderColor: 'purple',
+        alignItems: 'stretch',
+        paddingVertical: 18,
+        paddingHorizontal: 18,
+        backgroundColor: '#fff',
+        marginTop: 12,
+        marginBottom: 18,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#000',
+        textAlign: 'center',
+        marginBottom: 12,
+    },
+    h2: {
+        fontSize: 18,
+        fontWeight: '700',
+        marginTop: 10,
+        marginBottom: 6,
+    },
+    paragraph: {
+        fontSize: 14,
+        marginBottom: 8,
+        color: '#111',
+    },
+    paragraphSmall: {
+        fontSize: 13,
+        color: '#222',
+    },
+    bold: {
+        fontWeight: '700',
+    },
+    link: {
+        color: 'purple',
+        textDecorationLine: 'underline',
+    },
+    listItem: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        marginBottom: 8,
+    },
+    listIndex: {
+        fontSize: 14,
+        fontWeight: '700',
+        width: 18,
+    },
+    listContent: {
+        flex: 1,
+        paddingLeft: 6,
+    },
+    listTitle: {
+        fontWeight: '700',
+        fontSize: 14,
+    },
+});
+
+// Logout Styles
+export const logoutStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    form: {
+        width: '85%',
+        borderWidth: 4,
+        borderRadius: 16,
+        borderColor: 'purple',
+        alignItems: 'center',
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+    },
+    logo: {
+        width: 250,
+        height: 250,
+        marginBottom: 12,
+    },
+    title: {
+        color: 'crimson',
+        fontSize: 28,
+        marginVertical: 12,
+        fontWeight: '700',
+        textAlign: 'center',
+    },
+    message: {
+        fontSize: 16,
+        color: '#333',
+        textAlign: 'center',
+        marginVertical: 12,
+    },
+});
+
 export default {
     common: commonStyles,
     profile: profileStyles,
     image: imageStyles,
     table: tableStyles,
     admin: adminStyles,
+    login: loginStyles,
+    content: contentStyles,
+    dashboard: dashboardStyles,
+    level: levelStyles,
+    contact: contactStyles,
+    logout: logoutStyles,
 };

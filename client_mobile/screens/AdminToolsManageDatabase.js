@@ -23,14 +23,21 @@ const AdminToolsManageDatabase = () => {
                 const userLoggedIn = await VerificationCheck.CheckUserLogin();
                 const isAdmin = await VerificationCheck.GetAdminRole();
                 
-                if (!userLoggedIn || !isAdmin) {
+                console.log('AdminToolsManageDatabase - User logged in:', userLoggedIn, 'Is admin:', isAdmin);
+                
+                if (!userLoggedIn) {
                     navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+                    return;
+                }
+                
+                if (!isAdmin) {
+                    navigation.navigate('Dashboard');
                     return;
                 }
 
                 await gatherBackupImportInfo();
             } catch (error) {
-                console.error(error);
+                console.error('AdminToolsManageDatabase error:', error);
             } finally {
                 setIsLoading(false);
             }

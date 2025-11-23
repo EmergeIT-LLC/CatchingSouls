@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import { useThrottleAsync } from '../functions/throttler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { API } from '../config/constants';
 import VerificationCheck from '../functions/verificationCheck';
+import { logoutStyles } from '../styles/screenStyles';
 
 const Logout = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -49,8 +50,8 @@ const Logout = () => {
     }, [throttledLogout]);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.form}>
+        <View style={logoutStyles.container}>
+            <View style={logoutStyles.form}>
                 {isLoading ?
                     <>
                         <Text>Loading...</Text>
@@ -59,14 +60,14 @@ const Logout = () => {
                     <>
                         <Image
                             source={require('../assets/Images/Logo_Transparent.png')}
-                            style={styles.logo}
+                            style={logoutStyles.logo}
                             alt="Catching Souls Logo"
                         />
-                        <Text style={styles.title}>Logout</Text>
-                        {statusMessage ? <Text style={styles.status}>{statusMessage}</Text> : null}
-                        <Text>Select <Text style={{fontWeight: 'bold'}}>login</Text> to sign back in!</Text>
-                        <Pressable style={styles.button} onPress={loginNav}>
-                            <Text style={styles.buttonText}>Login</Text>
+                        <Text style={logoutStyles.title}>Logout</Text>
+                        {statusMessage ? <Text style={logoutStyles.message}>{statusMessage}</Text> : null}
+                        <Text style={logoutStyles.message}>Select <Text style={{fontWeight: 'bold'}}>login</Text> to sign back in!</Text>
+                        <Pressable style={{backgroundColor: 'purple', padding: 12, borderRadius: 8, marginTop: 10}} onPress={loginNav}>
+                            <Text style={{color: '#fff', fontWeight: '600'}}>Login</Text>
                         </Pressable>
                     </>
                 }
@@ -75,44 +76,5 @@ const Logout = () => {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-  form: {
-    width: '85%',
-    borderWidth: 4,
-    borderRadius: 16,
-    borderColor: 'purple',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  logo: { width: 200, height: 200, marginTop: 8 },
-  title: { color: 'crimson', fontSize: 28, marginVertical: 12, fontWeight: '700' },
-  input: {
-    width: 260,
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 12,
-  },
-  button: {
-    width: 260,
-    height: 44,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'purple',
-    backgroundColor: 'gold',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  buttonText: { color: 'black', fontWeight: 'bold' },
-  linksRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
-  link: { color: 'purple', textDecorationLine: 'none' },
-  linkDivider: { color: 'black', marginHorizontal: 4 },
-  status: { marginTop: 12, color: 'crimson' },
-});
 
 export default Logout;

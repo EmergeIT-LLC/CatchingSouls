@@ -20,14 +20,19 @@ const AdminToolsManageTrivia = () => {
                 const userLoggedIn = await VerificationCheck.CheckUserLogin();
                 const isAdmin = await VerificationCheck.GetAdminRole();
                 
-                if (!userLoggedIn || !isAdmin) {
+                if (!userLoggedIn) {
                     navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+                    return;
+                }
+                
+                if (!isAdmin) {
+                    navigation.navigate('Dashboard');
                     return;
                 }
 
                 await getTriviaProps();
             } catch (error) {
-                console.error(error);
+                console.error('AdminToolsManageTrivia error:', error);
             } finally {
                 setIsLoading(false);
             }

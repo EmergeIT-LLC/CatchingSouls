@@ -21,15 +21,22 @@ const AdminToolsManageAccount = () => {
                 const userLoggedIn = await VerificationCheck.CheckUserLogin();
                 const isAdmin = await VerificationCheck.GetAdminRole();
                 
-                if (!userLoggedIn || !isAdmin) {
+                if (!userLoggedIn) {
                     navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
                     return;
                 }
-
+                
+                if (!isAdmin) {
+                    navigation.navigate('Dashboard');
+                    return;
+                }
+                
+                console.log('AdminToolsManageAccount - Loading verified and unverified accounts');
                 await getVerifiedListProps();
                 await getUnverifiedListProps();
+                console.log('AdminToolsManageAccount - Accounts loaded successfully');
             } catch (error) {
-                console.error(error);
+                console.error('AdminToolsManageAccount error:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -42,7 +49,7 @@ const AdminToolsManageAccount = () => {
         try {
             const url = `${API.BASE_URL}/admin/account_retrieval`;
             const response = await axios.post(url);
-            setVerifiedAccounts(response.data || []);
+            setVerifiedAccounts(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -52,7 +59,7 @@ const AdminToolsManageAccount = () => {
         try {
             const url = `${API.BASE_URL}/admin/account_unverifiedRetrieval`;
             const response = await axios.post(url);
-            setUnverifiedAccounts(response.data || []);
+            setUnverifiedAccounts(response.data);
         } catch (error) {
             console.error(error);
         }

@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, Linking, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform, } from 'react-native';
+import { Text, View, Pressable, ScrollView, Linking, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { contactStyles } from '../styles/screenStyles';
 
 const Contact = () => {
     const handleMail = () => {
@@ -31,7 +32,7 @@ const Contact = () => {
     ];
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={contactStyles.container}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -39,39 +40,39 @@ const Contact = () => {
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 70}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={styles.form}>
-                        <Text style={styles.title}>Contact Us</Text>
-                        <Text style={styles.paragraph}>
+                    <ScrollView contentContainerStyle={contactStyles.form}>
+                        <Text style={contactStyles.title}>Contact Us</Text>
+                        <Text style={contactStyles.paragraph}>
                             We value your feedback, questions, and suggestions at Catching Souls Bible Trivia. If you have any inquiries or need assistance with our app, please don't hesitate to get in touch with us. Our dedicated support team is here to help you.
                         </Text>
 
-                        <Text style={styles.h2}>Contact Information:</Text>
-                        <Text style={styles.paragraph}>
-                            <Text style={styles.bold}>Email: </Text>
-                            <Text style={styles.link} onPress={handleMail}>
+                        <Text style={contactStyles.h2}>Contact Information:</Text>
+                        <Text style={contactStyles.paragraph}>
+                            <Text style={contactStyles.bold}>Email: </Text>
+                            <Text style={contactStyles.link} onPress={handleMail}>
                                 CatchingSoulsTrivia@Outlook.com
                             </Text>
                         </Text>
 
-                        <Text style={styles.h2}>How Can We Assist You?</Text>
+                        <Text style={contactStyles.h2}>How Can We Assist You?</Text>
 
                         {listItems.map((it, idx) => (
-                            <View key={idx} style={styles.listItem}>
-                                <Text style={styles.listIndex}>{idx + 1}.</Text>
-                                <View style={styles.listContent}>
-                                    <Text style={styles.listTitle}>{it.title}:</Text>
-                                    <Text style={styles.paragraphSmall}>{it.body}</Text>
+                            <View key={idx} style={contactStyles.listItem}>
+                                <Text style={contactStyles.listIndex}>{idx + 1}.</Text>
+                                <View style={contactStyles.listContent}>
+                                    <Text style={contactStyles.listTitle}>{it.title}:</Text>
+                                    <Text style={contactStyles.paragraphSmall}>{it.body}</Text>
                                 </View>
                             </View>
                         ))}
 
-                        <Text style={styles.h2}>Connect with Us Today:</Text>
-                        <Text style={styles.paragraph}>
+                        <Text style={contactStyles.h2}>Connect with Us Today:</Text>
+                        <Text style={contactStyles.paragraph}>
                             Catching Souls Bible Trivia is committed to creating a supportive and engaging platform for Bible enthusiasts worldwide. We aim to foster a community that celebrates knowledge, faith, and growth through the exploration of the Scriptures.
                         </Text>
-                        <Text style={styles.paragraph}>
+                        <Text style={contactStyles.paragraph}>
                             Drop us an email at{' '}
-                            <Text style={styles.link} onPress={handleMail}>
+                            <Text style={contactStyles.link} onPress={handleMail}>
                                 CatchingSoulsTrivia@Outlook.com
                             </Text>
                             , and we'll be delighted to connect with you. Thank you for being a part of Catching Souls, and we look forward to accompanying you on your biblical journey.
@@ -82,98 +83,5 @@ const Contact = () => {
         </SafeAreaView>
      );
 }
-
-const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff',
-  },
-  form: {
-    width: '92%',
-    alignSelf: 'center',
-    borderWidth: 4,
-    borderRadius: 16,
-    borderColor: 'purple',
-    alignItems: 'stretch',
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    backgroundColor: '#fff',
-    marginTop: 12,
-    marginBottom: 18,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#000',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  h2: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 10,
-    marginBottom: 6,
-  },
-  paragraph: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: '#111',
-  },
-  paragraphSmall: {
-    fontSize: 13,
-    color: '#222',
-  },
-  bold: {
-    fontWeight: '700',
-  },
-  link: {
-    color: 'purple',
-    textDecorationLine: 'underline',
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  listIndex: {
-    fontSize: 14,
-    fontWeight: '700',
-    width: 18,
-  },
-  listContent: {
-    flex: 1,
-    paddingLeft: 6,
-  },
-  formInputs: {
-    marginTop: 12,
-    alignItems: 'center',
-    paddingBottom: 24,
-  },
-  input: {
-    width: 260,
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 12,
-  },
-  textArea: {
-    height: 120,
-    textAlignVertical: 'top',
-  },
-  button: {
-    width: 260,
-    height: 44,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'purple',
-    backgroundColor: 'gold',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  buttonText: { color: 'black', fontWeight: 'bold' },
-});
 
 export default Contact;

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import CompanyLogo from "../assets/Images/Logo_Transparent.png";
 import TimeOfDay from "../functions/timeOfDay";
 import VerificationCheck from "../functions/verificationCheck";
+import { dashboardStyles } from '../styles/screenStyles';
 
 const Dashboard = () => {
   const navigation = useNavigation();
@@ -47,24 +49,27 @@ const Dashboard = () => {
   }, [navigation]);
 
   return (
-    <View style={styles.dashboardContainer}>
-      <View style={styles.dashboardForm}>
+    <View style={{flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{alignItems: 'center', justifyContent: 'center', borderColor: 'purple', borderWidth: 4, borderRadius: 15, width: '85%', padding: 16}}>
         {isLoading ? (
           <Text>Loading...</Text>
         ) : (
           <>
-            <Image source={CompanyLogo} style={styles.dashboardImage} alt="Catching Souls Logo" />
-            <Text style={styles.dashboardHeader}>
+            <Image source={CompanyLogo} style={{width: 300, height: 300}} alt="Catching Souls Logo" />
+            <Text style={{margin: 4, fontSize: 34, fontWeight: 'bold', textAlign: 'center'}}>
               {TOD} {lastName ? `${firstName} ${lastName}` : `${firstName}`},
             </Text>
-            <Text style={styles.dashboardText}>
+            <Text style={{margin: 4, fontSize: 16, textAlign: 'center', width: 300}}>
               Do you know your bible enough to spread the lord's message and save souls?
             </Text>
-            <Text style={styles.dashboardText}>
+            <Text style={{margin: 4, fontSize: 16, textAlign: 'center', width: 300}}>
               How about seeing the number of souls you can save with some questions?
             </Text>
-            <Pressable style={styles.dashboardButton} onPress={() => navigation.navigate("LevelChoice")}>
-              <Text style={styles.dashboardButtonText}>
+            <Pressable 
+              style={{backgroundColor: 'gold', padding: 10, margin: 25, width: '85%', alignItems: 'center', justifyContent: 'center', borderColor: 'purple', borderWidth: 2, borderRadius: 15}} 
+              onPress={() => navigation.navigate("LevelChoice")}
+            >
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                 How Many Souls Can you Save?
               </Text>
             </Pressable>
@@ -74,61 +79,5 @@ const Dashboard = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  dashboardContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  dashboardForm: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "purple",
-    borderStyle: "solid",
-    borderWidth: 4,
-    borderRadius: 15,
-    width: "85%"
-  },
-  dashboardImage: {
-    height: 300,
-    width: 300,
-    margin: 0,
-    padding: 0
-  },
-  dashboardHeader: {
-    margin: 4,
-    fontSize: 34,
-    fontFamily: "Arial",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  dashboardText: {
-    margin: 4,
-    fontSize: 16,
-    fontFamily: "Arial",
-    textAlign: "center",
-    width: 300
-  },
-  dashboardButton: {
-    backgroundColor: "gold",
-    color: "black",
-    padding: 10,
-    margin: 25,
-    width: "85%",
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "purple",
-    borderStyle: "solid",
-    borderWidth: 2,
-    borderRadius: 15
-  },
-  dashboardButtonText: {
-    fontFamily: "Arial",
-    fontSize: 16,
-    fontWeight: "bold"
-  }
-});
 
 export default Dashboard;

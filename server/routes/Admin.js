@@ -9,17 +9,17 @@ const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const jsonHandler = require('../functions/jsonHandler');
 //----------------------------------------- BEGINNING OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
-function requireAuth(req, res, next) {
-  if (req.session.user) {
-    next(); // User is authenticated, proceed to the route
-  } else {
-    res.json({ message: 'Unauthorized' });
-  }
-}
-// Example usage to protect a route
-router.get('/adminprotected', requireAuth, (req, res) => {
-  res.json({ message: 'This is a protected route' });
-});
+// function requireAuth(req, res, next) {
+//   if (req.session.user) {
+//     next(); // User is authenticated, proceed to the route
+//   } else {
+//     res.json({ message: 'Unauthorized' });
+//   }
+// }
+// // Example usage to protect a route
+// router.get('/adminprotected', requireAuth, (req, res) => {
+//   res.json({ message: 'This is a protected route' });
+// });
 //----------------------------------------- END OF PASSPORT MIDDLEWARE AND SETUP ---------------------------------------------------
 //----------------------------------------- REGISTER AND VERIFICATION SETUP ---------------------------------------------------
 //Register page communication
@@ -138,6 +138,7 @@ router.post('/account_retrieval', async (req, res) => {
     if (locateAllAdmins.length > 0) {
       return res.send(locateAllAdmins);
     }
+    return res.send([]);
   }
   catch (err) {
     return res.json({ message: 'An Error Occured!'});
@@ -152,6 +153,7 @@ router.post('/account_unverifiedRetrieval', async (req, res) => {
     if (unverifiedAdmin.length > 0) {
       return res.send(unverifiedAdmin);
     }
+    return res.send([]);
   }
   catch (err) {
     return res.json({ message: 'An Error Occured!'});
@@ -175,6 +177,7 @@ router.post('/adminAccountDetail_retrieval', async (req, res) => {
 
       return res.send({user: locateUnverifiedAdmin[0], cookieSetting: cookieSettings});
     }
+    return res.json({ message: 'User Not Found!', data:[]});
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
@@ -209,6 +212,7 @@ router.post('/adminAccountDetail_Update', async (req, res) => {
       }
       return res.json({updateStatus: "Unsuccessful"});
     }
+    return res.json({ message: 'User Not Found!', data:[]});
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
@@ -305,7 +309,8 @@ router.post('/adminTool/TriviaRetrieval', async (req, res) => {
     const triviaQA = await triviaQueries.qaGetAllQuestionData();
     if (triviaQA.length > 0){
       return res.send(triviaQA)
-    }    
+    }
+    return res.send([]);
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
@@ -320,7 +325,7 @@ router.post('/adminTool/TriviaDetailRetrieval', async (req, res) => {
     if (trivaQADetail.length > 0){
       return res.send(trivaQADetail);
     }
-    
+    return res.send([]);
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
@@ -345,6 +350,7 @@ router.post('/adminTool/TriviaUpdate', async (req, res) => {
       }
       return res.json({ updateStatus: 'Unsuccessful'});
     }
+    return res.send([]);
   } catch (error) {
     return res.json({ message: 'An Error Occured!'});
   }
