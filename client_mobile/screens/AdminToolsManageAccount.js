@@ -31,10 +31,8 @@ const AdminToolsManageAccount = () => {
                     return;
                 }
                 
-                console.log('AdminToolsManageAccount - Loading verified and unverified accounts');
                 await getVerifiedListProps();
                 await getUnverifiedListProps();
-                console.log('AdminToolsManageAccount - Accounts loaded successfully');
             } catch (error) {
                 console.error('AdminToolsManageAccount error:', error);
             } finally {
